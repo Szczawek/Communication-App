@@ -1,0 +1,79 @@
+::after,
+::before,
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+:root {
+  --main-font-size: 1.5rem;
+  --transition-std: 300ms ease-in;
+  --active-font-color: #ff1aff;
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  background-color: transparent;
+}
+a {
+  color: initial;
+  text-decoration: none;
+}
+li {
+  list-style: none;
+}
+
+input,
+button,
+hr {
+  border: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-block: 0rem;
+}
+
+img,
+video,
+iframe {
+  max-width: 100%;
+}
+body {
+  min-height: 100vh;
+}
+
+/* NAVIGATION */
+
+.links-list {
+  display: grid;
+  max-width: max-content;
+  gap: 1rem;
+  grid-auto-flow: column;
+}
+
+.link {
+  font-size: var(--main-font-size);
+}
+
+.link a {
+  /* transition: color 300ms ease-in-out; */
+  transition: color var(--transition-std);
+}
+.link a:is(:hover, :focus, :focus-visible, :focus-within) {
+  color: var(--active-font-color);
+}
+.navigation .active {
+  color: var(--active-font-color);
+}
