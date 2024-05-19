@@ -3,7 +3,6 @@ import useFetchFriends from "./useFetchFriends";
 
 export default function UsersList() {
   const users = useFetchFriends();
-  console.log(users);
 
   if (!users[0]) return <p className="empty">empty table</p>;
   return (

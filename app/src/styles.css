@@ -11,6 +11,10 @@ html {
 }
 
 :root {
+  --input-padding:0.2rem 0.4rem;
+  --input-border-r: .2rem;
+  --confirm-color:green;
+  --component-padding:.6rem;
   --main-font-size: 1.5rem;
   --transition-std: 300ms ease-in;
   --active-font-color: #ff1aff;
@@ -49,6 +53,7 @@ img,
 video,
 iframe {
   max-width: 100%;
+  max-height: 100%;
 }
 body {
   min-height: 100vh;
@@ -76,4 +81,28 @@ body {
 }
 .navigation .active {
   color: var(--active-font-color);
+}
+
+/* All loading in the site  */
+
+.loading {
+  display: grid;
+  font-weight: bold;
+  font-size: 2rem;
+  place-content: center;
+}
+
+.full-screen.loading {
+  min-height: 100vh;
+}
+
+.navigation {
+  height: 3.4rem;
+  display: grid;
+  align-items: center;
+}
+.navigation .links-list {
+  display: grid;
+  min-width: 100%;
+  justify-content: space-around;
 }

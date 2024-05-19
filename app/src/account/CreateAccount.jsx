@@ -43,6 +43,8 @@ export default function CreateAccount() {
         <header>
           <h2>Create Account</h2>
         </header>
+        <div className="labels">
+
         <label htmlFor="nick">
           <input
             required
@@ -52,36 +54,37 @@ export default function CreateAccount() {
             onChange={(e) => setNick(e.target.value)}
           />
         </label>
-        <label htmlFor="uniqueName">
+        <label htmlFor="cr-unqiue-name">
           <input
             required
             placeholder="unqiue name"
-            id="unqiueName"
+            id="cr-unqiue-name"
             value={unqiueName}
             onChange={(e) => setUnqiueName(e.target.value)}
           />
         </label>
-        <label htmlFor="email">
+        <label htmlFor="cr-email">
           <input
             required
             placeholder="email"
-            id="email"
+            id="cr-email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
           />
         </label>
-        <label htmlFor="password">
+        <label htmlFor="cr-password">
           <input
             required
             placeholder="password"
-            id="passwword"
+            id="cr-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
           />
         </label>
-        <button type="submit">{loading ? "Loading..." : "Submit"}</button>
+        </div>
+        <button className="confirm" type="submit">{loading ? "Loading..." : "Submit"}</button>
       </form>
     </div>
   );

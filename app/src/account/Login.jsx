@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [warning, setWarning] = useState(false);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (warning) setWarning(false);
+  }, [email, password]);
   async function reqLoginAccount(e) {
     e.preventDefault();
     try {
@@ -20,6 +24,7 @@ export default function Login() {
         headers: {
           "Content-type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(data),
       };
       const res = await fetch(
@@ -27,7 +32,11 @@ export default function Login() {
         fetchOptions
       );
       setLoading(false);
-      if (!res.ok) return console.error(`Error with login: ${res.status}}`);
+
+      if (!res.ok) {
+        if (res.status === 401) return setWarning(true);
+        return console.error(`Error with login: ${res.status}}`);
+      }
       navigate("/");
     } catch (err) {
       throw Error(`Error durning login to account: ${err}`);
@@ -39,27 +48,34 @@ export default function Login() {
         <header>
           <h2>Login</h2>
         </header>
-        <label htmlFor="login-ac">
-          <input
-            required
-            placeholder="email"
-            id="login-ac"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            type="email"
-          />
-        </label>
-        <label htmlFor="password-ac">
-          <input
-            required
-            placeholder="password-ac"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-          />
-        </label>
-        <button type="submit">{loading ? "loading..." : "Submit"}</button>
+        <div className="labels">
+          <label htmlFor="login-ac">
+            <input
+              required
+              placeholder="email"
+              id="login-ac"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+            />
+          </label>
+          <label htmlFor="password-ac">
+            <input
+              required
+              placeholder="password"
+              id="password-ac"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+            />
+          </label>
+          <small className="warning">
+            {warning && "Email or Password are invalid!"}
+          </small>
+        </div>
+        <button className="confirm" type="submit">
+          {loading ? "loading..." : "Submit"}
+        </button>
       </form>
     </div>
   );

@@ -1,0 +1,41 @@
+.account {
+  display: grid;
+  place-content: center;
+}
+
+.account form {
+  padding-block: 1.5rem;
+  border-radius: var(--component-padding);
+  background-color: purple;
+  width: clamp(320px, 60vw, 680px);
+  display: grid;
+  place-content: center;
+  row-gap: 2rem;
+  text-align: center;
+}
+.account .labels {
+  display: grid;
+  position: relative;
+  row-gap: 1rem;
+}
+.account input {
+  border-radius: var(--input-border-r);
+  padding: var(--input-padding);
+}
+
+.account .confirm {
+  padding: var(--input-padding);
+  border-radius: var(--input-border-r);
+  font-weight: bold;
+  font-size: 1.1rem;
+  background-color: var(--confirm-color);
+}
+
+.account .warning {
+  height: 1rem;
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: -1.5rem;
+  color: red;
+}

@@ -1,5 +1,7 @@
 import { Outlet, NavLink } from "react-router-dom";
-export default function Navigation() {
+export default function Navigation({ user }) {
+  const { nick, id, unqiueName } = user;
+
   return (
     <>
       <header>
@@ -17,6 +19,13 @@ export default function Navigation() {
                 className={({ isActive }) => (isActive ? "active" : "")}
                 to="login">
                 Login
+              </NavLink>
+            </li>
+            <li className="link">
+              <NavLink
+                className={({ isActive }) => (isActive ? "active" : "")}
+                to={id != 0 ? `/${unqiueName}` : "/login"}>
+                {id != 0 ? `${nick}` : "/login"}
               </NavLink>
             </li>
           </ul>

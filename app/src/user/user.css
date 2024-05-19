@@ -1,0 +1,61 @@
+.user {
+  display: grid;
+  justify-content: center;
+}
+.profile {
+  width: clamp(320px, 55vw, 700px);
+  background-color: red;
+  border-radius: 0.5rem;
+  display: grid;
+  row-gap: 4rem;
+  padding: var(--component-padding);
+}
+.profile .baner {
+  position: relative;
+  z-index: 1;
+  background-color: rgb(71, 12, 12);
+  height: 7rem;
+  border-radius: var(--input-border-r);
+}
+.profile .baner > img {
+  object-fit: cover;
+  width: 100%;
+}
+.profile .circle {
+  position: absolute;
+  display: grid;
+
+  bottom: -3rem;
+  left: 8%;
+  width: 7rem;
+}
+.profile .avatar::before {
+  content: "";
+  position: absolute;
+  background-color: rgb(151, 21, 21);
+  aspect-ratio: 2/1;
+  left: 0;
+  top: -0.5rem;
+  border-radius: 500% 500% 0 0;
+  width: 100%;
+  z-index: -1;
+}
+.profile .avatar {
+  aspect-ratio: 1/1;
+  width: 6rem;
+  margin-inline: auto;
+  display: grid;
+  place-content: center;
+  background-color: red;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.avatar > img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+}
+.profile .panel {
+  display: grid;
+  grid-template-columns: 1fr 2rem;
+}
