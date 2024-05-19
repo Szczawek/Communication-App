@@ -1,6 +1,9 @@
 import { Outlet, NavLink } from "react-router-dom";
+import NavSettingsList from "../navigation/NavSettingsList";
+import { useState } from "react";
+
 export default function Navigation({ user }) {
-  const { nick, id, unqiueName } = user;
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
 
   return (
     <>
@@ -22,11 +25,7 @@ export default function Navigation({ user }) {
               </NavLink>
             </li>
             <li className="link">
-              <NavLink
-                className={({ isActive }) => (isActive ? "active" : "")}
-                to={id != 0 ? `/${unqiueName}` : "/login"}>
-                {id != 0 ? `${nick}` : "/login"}
-              </NavLink>
+              <NavSettingsList user={user} />
             </li>
           </ul>
         </nav>

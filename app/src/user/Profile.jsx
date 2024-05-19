@@ -6,7 +6,11 @@ export default function Profile({ user, loggedInUser }) {
         <img src={baner} alt="baner" />
         <div className="circle">
           <div className="avatar">
-            <img className="profile_img" src={avatar} alt="avatar" />
+            <img
+              className="profile_img"
+              src={!avatar ? "./images/user.jpg" : avatar}
+              alt="avatar"
+            />
           </div>
         </div>
       </div>

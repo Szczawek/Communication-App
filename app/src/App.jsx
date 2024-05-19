@@ -15,6 +15,9 @@ export default function App() {
     id: 0,
     friends: [],
   });
+
+  console.log(loggedInUser)
+
   useEffect(() => {
     if (requestSent.current) return;
 
@@ -25,7 +28,14 @@ export default function App() {
         });
         if (!res.ok) return console.error(`Error with server: ${res.status}`);
         const obj = await res.json();
-        setLoggedInUser(obj);
+        setLoggedInUser((prev) => {
+          for (const key in obj) {
+            if (!obj[key]) {
+              obj[key] = prev[key];
+            }
+          }
+          return obj;
+        });
       } catch (err) {
         throw Error(
           `Error, the app now can't check if user is logged in: ${err}`
