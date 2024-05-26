@@ -1,17 +1,19 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "./logout";
+import { UserFunctions } from "../App";
 export default function NavSettingsList({ user }) {
   const { unqiueName, avatar } = user;
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const activeElement = useRef(null);
   const parentElement = useRef(null);
-
+  const navigate = useNavigate()
+  const refreshUser = useContext(UserFunctions);
   useEffect(() => {
     if (activeElement.current) {
       activeElement.current.focus();
     }
   }, [menuIsOpen, activeElement.current]);
-
   return (
     <div
       onKeyDown={(e) => {
@@ -33,6 +35,7 @@ export default function NavSettingsList({ user }) {
           className="nav_setting">
           <li className="link main_option">
             <Link
+              className="fn"
               ref={activeElement}
               onClick={() => {
                 setMenuIsOpen(false);
@@ -48,16 +51,18 @@ export default function NavSettingsList({ user }) {
           </li>
           <hr className="line" />
           <li className="link">
-            <Link>1</Link>
+            <Link className="fn">1</Link>
           </li>
           <li className="link">
-            <Link>2</Link>
+            <Link className="fn">2</Link>
           </li>
           <li className="link">
-            <Link>3</Link>
+            <Link className="fn">3</Link>
           </li>
           <li className="link">
-            <Link>4</Link>
+            <button className="fn" onClick={() => logout(refreshUser,navigate)}>
+              Logout
+            </button>
           </li>
         </ul>
       ) : (

@@ -18,20 +18,12 @@ export default function Navigation({ user }) {
             <li className="link">
               <NavLink
                 className={({ isActive }) => (isActive ? "active" : "")}
-                to="login">
-                Login
+                to="info">
+                Info
               </NavLink>
             </li>
             <li className="link">
-              {id != 0 ? (
-                <NavSettingsList user={user} />
-              ) : (
-                <NavLink
-                  to={"/login"}
-                  className={({ isActive }) => (isActive ? "active" : "")}>
-                  Login
-                </NavLink>
-              )}
+              <NavSettingsList user={user} />
             </li>
           </ul>
         </nav>

@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Login({ refreshUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [warning, setWarning] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (warning) setWarning(false);
@@ -37,7 +36,7 @@ export default function Login() {
         if (res.status === 401) return setWarning(true);
         return console.error(`Error with login: ${res.status}}`);
       }
-      navigate("/");
+      await refreshUser();    
     } catch (err) {
       throw Error(`Error durning login to account: ${err}`);
     }

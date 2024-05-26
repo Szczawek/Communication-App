@@ -102,6 +102,14 @@ function setLoggedInUser(res, id) {
   );
 }
 
+function removeLoggedInUser(res) {
+  res.clearCookie("logged-in", {
+    maxAge: 0,
+    httpOnly: true,
+    secure: true,
+  });
+}
+
 app.get("/logged-in-user", async (req, res) => {
   try {
     const idInCookie = req.cookies["logged-in"];
@@ -185,8 +193,12 @@ app.post("/friends-list-change", (req, res) => {
   });
 });
 
-// load messages
+app.post("/logout", (req, res) => {
+  removeLoggedInUser(res);
+  res.json("Logout");
+});
 
+// load messages
 app.get("/download-messages/:ownerID/:recipientID", (req, res) => {
   const { ownerID, recipientID } = req.params;
   const dbValues = [ownerID, recipientID];

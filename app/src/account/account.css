@@ -1,24 +1,36 @@
 .account {
   display: grid;
+  height: 100vh;
   place-content: center;
+  grid-template-rows: 0.5fr max-content;
 }
 
 .account form {
-  padding-block: 1.5rem;
-  border-radius: var(--component-padding);
+  height: 100%;
+  border-radius: 0.4rem 0.4rem 0 0;
   background-color: purple;
   width: clamp(320px, 60vw, 680px);
   display: grid;
-  place-content: center;
+  justify-content: center;
   row-gap: 2rem;
   text-align: center;
+}
+
+.account form h2 {
+  font-size: 1.8rem;
+  padding-top: 1.5rem;
 }
 .account .labels {
   display: grid;
   position: relative;
-  row-gap: 1rem;
+  grid-auto-rows: max-content;
+  row-gap: 1.5rem;
+}
+.account label {
+  height: max-content;
 }
 .account input {
+  font-size: 1rem;
   border-radius: var(--input-border-r);
   padding: var(--input-padding);
 }
@@ -28,6 +40,7 @@
   border-radius: var(--input-border-r);
   font-weight: bold;
   font-size: 1.1rem;
+  height: max-content;
   background-color: var(--confirm-color);
 }
 
@@ -38,4 +51,15 @@
   left: 0;
   bottom: -1.5rem;
   color: red;
+}
+
+.account .panel .panel-list {
+  display: grid;
+  font-weight: 800;
+  grid-template-columns: repeat(2, 1fr);
+  text-align: center;
+  border-radius: 0 0 0.4rem 0.4rem;
+  padding-block: 0.5rem;
+  background-color: rgb(28, 3, 49);
+  justify-content: space-between;
 }

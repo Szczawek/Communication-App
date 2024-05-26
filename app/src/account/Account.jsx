@@ -6,7 +6,7 @@ export default function Account() {
     <div className="account">
       <Outlet />
       <div className="panel">
-        <ul className="links-list">
+        <ul className="panel-list">
           <li className="link">
             <Link to="/create-account">Create Account</Link>
           </li>
