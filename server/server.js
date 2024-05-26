@@ -4,6 +4,7 @@ import "dotenv/config";
 import https from "https";
 import mysql from "mysql";
 import helmet from "helmet";
+import { WebSocketServer } from "ws";
 import cookieParser from "cookie-parser";
 
 const PORT = 443;
@@ -46,6 +47,9 @@ const options = {
 };
 const server = https.createServer(options, app);
 
+const wss = new WebSocketServer({
+  server,
+});
 // START POINT
 app.get("/", (req, res) => {
   res.json("Szczawik");
@@ -101,10 +105,9 @@ function setLoggedInUser(res, id) {
 app.get("/logged-in-user", async (req, res) => {
   try {
     const idInCookie = req.cookies["logged-in"];
-    if (!idInCookie) return res.status(404).json("User isn't logged-in!");
+    if (!idInCookie) return res.status(401).json("User isn't logged-in!");
 
     const { id } = idInCookie;
-    console.log(id);
     const dbDownloadUserData =
       "SELECT id, nick,avatar,date, unqiue_name as unqiueName FROM users where id = ?";
     const userData = await new Promise((resolve) => {
@@ -113,7 +116,6 @@ app.get("/logged-in-user", async (req, res) => {
         resolve(result[0]);
       });
     });
-    console.log(userData);
     const dbDownloadUserFriends =
       "SELECT id FROM user_friends where `personID` = ?";
     const userFriends = await new Promise((resolve) => {
@@ -133,15 +135,27 @@ app.get("/logged-in-user", async (req, res) => {
 });
 
 // CREATE ACCOUNT IN SENDERSON
-app.post("/create-account", (req, res) => {
-  const { nick, email, unqiueName, avatar, password } = req.body;
-  const dbValues = [nick, unqiueName, password, email, new Date()];
-  const dbCommand =
-    "INSERT INTO users(nick,unqiue_name,password,email,date) values(?,?,?,?,?)";
-  db.query(dbCommand, dbValues, (err) => {
-    if (err) throw Error(`Error with account-creator: ${err}`);
-    res.send("The account has been created successfully!");
-  });
+app.post("/create-account", async (req, res) => {
+  try {
+    const { nick, email, unqiueName, avatar, password } = req.body;
+    const dbValues = [nick, unqiueName, password, email, new Date()];
+    const dbCommand =
+      "INSERT INTO users(nick,unqiue_name,password,email,date) values(?,?,?,?,?)";
+    await new Promise((resolve) => {
+      db.query(dbCommand, dbValues, (err) => {
+        if (err) throw Error(`Error with account-creator: ${err}`);
+        resolve();
+      });
+    });
+    const searchForUserID = "SELECT id from users where unqiue_name =? ";
+    db.query(searchForUserID, [unqiueName], (err, result) => {
+      if (err) throw Error(`Error with user id: ${err}`);
+      setLoggedInUser(res, result[0]);
+      res.send("The account has been created successfully!");
+    });
+  } catch (err) {
+    throw Error(`Error with create-account: ${err}`);
+  }
 });
 
 // Add/Remove friend with user firends list
@@ -171,7 +185,54 @@ app.post("/friends-list-change", (req, res) => {
   });
 });
 
+// load messages
+
+app.get("/download-messages/:ownerID/:recipientID", (req, res) => {
+  const { ownerID, recipientID } = req.params;
+  const dbValues = [ownerID, recipientID];
+  const downloadMessDB =
+    "SELECT * FROM messages where ownerID =? and recipientID = ? ";
+  db.query(downloadMessDB, dbValues, (err, result) => {
+    if (err) throw Error(`Error with downloads-messages: ${err}`);
+    res.json(result);
+  });
+});
+
+const messages = {};
+app.post("/send-message", (req, res) => {
+  const { recipientID } = req.body;
+  if (messages[recipientID]) {
+    messages[recipientID].send("update");
+  }
+  res.sendStatus(200);
+});
+
 server.listen(PORT, (err) => {
   if (err) throw err;
   console.log(`https://localhost:${PORT}`);
+});
+
+wss.on("connection", (ws, req) => {
+  console.log(req);
+  const id = new URL(req.url, `https://${req.headers.host}`).searchParams.get(
+    "user"
+  );
+  console.log(id);
+  const addSocketToDB = "INSERT INTO sockets(id,secket) values(?,?)";
+  const valueToInsert = [id, ws];
+  console.log();
+  messages[id] = ws;
+  // db.query(addSocketToDB, valueToInsert, (err) => {
+  //   if (err) throw Error(`Error durning adding values to sockets: ${err}`);
+  //   console.log("add");
+  // });
+
+  ws.on("close", () => {
+    const removeFromDB = "DELETE from sockets where id =?";
+    delete messages[id];
+    // db.query(removeFromDB, [id], (err) => {
+    //   if (err) throw Error(`Error with removing Sockets with db: ${err}`);
+    //   console.log("remove");
+    // });
+  });
 });

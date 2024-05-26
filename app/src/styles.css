@@ -11,13 +11,14 @@ html {
 }
 
 :root {
-  --input-padding:0.2rem 0.4rem;
-  --input-border-r: .2rem;
-  --confirm-color:green;
-  --component-padding:.6rem;
+  --input-padding: 0.2rem 0.4rem;
+  --input-border-r: 0.2rem;
+  --confirm-color: green;
+  --component-padding: 0.6rem;
   --main-font-size: 1.5rem;
   --transition-std: 300ms ease-in;
   --active-font-color: #ff1aff;
+  --contrast-component-color: rgb(143, 9, 53);
 }
 
 button {
@@ -95,24 +96,77 @@ body {
 .full-screen.loading {
   min-height: 100vh;
 }
-
 .navigation {
-  height: 3.4rem;
+  height: 4rem;
   display: grid;
   align-items: center;
 }
 .navigation .links-list {
   display: grid;
+  align-items: center;
   min-width: 100%;
+  grid-template-columns: repeat(3, 7rem);
   justify-content: space-around;
+  justify-items: center;
 }
 .navigation .avatar {
-  background-color: red;
   height: 3rem;
   border-radius: 50%;
   aspect-ratio: 1/1;
   overflow: hidden;
   object-fit: cover;
 }
-.navigation .main_option  {
+.nav_setting {
+  position: absolute;
+  top: 1rem;
+  border-radius: var(--input-border-r);
+  display: grid;
+  row-gap: 1rem;
+  z-index: 999;
+  background-color: var(--contrast-component-color);
+}
+.nav_setting li:is(:not(.main_option)) a {
+  padding: var(--component-padding);
+}
+.nav_setting .main_option {
+  padding: 1rem 1rem 0 1rem;
+}
+
+.nav_setting .main_option a {
+  border-radius: 50%;
+  aspect-ratio: 1/1;
+  height: 3rem;
+  transition: filter 300ms;
+}
+.nav_setting .main_option a:is(:hover, :focus, :focus-visible, :focus-within) {
+  filter: brightness(70%);
+}
+.nav_setting > .link:is(:not(.main_option)) a {
+  display: grid;
+  text-align: center;
+  transition: background-color 300ms;
+  cursor: pointer;
+  padding-inline: var(--component-padding);
+}
+
+.nav_setting .link a:is(:hover, :focus, :focus-visible, :focus-within) {
+  background-color: rgb(224, 13, 83);
+}
+.nav_setting .line {
+  height: 2px;
+  width: 100%;
+  /* position: absolute; */
+  background-color: rgb(180, 18, 72);
+}
+
+
+/* NotFond */
+
+.empty-page {
+  height: 100vh;
+  display: grid;
+  place-content: center;
+  background-color: black;
+  position: absolute;
+  width: 100%;
 }

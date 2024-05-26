@@ -4,7 +4,7 @@
 }
 .profile {
   width: clamp(320px, 55vw, 700px);
-  background-color: red;
+  background-color: var(--contrast-component-color);
   border-radius: 0.5rem;
   display: grid;
   row-gap: 4rem;
@@ -24,21 +24,33 @@
 .profile .circle {
   position: absolute;
   display: grid;
-
-  bottom: -3rem;
+  place-content: center;
+  aspect-ratio: 1/1;
+  bottom: -3.5rem;
   left: 8%;
   width: 7rem;
 }
-.profile .avatar::before {
+.profile .avatar::after {
   content: "";
   position: absolute;
-  background-color: rgb(151, 21, 21);
-  aspect-ratio: 2/1;
-  left: 0;
-  top: -0.5rem;
-  border-radius: 500% 500% 0 0;
-  width: 100%;
-  z-index: -1;
+  background-color: rgb(24, 2, 9);
+  border-radius: 50%;
+  aspect-ratio: 1/1;
+  width: 8rem;
+  z-index: 1;
+  bottom: -0.5rem;
+  right: -0.5rem;
+}
+.profile .avatar::before {
+  content: "";
+  width: 8rem;
+  z-index: 2;
+  position: absolute;
+  background-color: var(--contrast-component-color);
+  height: 4rem;
+  bottom: -0.5rem;
+  top: 50%;
+  left: -0.5rem;
 }
 .profile .avatar {
   aspect-ratio: 1/1;
@@ -46,12 +58,13 @@
   margin-inline: auto;
   display: grid;
   place-content: center;
-  background-color: red;
-  overflow: hidden;
   border-radius: 50%;
 }
 .avatar > img {
   width: 100%;
+  border-radius: 50%;
+  position: relative;
+  z-index: 3;
   aspect-ratio: 1/1;
   object-fit: cover;
 }

@@ -3,7 +3,7 @@ export default function Profile({ user, loggedInUser }) {
   return (
     <div className="profile">
       <div className="baner">
-        <img src={baner} alt="baner" />
+        <img src={!baner ? "./images/baner.jpg" : baner} alt="baner" />
         <div className="circle">
           <div className="avatar">
             <img

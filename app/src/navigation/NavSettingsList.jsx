@@ -1,20 +1,70 @@
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 export default function NavSettingsList({ user }) {
-  const { id, unqiueName, avatar } = user;
+  const { unqiueName, avatar } = user;
+  const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const activeElement = useRef(null);
+  const parentElement = useRef(null);
+
+  useEffect(() => {
+    if (activeElement.current) {
+      activeElement.current.focus();
+    }
+  }, [menuIsOpen, activeElement.current]);
+
   return (
-    <ul className="nav_setting">
-      <li className="main_option">
-        <Link to={id != 0 ? `/${unqiueName}` : "/login"}>
-          {id != 0 ? (
-            <div className="avatar">
-              <img src={avatar} alt="avatar" />
-            </div>
-          ) : (
-            <p>Login</p>
-          )}
-        </Link>
-      </li>
-      <p>ss</p>
-    </ul>
+    <div
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && !menuIsOpen) setMenuIsOpen(true);
+      }}
+      tabIndex={0}
+      className="option">
+      {menuIsOpen ? (
+        <ul
+          ref={parentElement}
+          onBlur={(e) => {
+            if (
+              !e.relatedTarget ||
+              !parentElement.current.contains(e.relatedTarget)
+            ) {
+              setMenuIsOpen(false);
+            }
+          }}
+          className="nav_setting">
+          <li className="link main_option">
+            <Link
+              ref={activeElement}
+              onClick={() => {
+                setMenuIsOpen(false);
+              }}
+              to={unqiueName}>
+              <div className="avatar">
+                <img
+                  src={!avatar ? "./images/user.jpg" : avatar}
+                  alt="avatar"
+                />
+              </div>
+            </Link>
+          </li>
+          <hr className="line" />
+          <li className="link">
+            <Link>1</Link>
+          </li>
+          <li className="link">
+            <Link>2</Link>
+          </li>
+          <li className="link">
+            <Link>3</Link>
+          </li>
+          <li className="link">
+            <Link>4</Link>
+          </li>
+        </ul>
+      ) : (
+        <div className="avatar" onClick={() => setMenuIsOpen(true)}>
+          <img src={!avatar ? "./images/user.jpg" : avatar} alt="avatar" />
+        </div>
+      )}
+    </div>
   );
 }
