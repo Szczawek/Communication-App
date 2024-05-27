@@ -11,7 +11,8 @@
   background-color: purple;
   width: clamp(320px, 60vw, 680px);
   display: grid;
-  justify-content: center;
+  place-content: center;
+  grid-auto-rows: max-content;
   row-gap: 2rem;
   text-align: center;
 }
@@ -59,7 +60,7 @@
   grid-template-columns: repeat(2, 1fr);
   text-align: center;
   border-radius: 0 0 0.4rem 0.4rem;
-  padding-block: 0.5rem;
+  padding-block: 1rem;
   background-color: rgb(28, 3, 49);
   justify-content: space-between;
 }

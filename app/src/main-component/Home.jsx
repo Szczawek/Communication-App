@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import Messages from "../mess/Messages";
+import FriendsList from "../mess/FriendsList";
 import waitingForMessage from "./waitingForMessage";
 export default function Home({ id }) {
-  // const [ws, setWs] = useState(null);  
   const effect = useRef(false);
 
   useEffect(() => {
@@ -13,7 +12,7 @@ export default function Home({ id }) {
 
   return (
     <div className="home">
-      <Messages />
+      <FriendsList id={id} />
     </div>
   );
 }

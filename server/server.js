@@ -56,11 +56,21 @@ app.get("/", (req, res) => {
 });
 
 // Get a specific group of users
-app.get("/users:id", (req, res) => {
+app.get("/users/:id", async (req, res) => {
   const { id } = req.params;
-  const dbCommand = "SELECT nick,date,avatar FROM users ";
-  db.query(dbCommand, (err, result) => {
-    if (err) throw Error(`Error with fetching users: ${err}`);
+  const dbCommand = " select friendID from user_friends where personID =?";
+  const friendsID = await new Promise((resolve) => {
+    db.query(dbCommand, [id], (err, result) => {
+      if (err) throw Error(`Error with fetching users: ${err}`);
+      resolve(result);
+    });
+  });
+  const idList = friendsID.map((e) => e["friendID"]);
+  console.log(idList);
+  if (!idList[0]) return res.sendStatus(204);
+  const selectFriends = `SELECT * FROM users where id IN (${idList})`;
+  db.query(selectFriends, (err, result) => {
+    if (err) throw Error(`Error with firends data: ${err}`);
     res.json(result);
   });
 });
@@ -113,7 +123,7 @@ function removeLoggedInUser(res) {
 app.get("/logged-in-user", async (req, res) => {
   try {
     const idInCookie = req.cookies["logged-in"];
-    if (!idInCookie) return res.status(401).json("User isn't logged-in!");
+    if (!idInCookie) return res.status(204).json("User isn't logged-in!");
 
     const { id } = idInCookie;
     const dbDownloadUserData =
@@ -121,6 +131,7 @@ app.get("/logged-in-user", async (req, res) => {
     const userData = await new Promise((resolve) => {
       db.query(dbDownloadUserData, [id], (err, result) => {
         if (err) throw Error(`Error with logged-in-user: ${err}`);
+        console.log(result);
         resolve(result[0]);
       });
     });
@@ -146,9 +157,16 @@ app.get("/logged-in-user", async (req, res) => {
 app.post("/create-account", async (req, res) => {
   try {
     const { nick, email, unqiueName, avatar, password } = req.body;
-    const dbValues = [nick, unqiueName, password, email, new Date()];
+    const dbValues = [
+      avatar ? avatar : "./images/user.jpg",
+      nick,
+      unqiueName,
+      password,
+      email,
+      new Date(),
+    ];
     const dbCommand =
-      "INSERT INTO users(nick,unqiue_name,password,email,date) values(?,?,?,?,?)";
+      "INSERT INTO users(avatar,nick,unqiue_name,password,email,date) values(?,?,?,?,?,?)";
     await new Promise((resolve) => {
       db.query(dbCommand, dbValues, (err) => {
         if (err) throw Error(`Error with account-creator: ${err}`);
@@ -211,12 +229,19 @@ app.get("/download-messages/:ownerID/:recipientID", (req, res) => {
 });
 
 const messages = {};
+// Send Message
 app.post("/send-message", (req, res) => {
-  const { recipientID } = req.body;
+  const { ownerID, recipientID, message } = req.body;
   if (messages[recipientID]) {
     messages[recipientID].send("update");
   }
-  res.sendStatus(200);
+  const valuesDB = [ownerID, recipientID, new Date(), message];
+  const addMessageDB =
+    "INSERT INTO messages(ownerID,recipientID,date,message) values(?,?,?,?)";
+  db.query(addMessageDB, valuesDB, (err) => {
+    if (err) throw Error(`Error with adding message: ${err}`);
+    res.sendStatus(200);
+  });
 });
 
 server.listen(PORT, (err) => {
@@ -225,14 +250,11 @@ server.listen(PORT, (err) => {
 });
 
 wss.on("connection", (ws, req) => {
-  console.log(req);
   const id = new URL(req.url, `https://${req.headers.host}`).searchParams.get(
     "user"
   );
-  console.log(id);
   const addSocketToDB = "INSERT INTO sockets(id,secket) values(?,?)";
   const valueToInsert = [id, ws];
-  console.log();
   messages[id] = ws;
   // db.query(addSocketToDB, valueToInsert, (err) => {
   //   if (err) throw Error(`Error durning adding values to sockets: ${err}`);

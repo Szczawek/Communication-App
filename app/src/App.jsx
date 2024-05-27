@@ -18,7 +18,6 @@ const CreateAccount = lazy(() => import("./account/CreateAccount"));
 const Login = lazy(() => import("./account/Login"));
 const UserFunctions = createContext();
 
-
 export default function App() {
   const [refreshValue, setRefreshValue] = useState(false);
   const [loggedInUser, setLoggedInUser] = useState({
@@ -28,7 +27,6 @@ export default function App() {
     id: 0,
     friends: [],
   });
-
   useEffect(() => {
     async function searchLoggedInUser() {
       try {
@@ -36,9 +34,10 @@ export default function App() {
           credentials: "include",
         });
         console.log("start");
-        if (res.status === 401) return setLoggedInUser({ id: 0 });
+        if (res.status === 204) return setLoggedInUser({ id: 0 });
         if (!res.ok) return console.error(`Error with server: ${res.status}`);
         const obj = await res.json();
+        console.log(obj)
         setLoggedInUser((prev) => {
           for (const key in obj) {
             if (!obj[key]) {

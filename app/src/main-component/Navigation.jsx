@@ -2,7 +2,6 @@ import { Outlet, NavLink } from "react-router-dom";
 import NavSettingsList from "../navigation/NavSettingsList";
 
 export default function Navigation({ user }) {
-  const { id } = user;
   return (
     <>
       <header>

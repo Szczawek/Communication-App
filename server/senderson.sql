@@ -3,6 +3,8 @@
 SELECT nick,unqiue_name as unqiueName FROM users
 
 
+SELECT * from messages
+
 SELECT * FROM users
 
 

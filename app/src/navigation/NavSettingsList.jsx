@@ -7,8 +7,9 @@ export default function NavSettingsList({ user }) {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const activeElement = useRef(null);
   const parentElement = useRef(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const refreshUser = useContext(UserFunctions);
+  // console.log(user)
   useEffect(() => {
     if (activeElement.current) {
       activeElement.current.focus();
@@ -42,10 +43,7 @@ export default function NavSettingsList({ user }) {
               }}
               to={unqiueName}>
               <div className="avatar">
-                <img
-                  src={!avatar ? "./images/user.jpg" : avatar}
-                  alt="avatar"
-                />
+                <img src={avatar} alt="avatar" />
               </div>
             </Link>
           </li>
@@ -60,7 +58,9 @@ export default function NavSettingsList({ user }) {
             <Link className="fn">3</Link>
           </li>
           <li className="link">
-            <button className="fn" onClick={() => logout(refreshUser,navigate)}>
+            <button
+              className="fn"
+              onClick={() => logout(refreshUser, navigate)}>
               Logout
             </button>
           </li>

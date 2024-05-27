@@ -1,5 +1,7 @@
 import useUserSearch from "./useUserSearch";
 import Profile from "../user/Profile";
+import Messages from "../mess/Messages";
+
 import "../user/user.css";
 export default function UserSearch({ loggedInUser }) {
   const user = useUserSearch();
@@ -8,6 +10,7 @@ export default function UserSearch({ loggedInUser }) {
   return (
     <div className="user">
       <Profile user={user} loggedInUser={loggedInUser} />
+      <Messages ownerID={loggedInUser["id"]} recipientID={user["id"]} />
     </div>
   );
 }

@@ -1,39 +1,49 @@
 import { useEffect, useRef, useState } from "react";
-import "./home.css";
-export default function Messages() {
+import MessageTools from "./MessageTools";
+
+export default function Messages({ ownerID, recipientID }) {
   const [messages, setMessages] = useState([]);
   const effect = useRef(false);
 
   useEffect(() => {
     if (effect.current) return;
-    async function downloadMessages() {
+    async function loadMess() {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_URL}/download-messages/12/11`
+          `${
+            import.meta.env.VITE_URL
+          }/download-messages/${ownerID}/${recipientID}`
         );
-        if (!res.ok) return console.error(res.status);
+        if (res.status === 204) return;
+        if (!res.ok) return console.error(`${err}`);
         const obj = await res.json();
         setMessages((prev) => [...prev, ...obj]);
       } catch (err) {
-        throw Error(`Error with messages${err}`);
+        throw Error(`Erro with loading messages: ${err}`);
       }
     }
-    downloadMessages();
+    loadMess();
     return () => (effect.current = true);
   }, []);
-  
+
+  function refreshMessages() {
+    effect.current = false;
+  }
   return (
-    <>
-      <h2>Messages</h2>
-      <div className="messages">
-        {messages.map((e, index) => {
-          return (
-            <p key={index} className="text">
-              {e["message"]}
-            </p>
-          );
-        })}
+    <div className="container">
+      <div>
+        {!messages[0] && <p className="empty">Empty...</p>}
+        <div className="messages">
+          {messages.map((e) => {
+            return (
+              <p key={e["date"]} className="text">
+                {e["message"]}
+              </p>
+            );
+          })}
+        </div>
       </div>
-    </>
+      <MessageTools ownerID={ownerID} recipientID={recipientID} />
+    </div>
   );
 }
