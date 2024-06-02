@@ -23,3 +23,6 @@ SELECT id FROM user_friends where `personID` = 11;
 
 
     SELECT id FROM user_friends where `personID` = 11
+
+    
+    SELECT * FROM messages WHERE ownerID =21 AND recipientID =20 ORDER BY id DESC LIMIT 1

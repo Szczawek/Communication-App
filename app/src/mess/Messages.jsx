@@ -6,9 +6,8 @@ export default function Messages({ ownerID, recipientID }) {
   const [messages, setMessages] = useState([]);
   const effect = useRef(false);
   const messContainer = useRef(null);
-  const wsInfo = useWaitingForMessage(ownerID,refreshMessages);
+  const wsInfo = useWaitingForMessage(ownerID, refreshMessages);
   useEffect(() => {
-    console.log(1)
     if (effect.current) return;
     async function loadMess() {
       try {
@@ -29,20 +28,26 @@ export default function Messages({ ownerID, recipientID }) {
     return () => (effect.current = true);
   }, []);
 
-  function refreshMessages() {
-    // setMessages([])
-    effect.current = false;
+  async function refreshMessages() {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_URL}/last-message/${ownerID}/${recipientID}`);
+      if (!res.ok) throw Error(res.status);
+      const obj = await res.json();
+      setMessages((prev) => [...prev, ...obj]);
+    } catch (err) {
+      throw Error(`Error with last message: ${err}`);
+    }
   }
 
   function addMessage(mess) {
     setMessages((prev) => [...prev, mess]);
-    // messContainer.current.scrollTop = messContainer.current.scrollHeight;
   }
+
   return (
     <div className="container">
       <div>
-        {!messages[0] && <p className="empty">Empty...</p>}
         <div className="messages" ref={messContainer}>
+          {!messages[0] && <p className="empty">Empty...</p>}
           {messages.map((e) => {
             return (
               <p

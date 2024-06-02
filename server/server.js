@@ -24,7 +24,15 @@ db.connect((err) => {
 });
 
 // SERVER config
-app.use(cors({ origin: ["https://localhost:5173"], credentials: true }));
+app.use(
+  cors({
+    origin: [
+      "https://localhost:5173",
+      "https://communication-app-d664f.web.app",
+    ],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(
   helmet({
@@ -66,7 +74,6 @@ app.get("/users/:id", async (req, res) => {
     });
   });
   const idList = friendsID.map((e) => e["friendID"]);
-  console.log(idList);
   if (!idList[0]) return res.sendStatus(204);
   const selectFriends = `SELECT * FROM users where id IN (${idList})`;
   db.query(selectFriends, (err, result) => {
@@ -76,8 +83,9 @@ app.get("/users/:id", async (req, res) => {
 });
 
 // DOWNLOAD DATA FROM USER IF EXIST
-app.get("/user-search:nick", (req, res) => {
+app.get("/user-search/:nick", (req, res) => {
   const { nick } = req.params;
+  console.log(nick);
   const dbCommand =
     "SELECT id, nick,avatar,unqiue_name as unqiueName from users where nick =? or unqiue_name =?";
   db.query(dbCommand, [nick, nick], (err, result) => {
@@ -108,6 +116,7 @@ function setLoggedInUser(res, id) {
       maxAge: 1000 * 60 * 60 * 24 * 7,
       httpOnly: true,
       secure: true,
+      sameSite: "none",
     }
   );
 }
@@ -117,6 +126,7 @@ function removeLoggedInUser(res) {
     maxAge: 0,
     httpOnly: true,
     secure: true,
+    sameSite: "none",
   });
 }
 
@@ -131,7 +141,6 @@ app.get("/logged-in-user", async (req, res) => {
     const userData = await new Promise((resolve) => {
       db.query(dbDownloadUserData, [id], (err, result) => {
         if (err) throw Error(`Error with logged-in-user: ${err}`);
-        console.log(result);
         resolve(result[0]);
       });
     });
@@ -164,7 +173,7 @@ app.post("/create-account", async (req, res) => {
       password,
       email,
       new Date(),
-    ];    
+    ];
     const dbCommand =
       "INSERT INTO users(avatar,nick,unqiue_name,password,email,date) values(?,?,?,?,?,?)";
     await new Promise((resolve) => {
@@ -224,6 +233,16 @@ app.get("/download-messages/:ownerID/:recipientID", (req, res) => {
     "SELECT * FROM messages where ownerID =? AND recipientID =? OR ownerID =? AND recipientID =?";
   db.query(downloadMessDB, dbValues, (err, result) => {
     if (err) throw Error(`Error with downloads-messages: ${err}`);
+    res.json(result);
+  });
+});
+
+app.get("/last-message/:ownerID/:recipientID", (req, res) => {
+  const { ownerID, recipientID } = req.params;
+  const downloadLastMessage =
+    "SELECT * FROM messages WHERE ownerID =? AND recipientID =? ORDER BY id DESC LIMIT 1";
+  db.query(downloadLastMessage, [recipientID, ownerID], (err, result) => {
+    if (err) throw Error(`Error with last message db: ${err}`);
     res.json(result);
   });
 });

@@ -9,8 +9,9 @@ export default function useUserSearch() {
     async function fetchUser() {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_URL}/user-search${nick}`
+          `${import.meta.env.VITE_URL}/user-search/${nick}`
         );
+        console.log(nick)
         if (!res.ok) {
           if (res.status === 404) return;
           return console.error(`Error: ${res.status}`);
@@ -21,7 +22,7 @@ export default function useUserSearch() {
         throw Error(`An error occurs when searching for a user: ${err}`);
       }
     }
-    return () => fetchUser();
+    fetchUser();
   }, [nick]);
 
   return user;
