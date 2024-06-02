@@ -8,6 +8,9 @@ SELECT * from messages
 SELECT * FROM users
 
 
+DELETE from messages where id > 56
+
+
 CREATE TABLE user_friends(id int AUTO_INCREMENT, personID int, friendID int,   UNIQUE KEY unique_person_friend (personID, friendID), FOREIGN KEY(personID) REFERENCES users(id), FOREIGN KEY(friendID) REFERENCES users(id), PRIMARY KEY(id))
 
 

@@ -164,7 +164,7 @@ app.post("/create-account", async (req, res) => {
       password,
       email,
       new Date(),
-    ];
+    ];    
     const dbCommand =
       "INSERT INTO users(avatar,nick,unqiue_name,password,email,date) values(?,?,?,?,?,?)";
     await new Promise((resolve) => {
@@ -219,9 +219,9 @@ app.post("/logout", (req, res) => {
 // load messages
 app.get("/download-messages/:ownerID/:recipientID", (req, res) => {
   const { ownerID, recipientID } = req.params;
-  const dbValues = [ownerID, recipientID];
+  const dbValues = [ownerID, recipientID, recipientID, ownerID];
   const downloadMessDB =
-    "SELECT * FROM messages where ownerID =? and recipientID = ? ";
+    "SELECT * FROM messages where ownerID =? AND recipientID =? OR ownerID =? AND recipientID =?";
   db.query(downloadMessDB, dbValues, (err, result) => {
     if (err) throw Error(`Error with downloads-messages: ${err}`);
     res.json(result);

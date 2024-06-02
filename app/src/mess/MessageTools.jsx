@@ -1,33 +1,63 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export default function MessageTools({ ownerID, recipientID }) {
-  const [value, setValues] = useState("");
+export default function MessageTools({ addMessage, ownerID, recipientID }) {
+  const [value, setValue] = useState("");
+  const messageInput = useRef(null);
+  const [slow, setSlow] = useState(false);
+  const [warning, setWarning] = useState(false);
+
   async function sendMessage() {
+    if (!messageInput.current.checkValidity()) return setWarning(true);
+    setSlow(true);
+    const messData = { ownerID, recipientID, message: value };
     try {
       const res = await fetch(`${import.meta.env.VITE_URL}/send-message`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({ ownerID, recipientID, message: value }),
+        body: JSON.stringify(messData),
       });
+      if (!res.ok) throw console.error(res.status);
+
+      await addMessage({ ...messData, date: new Date() });
+      setValue("");
+      setTimeout(() => {
+        setSlow(false);
+      }, 1000);
       console.log("Messagfe was sended sucessfully!");
     } catch (err) {
       throw err;
     }
   }
+
+  useEffect(() => {
+    if (warning) setWarning(false);
+  }, [value]);
+
   return (
     <div className="tools">
-      <label htmlFor="create-mess">
+      <label
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !slow) sendMessage();
+        }}
+        htmlFor="create-mess">
         <input
+          autoComplete="off"
+          ref={messageInput}
           value={value}
-          onChange={(e) => setValues(e.target.value)}
-          placeholder="Aaa"
+          onChange={(e) => setValue(e.target.value)}
+          placeholder={`${warning ? "Warning" : "Aaa"}`}
+          minLength={1}
+          required
+          pattern="^(?!\s*$).+"
           id="create-mess"
           type="text"
         />
       </label>
-      <button onClick={() => sendMessage()}>Send X</button>
+      <button disabled={slow ? true : false} onClick={() => sendMessage()}>
+        Send X
+      </button>
     </div>
   );
 }

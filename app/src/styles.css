@@ -103,15 +103,16 @@ body {
   min-height: 100vh;
 }
 .navigation {
-  height: 4rem;
+  height: 5rem;
   display: grid;
+  border-bottom: 4px solid black;
   align-items: center;
 }
 .navigation .links-list {
   display: grid;
   align-items: center;
   min-width: 100%;
-  grid-template-columns: repeat(3, 7rem);
+  grid-template-columns: repeat(3, max-content);
   justify-content: space-around;
   justify-items: center;
 }
@@ -129,6 +130,7 @@ body {
   display: grid;
   row-gap: 1rem;
   z-index: 999;
+  padding-bottom: 1rem;
   background-color: var(--contrast-component-color);
 }
 .nav_setting li:is(:not(.main_option)).fn {
@@ -176,4 +178,23 @@ body {
   background-color: black;
   position: absolute;
   width: 100%;
+}
+
+/* INFO */
+
+.info {
+  height: 100%;
+  gap: 1rem;
+  display: grid;
+  grid-template-columns: 50%;
+  place-content: center;
+}
+.info h1 {
+  text-align: center;
+}
+.info p {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: lightgreen;
+  text-align: right;
 }
