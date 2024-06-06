@@ -11,9 +11,9 @@ html {
 }
 
 :root {
-  --input-padding: 0.4rem 0.8rem;
+  --input-padding: 0.6rem 0.8rem;
   --input-border-r: 0.4rem;
-  --confirm-color: green;
+  --confirm-color: #00b300;
   --component-padding: 0.6rem;
   --main-font-size: 1.5rem;
   --transition-std: 300ms ease-in;
@@ -39,6 +39,7 @@ input,
 button,
 hr {
   border: none;
+  outline: none;
 }
 
 h1,
@@ -57,6 +58,8 @@ iframe {
   max-height: 100%;
 }
 body {
+  font-family: "Anton", sans-serif;
+letter-spacing: .1rem;
   min-height: 100vh;
 }
 
@@ -121,6 +124,7 @@ body {
   border-radius: 50%;
   aspect-ratio: 1/1;
   overflow: hidden;
+  cursor: pointer;
   object-fit: cover;
 }
 .nav_setting {

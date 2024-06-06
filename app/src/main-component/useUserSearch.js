@@ -11,7 +11,6 @@ export default function useUserSearch() {
         const res = await fetch(
           `${import.meta.env.VITE_URL}/user-search/${nick}`
         );
-        console.log(nick)
         if (!res.ok) {
           if (res.status === 404) return;
           return console.error(`Error: ${res.status}`);

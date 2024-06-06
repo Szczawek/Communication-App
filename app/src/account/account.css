@@ -2,14 +2,28 @@
   display: grid;
   height: 100vh;
   place-content: center;
-  grid-template-rows: 0.5fr max-content;
 }
 
+.account .container {
+  display: grid;
+  overflow: hidden;
+  border-style: solid;
+  border-width: 4px;
+  border-image: linear-gradient(
+      190deg,
+      rgba(255, 255, 0, 0.623),
+      white,
+      rgba(255, 255, 0, 0.623)
+    )
+    30;
+  border-radius: 0.2rem;
+  height: 500px;
+  grid-template-rows: 1fr max-content;
+}
 .account form {
   height: 100%;
-  border-radius: 0.4rem 0.4rem 0 0;
-  background-color: purple;
-  width: clamp(320px, 60vw, 680px);
+  background-color: #501650;
+  width: clamp(416px, 60vw, 680px);
   display: grid;
   place-content: center;
   grid-auto-rows: max-content;
@@ -18,8 +32,51 @@
 }
 
 .account form h2 {
-  font-size: 1.8rem;
-  padding-top: 1.5rem;
+  background-image: linear-gradient(-45deg, #f00 0%, rgb(100, 192, 38) 100%);
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: title-spining infinite 12s;
+  font-size: 2.5rem;
+}
+@keyframes title-spining {
+  0% {
+  }
+  20% {
+    rotate: 10deg;
+    translate: 10rem 1rem;
+  }
+  30% {
+    rotate: 20deg;
+    translate: 11rem 2rem;
+  }
+  40% {
+    transform: 11rem 4rem;
+    rotate: 45deg;
+  }
+  50% {
+    rotate: 0;
+    transform: 5rem 2rem;
+  }
+
+  60% {
+    translate: -10rem 0;
+  }
+
+  70% {
+    rotate: -20deg;
+    translate: -11rem 4rem;
+  }
+  80% {
+    rotate: -45deg;
+  }
+  90% {
+    translate: -8rem 0rem;
+    rotate: 0deg;
+  }
+  100% {
+    transform: 0 0;
+  }
 }
 .account .labels {
   display: grid;
@@ -42,7 +99,18 @@
   font-weight: bold;
   font-size: 1.1rem;
   height: max-content;
+  width: 200px;
+  transition: scale, border, 300ms ease-in;
+  padding-block: 0.4rem;
+  font-weight: 200;
+  margin-inline: auto;
+  border: 4px solid transparent;
   background-color: var(--confirm-color);
+}
+
+.account .confirm:is(:hover, :focus) {
+  background-color: #4dff4d;
+  scale: 1.1;
 }
 
 .account .warning {
@@ -54,6 +122,10 @@
   color: red;
 }
 
+.account .panel {
+  background-color: #280b28;
+  padding-inline: 1rem;
+}
 .account .panel .panel-list {
   display: grid;
   font-weight: 800;
@@ -61,6 +133,19 @@
   text-align: center;
   border-radius: 0 0 0.4rem 0.4rem;
   padding-block: 1rem;
-  background-color: rgb(28, 3, 49);
+  align-items: center;
   justify-content: space-between;
+}
+
+.account .panel .link {
+  padding-block: 0.2rem;
+}
+
+@media (width < 417px) {
+  .account form {
+    max-width: calc(100vw - 4px);
+  }
+  .account .panel {
+    padding-inline: 1rem;
+  }
 }

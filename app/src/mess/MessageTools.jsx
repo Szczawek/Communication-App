@@ -49,6 +49,7 @@ export default function MessageTools({ addMessage, ownerID, recipientID }) {
           onChange={(e) => setValue(e.target.value)}
           placeholder={`${warning ? "Warning" : "Aaa"}`}
           minLength={1}
+          maxLength={500}
           required
           pattern="^(?!\s*$).+"
           id="create-mess"

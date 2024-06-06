@@ -9,7 +9,7 @@ export default function NavSettingsList({ user }) {
   const parentElement = useRef(null);
   const navigate = useNavigate();
   const refreshUser = useContext(UserFunctions);
-  // console.log(user)
+
   useEffect(() => {
     if (activeElement.current) {
       activeElement.current.focus();

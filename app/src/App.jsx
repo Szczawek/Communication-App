@@ -20,6 +20,7 @@ const UserFunctions = createContext();
 
 export default function App() {
   const [refreshValue, setRefreshValue] = useState(false);
+  const effect = useRef(false);
   const [loggedInUser, setLoggedInUser] = useState({
     nick: "User",
     avatar: "./images/user.jpg",
@@ -27,19 +28,20 @@ export default function App() {
     id: 0,
     friends: [],
   });
+
   useEffect(() => {
+    if (effect.current) return;
     async function searchLoggedInUser() {
       try {
         const res = await fetch(`${import.meta.env.VITE_URL}/logged-in-user`, {
           credentials: "include",
         });
-        console.log("start");
         if (res.status === 204) return setLoggedInUser({ id: 0 });
         if (!res.ok) return console.error(`Error with server: ${res.status}`);
         const obj = await res.json();
-        console.log(obj)
+
         setLoggedInUser((prev) => {
-          for (const key in obj) {
+          for (const key in prev) {
             if (!obj[key]) {
               obj[key] = prev[key];
             }
@@ -53,10 +55,35 @@ export default function App() {
       }
     }
     searchLoggedInUser();
+    return () => (effect.current = true);
   }, [refreshValue]);
 
   function refreshUser() {
+    effect.current = false;
     setRefreshValue((prev) => !prev);
+  }
+
+  function changeFriendsList(type, id) {
+    switch (type) {
+      case "add":
+        setLoggedInUser((prev) => {
+          const friends = [...prev["friends"]];
+          friends.push(id);
+          const obj = { ...prev, friends };
+          return obj;
+        });
+        break;
+      case "remove":
+        setLoggedInUser((prev) => {
+          const friends = [...prev["friends"]];
+          const friendIndex = friends.findIndex((element) => element === id);
+          friends.splice(friendIndex, 1);
+
+          const obj = { ...prev, friends };
+          return obj;
+        });
+        break;
+    }
   }
   return (
     <BrowserRouter>
@@ -78,7 +105,12 @@ export default function App() {
                 <Route path="info" element={<Info />} />
                 <Route
                   path=":nick"
-                  element={<UserSearch loggedInUser={loggedInUser} />}
+                  element={
+                    <UserSearch
+                      loggedInUser={loggedInUser}
+                      changeFriendsLis={changeFriendsList}
+                    />
+                  }
                 />
               </Route>
             )}

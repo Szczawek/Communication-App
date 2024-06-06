@@ -135,7 +135,7 @@ app.get("/logged-in-user", async (req, res) => {
     const idInCookie = req.cookies["logged-in"];
     if (!idInCookie) return res.status(204).json("User isn't logged-in!");
 
-    const { id } = idInCookie;
+    const { id } = idInCookie["id"];
     const dbDownloadUserData =
       "SELECT id, nick,avatar,date, unqiue_name as unqiueName FROM users where id = ?";
     const userData = await new Promise((resolve) => {
@@ -145,16 +145,17 @@ app.get("/logged-in-user", async (req, res) => {
       });
     });
     const dbDownloadUserFriends =
-      "SELECT id FROM user_friends where `personID` = ?";
+      "SELECT friendID FROM user_friends where `personID` = ?";
     const userFriends = await new Promise((resolve) => {
       db.query(dbDownloadUserFriends, [id], (err, result) => {
         if (err) throw Error(`Error with user friends db: ${err}`);
         resolve(result);
       });
     });
+    console.log(userFriends.map((e) => e["firendID"]))
     const data = await {
       ...userData,
-      friends: userFriends.map((e) => e["id"]),
+      friends: userFriends.map((e) => e["friendID"]),
     };
     res.json(data);
   } catch (err) {

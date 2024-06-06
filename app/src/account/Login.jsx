@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Login({ refreshUser }) {
@@ -6,6 +6,10 @@ export default function Login({ refreshUser }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [warning, setWarning] = useState(false);
+  const focusdElement = useRef(null);
+  useEffect(() => {
+    if (focusdElement.current) focusdElement.current.focus();
+  }, []);
 
   useEffect(() => {
     if (warning) setWarning(false);
@@ -36,7 +40,7 @@ export default function Login({ refreshUser }) {
         if (res.status === 401) return setWarning(true);
         return console.error(`Error with login: ${res.status}}`);
       }
-      await refreshUser();    
+      await refreshUser();
     } catch (err) {
       throw Error(`Error durning login to account: ${err}`);
     }
@@ -50,6 +54,7 @@ export default function Login({ refreshUser }) {
         <div className="labels">
           <label htmlFor="login-ac">
             <input
+              ref={focusdElement}
               required
               placeholder="email"
               id="login-ac"

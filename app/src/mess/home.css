@@ -1,11 +1,30 @@
-.home .messages-list {
+.home .friends-list {
   display: grid;
+  padding-block: 2rem;
   row-gap: 0.6rem;
   justify-content: center;
 }
-.home .text {
-  border-radius: var(--input-border-r);
-  padding: var(--input-padding);
-  background-color: red;
-  max-width: max-content;
+
+.home .profil-link {
+  min-width: 320px;
+  padding: .4rem .8rem;
+  border-radius: .4rem;
+  background-color: var(--contrast-component-color);
+}
+.home .profil-link a {
+  display: grid;
+  align-items: center;
+  gap: 2rem;
+  grid-template-columns: 2rem 1fr;
+}
+.home .unqiue_name {
+  opacity: 0.8;
+}
+
+.home .avatar {
+  height: 100%;
+  aspect-ratio: 1/1;
+}
+.home .avatar img {
+  border-radius: 50%;
 }

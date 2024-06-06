@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function CreateAccount({ refreshUser }) {
@@ -7,6 +7,10 @@ export default function CreateAccount({ refreshUser }) {
   const [email, setEmail] = useState("");
   const [unqiueName, setUnqiueName] = useState("");
   const [loading, setLoading] = useState(false);
+  const focusdElement = useRef(null);
+  useEffect(() => {
+    if (focusdElement.current) focusdElement.current.focus();
+  }, []);
   const navigate = useNavigate();
 
   async function reqCreateAccount(e) {
@@ -48,6 +52,7 @@ export default function CreateAccount({ refreshUser }) {
         <div className="labels">
           <label htmlFor="nick">
             <input
+              ref={focusdElement}
               required
               placeholder="nick"
               id="nick"

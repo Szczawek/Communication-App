@@ -1,5 +1,15 @@
-export default function Profile({ user, loggedInUser }) {
+import { useEffect, useState } from "react";
+import { changeFriendStatus } from "./changeFriendStatus";
+export default function Profile({ user, loggedInUser, changeFriendsLis }) {
   const { nick, avatar, unqiueName, id, baner } = user;
+  const [friendAccount, setFriendAccount] = useState(false);
+  const [slowDown, setSlowDown] = useState(false);
+
+  useEffect(() => {
+    if (loggedInUser["id"] === id) return;
+    setFriendAccount(loggedInUser["friends"].includes(id));
+  }, []);
+
   return (
     <div className="profile">
       <div className="baner">
@@ -19,12 +29,24 @@ export default function Profile({ user, loggedInUser }) {
           <p className="nick">{nick}</p>
           <p className="unqiue-name">{unqiueName}</p>
         </div>
-        {loggedInUser["id"] === id ? null : loggedInUser["friends"].includes(
-            id
-          ) ? (
-          <button>Remove</button>
-        ) : (
-          <button>Add</button>
+        {loggedInUser["id"] === id ? null : (
+          <button
+            disabled={slowDown ? true : false}
+            onClick={() => {
+              setSlowDown(true);
+              setTimeout(() => {
+                setSlowDown(false);
+              }, 1000);
+              changeFriendStatus(
+                friendAccount ? "remove" : "add",
+                loggedInUser["id"],
+                id,
+                changeFriendsLis
+              );
+              setFriendAccount((prev) => !prev);
+            }}>
+            {friendAccount ? "Remove" : "Add"}
+          </button>
         )}
       </div>
     </div>
