@@ -18,7 +18,7 @@ html {
   --main-font-size: 1.5rem;
   --transition-std: 300ms ease-in;
   --active-font-color: #ff1aff;
-  --contrast-component-color: rgb(143, 9, 53);
+  --contrast-component-color: #94004a;
 }
 
 button {
@@ -58,6 +58,7 @@ iframe {
   max-height: 100%;
 }
 body {
+  background-color: #201d20;
   font-family: "Anton", sans-serif;
 letter-spacing: .1rem;
   min-height: 100vh;
@@ -71,6 +72,7 @@ letter-spacing: .1rem;
 
 /* NAVIGATION */
 
+
 .links-list {
   display: grid;
   max-width: max-content;
@@ -83,7 +85,7 @@ letter-spacing: .1rem;
 }
 
 .link a {
-  /* transition: color 300ms ease-in-out; */
+  transition: color 300ms ease-in-out;
   transition: color var(--transition-std);
 }
 .link a:is(:hover, :focus, :focus-visible, :focus-within) {
@@ -107,8 +109,9 @@ letter-spacing: .1rem;
 }
 .navigation {
   height: 5rem;
+  background-color: #282428;
   display: grid;
-  border-bottom: 4px solid black;
+ box-shadow: 0 1rem 2rem #1a171a;
   align-items: center;
 }
 .navigation .links-list {

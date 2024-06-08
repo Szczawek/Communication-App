@@ -36,7 +36,7 @@
 .profile .avatar::after {
   content: "";
   position: absolute;
-  background-color: rgb(24, 2, 9);
+  background-color: rgba(29, 11, 17, 0.959);
   border-radius: 50%;
   aspect-ratio: 1/1;
   width: 8rem;

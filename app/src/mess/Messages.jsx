@@ -1,61 +1,66 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import MessageTools from "./MessageTools";
+import useFetchMessages from "./useFetchMessages";
 import useWaitingForMessage from "../main-component/waitingForMessage";
 
 export default function Messages({ ownerID, recipientID }) {
-  const [messages, setMessages] = useState([]);
-  const effect = useRef(false);
+  const [index, setIndex] = useState(0);
+  const loadingElement = useRef(null);
+  const [loading, setLoading] = useState(true);
+  const { userMessages, addMessage, refreshMessages } = useFetchMessages(
+    ownerID,
+    recipientID,
+    index
+  );
   const messContainer = useRef(null);
-  const [currentUser, setCurrentUser] = useState(recipientID);
   const wsInfo = useWaitingForMessage(ownerID, refreshMessages);
-  
+
   useEffect(() => {
-    if (effect.current && currentUser === recipientID) return;
-    async function loadMess() {
-      try {
-        const res = await fetch(
-          `${
-            import.meta.env.VITE_URL
-          }/download-messages/${ownerID}/${recipientID}`
-        );
-        if (res.status === 204) return;
-        if (!res.ok) return console.error(`${err}`);
-        const obj = await res.json();
-        setMessages(obj);
-      } catch (err) {
-        throw Error(`Erro with loading messages: ${err}`);
+    if (messContainer.current)
+      messContainer.current.scrollTop = messContainer.current.scrollHeight;
+  }, [userMessages]);
+
+// 
+// 
+// 
+// TO DO 
+// TO DO 
+// TO DO 
+// TO DO 
+  useEffect(() => {
+    const observer = new IntersectionObserver(test);
+    console.log(loadingElement);
+    if (observer && loadingElement.current) {
+      console.log(2);
+      observer.observe(loadingElement.current);
+    }
+    return () => {
+      if (observer) {
+        observer.disconnect();
       }
-    }
-    loadMess();
-    return () => (effect.current = true);
-  }, [recipientID]);
+    };
+  }, []);
 
-  async function refreshMessages() {
-    if (ownerID === recipientID) return;
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_URL}/last-message/${ownerID}/${recipientID}`
-      );
-      if (!res.ok) throw Error(res.status);
-      const obj = await res.json();
-      setMessages((prev) => [...prev, ...obj]);
-    } catch (err) {
-      throw Error(`Error with last message: ${err}`);
+
+  function test(e) {
+    if (e[0].isInterseting) {
+      console.log(2);
     }
   }
-
-  function addMessage(mess) {
-    setMessages((prev) => [...prev, mess]);
-  }
-
   return (
     <div className="container">
+      <button onClick={() => setLoading(false)}>Send</button>
       <div className="messages-window">
-        {!messages[0] ? (
-          <p className="empty">Empty...</p>
-        ) : (
-          <div className="messages" ref={messContainer}>
-            {messages.map((e) => {
+        <div className="messages" ref={messContainer}>
+          {loading && (
+            <p ref={loadingElement} className="loaing">
+              Loading...
+            </p>
+          )}
+          {!userMessages[0] ? (
+            <p className="empty">Empty...</p>
+          ) : (
+            userMessages.map((e) => {
               return (
                 <p
                   key={e["date"]}
@@ -65,9 +70,9 @@ export default function Messages({ ownerID, recipientID }) {
                   {e["message"]}
                 </p>
               );
-            })}
-          </div>
-        )}
+            })
+          )}
+        </div>
       </div>
       <MessageTools
         addMessage={addMessage}

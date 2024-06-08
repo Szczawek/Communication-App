@@ -85,7 +85,6 @@ app.get("/users/:id", async (req, res) => {
 // DOWNLOAD DATA FROM USER IF EXIST
 app.get("/user-search/:nick", (req, res) => {
   const { nick } = req.params;
-  console.log(nick);
   const dbCommand =
     "SELECT id, nick,avatar,unqiue_name as unqiueName from users where nick =? or unqiue_name =?";
   db.query(dbCommand, [nick, nick], (err, result) => {
@@ -152,7 +151,6 @@ app.get("/logged-in-user", async (req, res) => {
         resolve(result);
       });
     });
-    console.log(userFriends.map((e) => e["firendID"]))
     const data = await {
       ...userData,
       friends: userFriends.map((e) => e["friendID"]),
@@ -227,11 +225,10 @@ app.post("/logout", (req, res) => {
 });
 
 // load messages
-app.get("/download-messages/:ownerID/:recipientID", (req, res) => {
-  const { ownerID, recipientID } = req.params;
+app.get("/download-messages/:ownerID/:recipientID/:index", (req, res) => {
+  const { ownerID, recipientID, index } = req.params;
   const dbValues = [ownerID, recipientID, recipientID, ownerID];
-  const downloadMessDB =
-    "SELECT * FROM messages where ownerID =? AND recipientID =? OR ownerID =? AND recipientID =?";
+  const downloadMessDB = `SELECT * FROM messages where ownerID =? AND recipientID =? OR ownerID =? AND recipientID =? ORDER BY id DESC LIMIT 20 OFFSET ${index}`;
   db.query(downloadMessDB, dbValues, (err, result) => {
     if (err) throw Error(`Error with downloads-messages: ${err}`);
     res.json(result);
