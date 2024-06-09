@@ -225,13 +225,23 @@ app.post("/logout", (req, res) => {
 });
 
 // load messages
-app.get("/download-messages/:ownerID/:recipientID/:index", (req, res) => {
+app.get("/download-messages/:ownerID/:recipientID/:index", async (req, res) => {
   const { ownerID, recipientID, index } = req.params;
+
   const dbValues = [ownerID, recipientID, recipientID, ownerID];
-  const downloadMessDB = `SELECT * FROM messages where ownerID =? AND recipientID =? OR ownerID =? AND recipientID =? ORDER BY id DESC LIMIT 20 OFFSET ${index}`;
-  db.query(downloadMessDB, dbValues, (err, result) => {
+  const numberOfMessagesCommand =
+    "SELECT COUNT(id) as messagesNumber FROM messages where ownerID =22 AND recipientID = 22 OR ownerID =22 AND recipientID =22";
+  const messagesNumber = await new Promise((resolve) => {
+    db.query(numberOfMessagesCommand, dbValues, (err, result) => {
+      if (err) throw Error(`Error with downloads-messages: ${err}`);
+      resolve(result[0]);
+    });
+  });
+
+  const downloadMessagesCommand = `SELECT * FROM messages where ownerID =? AND recipientID =? OR ownerID =? AND recipientID =? ORDER BY id DESC LIMIT 20 OFFSET ${index}`;
+  db.query(downloadMessagesCommand, dbValues, (err, result) => {
     if (err) throw Error(`Error with downloads-messages: ${err}`);
-    res.json(result);
+    res.json({ messages: result, limit: messagesNumber["messagesNumber"] });
   });
 });
 

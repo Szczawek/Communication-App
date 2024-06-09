@@ -5,59 +5,65 @@ import useWaitingForMessage from "../main-component/waitingForMessage";
 
 export default function Messages({ ownerID, recipientID }) {
   const [index, setIndex] = useState(0);
-  const loadingElement = useRef(null);
   const [loading, setLoading] = useState(true);
-  const { userMessages, addMessage, refreshMessages } = useFetchMessages(
-    ownerID,
-    recipientID,
-    index
-  );
+  const [stopScrolling, setStopScrolling] = useState(false);
+  const loadingElement = useRef(null);
   const messContainer = useRef(null);
-  const wsInfo = useWaitingForMessage(ownerID, refreshMessages);
+  const { userMessages, addMessage, lastMessageRefresh, loadMessages, limit } =
+    useFetchMessages(ownerID, recipientID, index);
+  const [messageContainerHeight, setMessageContainerHeight] = useState(0);
+  const wsInfo = useWaitingForMessage(ownerID, lastMessageRefresh);
 
   useEffect(() => {
-    if (messContainer.current)
-      messContainer.current.scrollTop = messContainer.current.scrollHeight;
+    if (messContainer.current) {
+      setMessageContainerHeight(messContainer.current.scrollHeight);
+      // First time loading and Scroll to the top 
+      if (index === 20) {
+        messContainer.current.scrollTop = messContainer.current.scrollHeight;
+      } else {
+        messContainer.current.scrollTop =
+          messContainer.current.scrollHeight - messageContainerHeight;
+      }
+    }
+    if (messContainer.current && index === 20) {
+    }
   }, [userMessages]);
 
-// 
-// 
-// 
-// TO DO 
-// TO DO 
-// TO DO 
-// TO DO 
   useEffect(() => {
-    const observer = new IntersectionObserver(test);
-    console.log(loadingElement);
+    const observer = new IntersectionObserver(spyLoadingElement);
     if (observer && loadingElement.current) {
-      console.log(2);
-      observer.observe(loadingElement.current);
+      observer.observe(loadingElement.current, { thresholds: 1.0 });
     }
     return () => {
       if (observer) {
         observer.disconnect();
       }
     };
-  }, []);
+  }, [index]);
 
-
-  function test(e) {
-    if (e[0].isInterseting) {
-      console.log(2);
+  async function spyLoadingElement(e) {
+    if (stopScrolling || (index === limit && index !== 0)) return;
+    if (e[0].isIntersecting) {
+      await loadMessages(index);
+      if (limit - (index + 20) <= 0 && index !== 0) {
+        setIndex((prev) => prev + limit - index);
+        setStopScrolling(true);
+        setLoading(false);
+        return;
+      }
+      setIndex((prev) => prev + 20);
     }
   }
   return (
     <div className="container">
-      <button onClick={() => setLoading(false)}>Send</button>
       <div className="messages-window">
         <div className="messages" ref={messContainer}>
           {loading && (
-            <p ref={loadingElement} className="loaing">
+            <p ref={loadingElement} className="loading">
               Loading...
             </p>
           )}
-          {!userMessages[0] ? (
+          {!userMessages[0] && !loading ? (
             <p className="empty">Empty...</p>
           ) : (
             userMessages.map((e) => {

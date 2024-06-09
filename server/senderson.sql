@@ -33,4 +33,7 @@ show tables;
 
 SELECT * FROM user_friends
 
-SELECT * FROM messages where ownerID =22 AND recipientID =22 OR ownerID =22 AND recipientID =22 
+SELECT * FROM messages where ownerID =22 AND recipientID =22 OR ownerID =22 AND recipientID =22 ORDER BY id DESC LIMIT 20 OFFSET 0
+
+SELECT COUNT(id) FROM messages where ownerID =22 AND recipientID = 22 OR ownerID =22 AND recipientID =22
+
