@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Info() {
   const [values, setValues] = useState([]);
   const mess = useRef(null);
   const effect = useRef(false);
+  const navigate = useNavigate()
   useEffect(() => {
     if (effect.current) return;
     function addVal() {
@@ -20,7 +22,7 @@ export default function Info() {
     <div className="info">
       <div className="">
         <button
-          onClick={() => (mess.current.scrollTop = mess.current.scrollHeight)}>
+          onClick={() => navigate("/")}>
           X
         </button>
         <ul

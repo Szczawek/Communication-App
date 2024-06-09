@@ -134,7 +134,7 @@ app.get("/logged-in-user", async (req, res) => {
     const idInCookie = req.cookies["logged-in"];
     if (!idInCookie) return res.status(204).json("User isn't logged-in!");
 
-    const { id } = idInCookie["id"];
+    const { id } = idInCookie;
     const dbDownloadUserData =
       "SELECT id, nick,avatar,date, unqiue_name as unqiueName FROM users where id = ?";
     const userData = await new Promise((resolve) => {

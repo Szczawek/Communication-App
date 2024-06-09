@@ -17,7 +17,7 @@ export default function Messages({ ownerID, recipientID }) {
   useEffect(() => {
     if (messContainer.current) {
       setMessageContainerHeight(messContainer.current.scrollHeight);
-      // First time loading and Scroll to the top 
+      // First time loading and Scroll to the top
       if (index === 20) {
         messContainer.current.scrollTop = messContainer.current.scrollHeight;
       } else {
@@ -28,6 +28,12 @@ export default function Messages({ ownerID, recipientID }) {
     if (messContainer.current && index === 20) {
     }
   }, [userMessages]);
+  
+
+  function addMessageAndIndex(data) {
+    addMessage(data);
+    setIndex((prev) => prev + 1);
+  }
 
   useEffect(() => {
     const observer = new IntersectionObserver(spyLoadingElement);
@@ -81,7 +87,7 @@ export default function Messages({ ownerID, recipientID }) {
         </div>
       </div>
       <MessageTools
-        addMessage={addMessage}
+        addMessage={addMessageAndIndex}
         ownerID={ownerID}
         recipientID={recipientID}
       />
