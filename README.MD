@@ -4,3 +4,4 @@ Przy logowaniu się do konta brakuję funkcji, która przenosi użytkownika z Lo
 - Naprawić srollowanie wiadomości: 
         - Jeśli user wysyła wiadomość to scroll dodać okno szybkiego scrolla w dół, gdy dostaje wiadomość to ta sama sytuacja.
         - Pierwsze ładowanie wiadomości scroll na sam dół, następne o wysokość nowch wiadomości.
+

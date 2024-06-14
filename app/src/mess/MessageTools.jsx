@@ -25,7 +25,6 @@ export default function MessageTools({ addMessage, ownerID, recipientID }) {
       setTimeout(() => {
         setSlow(false);
       }, 1000);
-      console.log("Messagfe was sended sucessfully!");
     } catch (err) {
       throw err;
     }

@@ -11,7 +11,6 @@ export default function useWaitingForMessage(id, refreshMessages) {
   ws.onmessage = async (e) => {
     await refreshMessages();
     setValue((prev) => !prev);
-    console.log("Message:", e.data);
   };
 
   ws.onclose = (e) => {

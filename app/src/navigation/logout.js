@@ -7,7 +7,7 @@ export async function logout(refreshUser, navigate) {
     if (!res.ok) throw Error(`Error with logout btn: ${res.status}`);
     const msg = await res.json();
     refreshUser();
-    navigate();
+    navigate("/");
   } catch (err) {
     throw Error(`Error with logout fn: ${err}`);
   }

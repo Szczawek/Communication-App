@@ -30,7 +30,7 @@ export default function Profile({ user, loggedInUser, changeFriendsLis }) {
           <p className="unqiue-name">{unqiueName}</p>
         </div>
         {loggedInUser["id"] === id ? null : (
-          <button
+          <button className="friend"
             disabled={slowDown ? true : false}
             onClick={() => {
               setSlowDown(true);
