@@ -26,6 +26,7 @@ export default function Login({ refreshUser }) {
         method: "POST",
         headers: {
           "Content-type": "application/json",
+          token: localStorage.getItem("session"),
         },
         credentials: "include",
         body: JSON.stringify(data),

@@ -8,8 +8,10 @@ export default function Messages({ id }) {
     if (effect.current) return;
     async function downloadMessages() {
       try {
-        const res = await fetch(`${import.meta.env.VITE_URL}/users/${id}`);
-        if (res.status ===204) return;
+        const res = await fetch(`${import.meta.env.VITE_URL}/users/${id}`, {
+          credentials: "include",
+        });
+        if (res.status === 204) return;
         if (!res.ok) return console.error(res.status);
         const obj = await res.json();
         setMessages((prev) => [...prev, ...obj]);

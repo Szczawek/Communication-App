@@ -9,7 +9,12 @@ export default function Home({ id }) {
     if (effect.current || id === 0) return;
     async function loadUserFriends() {
       try {
-        const res = await fetch(`${import.meta.env.VITE_URL}/users/${id}`);
+        const res = await fetch(`${import.meta.env.VITE_URL}/users/${id}`, {
+          credentials: "include",
+          headers: {
+            token: localStorage.getItem("session"),
+          },
+        });
         if (res.status === 204) return;
         if (!res.ok) throw console.error(res.status);
         const obj = await res.json();

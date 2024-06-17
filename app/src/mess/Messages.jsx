@@ -28,7 +28,6 @@ export default function Messages({ ownerID, recipientID }) {
     if (messContainer.current && index === 20) {
     }
   }, [userMessages]);
-  
 
   function addMessageAndIndex(data) {
     addMessage(data);
@@ -60,6 +59,7 @@ export default function Messages({ ownerID, recipientID }) {
       setIndex((prev) => prev + 20);
     }
   }
+
   return (
     <div className="container">
       <div className="messages-window">

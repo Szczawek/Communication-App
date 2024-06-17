@@ -2,6 +2,9 @@ export async function logout(refreshUser, navigate) {
   try {
     const res = await fetch(`${import.meta.env.VITE_URL}/logout`, {
       method: "POST",
+      headers: {
+        token: localStorage.getItem("session"),
+      },
       credentials: "include",
     });
     if (!res.ok) throw Error(`Error with logout btn: ${res.status}`);

@@ -31,32 +31,51 @@ export default function App() {
 
   useEffect(() => {
     if (effect.current) return;
-    async function searchLoggedInUser() {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_URL}/logged-in-user`, {
-          credentials: "include",
-        });
-        if (res.status === 204) return setLoggedInUser({ id: 0 });
-        if (!res.ok) return console.error(`Error with server: ${res.status}`);
-        const obj = await res.json();
-
-        setLoggedInUser((prev) => {
-          for (const key in prev) {
-            if (!obj[key]) {
-              obj[key] = prev[key];
-            }
-          }
-          return obj;
-        });
-      } catch (err) {
-        throw Error(
-          `Error, the app now can't check if user is logged in: ${err}`
-        );
-      }
-    }
-    searchLoggedInUser();
+    createSession();
     return () => (effect.current = true);
   }, [refreshValue]);
+
+  async function createSession() {
+    try {
+      if (!localStorage.getItem("session")) {
+        const res = await fetch(`${import.meta.env.VITE_URL}`, {
+          credentials: "include",
+        });
+        const obj = await res.json();
+        localStorage.setItem("session", obj["token"]);
+      }
+      await searchLoggedInUser();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async function searchLoggedInUser() {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_URL}/logged-in-user`, {
+        credentials: "include",
+        headers: {
+          token: localStorage.getItem("session"),
+        },
+      });
+      if (res.status === 204) return setLoggedInUser({ id: 0 });
+      if (!res.ok) return console.error(`Error with server: ${res.status}`);
+      const obj = await res.json();
+
+      setLoggedInUser((prev) => {
+        for (const key in prev) {
+          if (!obj[key]) {
+            obj[key] = prev[key];
+          }
+        }
+        return obj;
+      });
+    } catch (err) {
+      throw Error(
+        `Error, the app now can't check if user is logged in: ${err}`
+      );
+    }
+  }
 
   function refreshUser() {
     effect.current = false;

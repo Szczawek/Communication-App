@@ -27,8 +27,10 @@ export default function CreateAccount({ refreshUser }) {
         method: "POST",
         headers: {
           "Content-type": "application/json",
+          token: localStorage.getItem("session"),
         },
         credentials: "include",
+
         body: JSON.stringify(data),
       };
       const res = await fetch(

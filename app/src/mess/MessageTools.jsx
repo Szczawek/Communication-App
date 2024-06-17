@@ -15,7 +15,9 @@ export default function MessageTools({ addMessage, ownerID, recipientID }) {
         method: "POST",
         headers: {
           "Content-type": "application/json",
+          token: localStorage.getItem("session"),
         },
+        credentials:"include",
         body: JSON.stringify(messData),
       });
       if (!res.ok) throw console.error(res.status);

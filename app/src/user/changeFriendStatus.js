@@ -10,6 +10,7 @@ export async function changeFriendStatus(
       method: "POST", 
       headers: {
         "Content-type": "application/json",
+        token: localStorage.getItem("session"),
       },
       body: JSON.stringify(data),
     });

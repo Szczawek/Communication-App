@@ -9,7 +9,11 @@ export default function useUserSearch(stopLoadingScreen) {
     async function fetchUser() {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_URL}/user-search/${nick}`
+          `${import.meta.env.VITE_URL}/user-search/${nick}`,
+          {
+            credentials: "include",
+            headers: { token: localStorage.getItem("session") },
+          }
         );
 
         if (!res.ok) {
