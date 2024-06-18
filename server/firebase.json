@@ -9,8 +9,10 @@
         "firebase-debug.log",
         "firebase-debug.*.log",
         "*.local"
-      ]
-    
+      ],
+      "functions": {
+        "vpcConnector": "shadow-connection"
+      }
     }
   ]
 }
