@@ -1,17 +1,24 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-export default function CreateAccount({ refreshUser }) {
+import { UserFunctions } from "../App";
+export default function CreateAccount() {
   const [nick, setNick] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [unqiueName, setUnqiueName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [warning, setWarning] = useState(false);
+  const { searchLoggedInUser } = useContext(UserFunctions);
   const focusdElement = useRef(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (warning) setWarning(false);
+  }, [email, password]);
+
   useEffect(() => {
     if (focusdElement.current) focusdElement.current.focus();
   }, []);
-  const navigate = useNavigate();
 
   async function reqCreateAccount(e) {
     e.preventDefault();
@@ -37,10 +44,15 @@ export default function CreateAccount({ refreshUser }) {
         `${import.meta.env.VITE_URL}/create-account`,
         fetchOptions
       );
-      if (!res.ok) return console.error("Error with server");
+      if (!res.ok) {
+        if (res.status == 400) {
+          return setWarning(true);
+        }
+        throw console.error("Error with server");
+      }
       setLoading(false);
-      refreshUser();
-      navigate("/");
+      await searchLoggedInUser();
+      navigate("/info");
     } catch (err) {
       throw Error(`Error with account-creator: ${err}`);
     }
@@ -91,6 +103,9 @@ export default function CreateAccount({ refreshUser }) {
               type="password"
             />
           </label>
+          <small className="warning">
+            {warning && "Email or Password are invalid!"}
+          </small>
         </div>
         <button className="confirm" type="submit">
           {loading ? "Loading..." : "Submit"}

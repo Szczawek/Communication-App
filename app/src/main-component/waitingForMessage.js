@@ -1,20 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function useWaitingForMessage(id, refreshMessages) {
-  const [value, setValue] = useState(null);
+  const [ws, setWS] = useState();
   if (!id || id === 0) return;
-    const ws = new WebSocket(`wss://localhost?user=${id}`);
-  ws.onerror = (e) => {
-    console.error("Error with WebSocktet!");
-  };
+  console.log("con?");
+  useEffect(() => {
+    return () => setWS(new WebSocket(`wss://localhost?user=${id}`));
+  }, []);
+  if (ws) {
+    console.log(2)
+    ws.onopen = (e) => {
+      console.log("connected!")
+    }
+    ws.onerror = (e) => {
+      console.error("Error with WebSocktet!");
+    };
 
-  ws.onmessage = async (e) => {
-    await refreshMessages();
-    setValue((prev) => !prev);
-  };
+    ws.onmessage = async (e) => {
+      console.log("Messag",e.data)
+      await refreshMessages();
+    };
 
-  ws.onclose = (e) => {
-    console.log("Conection was closed!");
-  };
-  return value;
+    ws.onclose = (e) => {
+      console.log("Conection was closed!");
+    };
+  }
 }

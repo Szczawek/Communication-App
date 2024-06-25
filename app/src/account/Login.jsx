@@ -1,12 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-export default function Login({ refreshUser }) {
+import { UserFunctions } from "../App";
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [warning, setWarning] = useState(false);
   const focusdElement = useRef(null);
+  const navigate = useNavigate();
+  const { searchLoggedInUser } = useContext(UserFunctions);
   useEffect(() => {
     if (focusdElement.current) focusdElement.current.focus();
   }, []);
@@ -41,7 +43,8 @@ export default function Login({ refreshUser }) {
         if (res.status === 401) return setWarning(true);
         return console.error(`Error with login: ${res.status}}`);
       }
-      await refreshUser();
+      await searchLoggedInUser();
+      navigate("/info");
     } catch (err) {
       throw Error(`Error durning login to account: ${err}`);
     }

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import {
   lazy,
   useEffect,
@@ -13,14 +13,15 @@ const Navigation = lazy(() => import("./main-component/Navigation"));
 const Home = lazy(() => import("./main-component/Home"));
 const Info = lazy(() => import("./main-component/Info"));
 const UserSearch = lazy(() => import("./main-component/UserSearch"));
-const NotFound = lazy(() => import("./main-component/NotFound"));
 const CreateAccount = lazy(() => import("./account/CreateAccount"));
 const Login = lazy(() => import("./account/Login"));
+const ReturnToPath = lazy(() => import("./main-component/ReturnToPath"));
 const UserFunctions = createContext();
 
 export default function App() {
   const [refreshValue, setRefreshValue] = useState(false);
   const effect = useRef(false);
+  const [loading, setLoading] = useState(true);
   const [loggedInUser, setLoggedInUser] = useState({
     nick: "User",
     avatar: "./images/user.jpg",
@@ -58,7 +59,10 @@ export default function App() {
           token: localStorage.getItem("session"),
         },
       });
-      if (res.status === 204) return setLoggedInUser({ id: 0 });
+      if (res.status === 204) {
+        setLoggedInUser({ id: 0 });
+        return;
+      }
       if (!res.ok) return console.error(`Error with server: ${res.status}`);
       const obj = await res.json();
 
@@ -70,10 +74,13 @@ export default function App() {
         }
         return obj;
       });
+      
     } catch (err) {
       throw Error(
         `Error, the app now can't check if user is logged in: ${err}`
       );
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -107,18 +114,18 @@ export default function App() {
   return (
     <BrowserRouter>
       <Suspense fallback={<p className="full-screen loading">Loading...</p>}>
-        <UserFunctions.Provider value={refreshUser}>
-          <Routes>
-            {loggedInUser["id"] === 0 ? (
-              <Route path="/" element={<Account />}>
-                <Route index element={<Login refreshUser={refreshUser} />} />
-                <Route
-                  path="create-account"
-                  element={<CreateAccount refreshUser={refreshUser} />}
-                />
-                <Route path="*" element={<NotFound />} />
+        <UserFunctions.Provider value={{ refreshUser, searchLoggedInUser }}>
+          {loggedInUser["id"] === 0 && !loading ? (
+            <Routes>
+              <Route path="/account" element={<Account />}>
+                <Route index element={<Login />} />
+                <Route path="create" element={<CreateAccount />} />
+                <Route path="*" element={<ReturnToPath path="/account" />} />
               </Route>
-            ) : (
+              <Route path="*" element={<ReturnToPath path="/account" />} />
+            </Routes>
+          ) : (
+            <Routes>
               <Route path="/" element={<Navigation user={loggedInUser} />}>
                 <Route index element={<Home id={loggedInUser["id"]} />} />
                 <Route path="info" element={<Info />} />
@@ -132,8 +139,9 @@ export default function App() {
                   }
                 />
               </Route>
-            )}
-          </Routes>
+              <Route path="*" element={<ReturnToPath path={"/info"} />} />
+            </Routes>
+          )}
         </UserFunctions.Provider>
       </Suspense>
     </BrowserRouter>

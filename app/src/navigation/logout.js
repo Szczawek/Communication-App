@@ -1,4 +1,4 @@
-export async function logout(refreshUser, navigate) {
+export async function logout(searchLoggedInUser) {
   try {
     const res = await fetch(`${import.meta.env.VITE_URL}/logout`, {
       method: "POST",
@@ -9,8 +9,8 @@ export async function logout(refreshUser, navigate) {
     });
     if (!res.ok) throw Error(`Error with logout btn: ${res.status}`);
     const msg = await res.json();
-    refreshUser();
-    navigate("/");
+    console.log(msg);
+    await searchLoggedInUser();
   } catch (err) {
     throw Error(`Error with logout fn: ${err}`);
   }

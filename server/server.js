@@ -10,6 +10,7 @@ import { WebSocketServer } from "ws";
 import cookieParser from "cookie-parser";
 import functions from "firebase-functions";
 import crypto from "crypto";
+import sqlite3 from "sqlite3";
 
 const PORT = 443;
 const app = express();
@@ -23,7 +24,17 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
   if (err) return console.error(`Error with db: ${err}`);
-  console.log("db works well!");
+  console.log("DB MySQL works well!");
+});
+
+sqlite3.verbose();
+const dbLite = new sqlite3.Database(":memory:", (err) => {
+  if (err) return console.error("DB Lite is doesn't work propertly!");
+  console.log("DB Lite is connected!");
+});
+
+dbLite.serialize(() => {
+  dbLite.run("CREATE TABLE users (id int,socket TEXT)");
 });
 
 // SERVER config
@@ -107,7 +118,11 @@ function decrypt(encryptedText, encryptionKey) {
   }
 }
 
+// SIMPLE/WISE
+let count = 0;
 const authorization = (req, res, next) => {
+  if (count >= 1000) return res.sendStatus(403);
+  count++;
   const token = req.cookies["session"];
   if (!token) {
     const newToken = "1233";
@@ -161,6 +176,18 @@ app.post("/login", async (req, res) => {
 app.post("/create-account", async (req, res) => {
   try {
     const { nick, email, unqiueName, avatar, password } = req.body;
+
+    const selectUser = "SELECT id FROM users where email =? OR unqiue_name =?";
+    const isUserAlreadyExist = await new Promise((resolve) => {
+      db.query(selectUser, [email, unqiueName], (err, result) => {
+        if (err)
+          throw Error(
+            `Error, check if user already exist is imposible for that moment! :${err}`
+          );
+        resolve(result);
+      });
+    });
+    if (isUserAlreadyExist[0]) return res.sendStatus(400);
     const encryptedPassword = await bcrypt.hash(password, 10);
     const values = [
       avatar ? avatar : "./images/user.jpg",
@@ -206,6 +233,7 @@ function createSession(res, id) {
 app.get("/logged-in-user", async (req, res) => {
   try {
     const userIsLogged = req.cookies["user_id"];
+    console.log(userIsLogged);
     if (!userIsLogged) return res.status(204).json("User isn't logged-in!");
     const id = decrypt(userIsLogged, process.env.COOKIES_KEY);
     console.log(id);
@@ -271,18 +299,15 @@ app.get("/user-search/:nick", (req, res) => {
   });
 });
 
-function removeLoggedInUser(res) {
-  res.clearCookie("user_id", {
-    maxAge: 0,
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-  });
-  res.clearCookie("session", {
-    maxAge: 0,
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
+async function removeLoggedInUser(res) {
+  new Promise((resolve) => {
+    res.clearCookie("user_id", {
+      maxAge: 0,
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+    resolve();
   });
 }
 
@@ -313,8 +338,8 @@ app.post("/friends-list-change", (req, res) => {
   });
 });
 
-app.post("/logout", (req, res) => {
-  removeLoggedInUser(res);
+app.post("/logout", async (req, res) => {
+  await removeLoggedInUser(res);
   res.json("Logout");
 });
 
@@ -349,13 +374,24 @@ app.get("/last-message/:ownerID/:recipientID", (req, res) => {
   });
 });
 
-const messages = {};
 // Send Message
-app.post("/send-message", (req, res) => {
+app.post("/send-message", async (req, res) => {
   const { ownerID, recipientID, message } = req.body;
-  if (messages[recipientID]) {
-    messages[recipientID].send("update");
-  }
+  const selectSocketFromDB = "SELECT socket from users where id =?";
+  
+  // Sqlite Nie jest w stanie przechowywać tak złożonych obiektów jak WS socket obkiekt
+  // Sqlite Nie jest w stanie przechowywać tak złożonych obiektów jak WS socket obkiekt
+  // Sqlite Nie jest w stanie przechowywać tak złożonych obiektów jak WS socket obkiekt
+  // Sqlite Nie jest w stanie przechowywać tak złożonych obiektów jak WS socket obkiekt
+  // Sqlite Nie jest w stanie przechowywać tak złożonych obiektów jak WS socket obkiekt
+  // Sqlite Nie jest w stanie przechowywać tak złożonych obiektów jak WS socket obkiekt
+  dbLite.get(selectSocketFromDB, [ownerID], (err, result) => {
+    if (err) return console.error(err);
+    console.log(JSON.parse(result["socket"]))
+    if(!result["socket"]) return
+    JSON.parse(result["socket"]).send("New Message!");
+  });
+
   const valuesDB = [ownerID, recipientID, new Date(), message];
   const addMessageDB =
     "INSERT INTO messages(ownerID,recipientID,date,message) values(?,?,?,?)";
@@ -365,31 +401,37 @@ app.post("/send-message", (req, res) => {
   });
 });
 
-server.listen(PORT, (err) => {
-  if (err) throw err;
-  console.log(`https://localhost:${PORT}`);
-});
-
 wss.on("connection", (ws, req) => {
   const id = new URL(req.url, `https://${req.headers.host}`).searchParams.get(
     "user"
   );
-  //   const addSocketToDB = "INSERT INTO sockets(id,secket) values(?,?)";
-  //   const valueToInsert = [id, ws];
-  messages[id] = ws;
-  //   // db.query(addSocketToDB, valueToInsert, (err) => {
-  //   //   if (err) throw Error(`Error durning adding values to sockets: ${err}`);
-  //   //   console.log("add");
-  //   // });
+  console.log("WBSOCKET connected!");
+
+  const check = dbLite.get(
+    "SELECT id FROM users where id =?",
+    [id],
+    (err, result) => {
+      if (err) return console.error(err);
+      return result;
+    }
+  );
+
+  const addSocket = "INSERT INTO users(id,socket) values(?,?)";
+  if (!check["id"]) {
+    dbLite.run(addSocket, [id, JSON.stringify(ws)]);
+  }
+
 
   ws.on("close", () => {
-    const removeFromDB = "DELETE from sockets where id =?";
-    delete messages[id];
-    // db.query(removeFromDB, [id], (err) => {
-    //   if (err) throw Error(`Error with removing Sockets with db: ${err}`);
-    //   console.log("remove");
-    // });
+    console.log("connection was closed!");
+    const removeFromDB = "DELETE from users where id =?";
+    dbLite.run(removeFromDB, [id]);
   });
+});
+
+server.listen(PORT, (err) => {
+  if (err) throw err;
+  console.log(`https://localhost:${PORT}`);
 });
 
 export const api = functions

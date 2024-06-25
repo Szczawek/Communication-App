@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import MessageTools from "./MessageTools";
 import useFetchMessages from "./useFetchMessages";
 import useWaitingForMessage from "../main-component/waitingForMessage";
@@ -12,7 +12,8 @@ export default function Messages({ ownerID, recipientID }) {
   const { userMessages, addMessage, lastMessageRefresh, loadMessages, limit } =
     useFetchMessages(ownerID, recipientID, index);
   const [messageContainerHeight, setMessageContainerHeight] = useState(0);
-  const wsInfo = useWaitingForMessage(ownerID, lastMessageRefresh);
+
+  useWaitingForMessage(ownerID, lastMessageRefresh);
 
   useEffect(() => {
     if (messContainer.current) {

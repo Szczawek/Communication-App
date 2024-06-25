@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { logout } from "./logout";
 import { UserFunctions } from "../App";
 export default function NavSettingsList({ user }) {
@@ -7,8 +7,7 @@ export default function NavSettingsList({ user }) {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const activeElement = useRef(null);
   const parentElement = useRef(null);
-  const navigate = useNavigate();
-  const refreshUser = useContext(UserFunctions);
+  const { searchLoggedInUser } = useContext(UserFunctions);
 
   useEffect(() => {
     if (activeElement.current) {
@@ -58,9 +57,7 @@ export default function NavSettingsList({ user }) {
             <Link className="fn">3</Link>
           </li>
           <li className="link">
-            <button
-              className="fn"
-              onClick={() => logout(refreshUser, navigate)}>
+            <button className="fn" onClick={() => logout(searchLoggedInUser)}>
               Logout
             </button>
           </li>
