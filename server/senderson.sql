@@ -1,5 +1,0 @@
--- Active: 1718432638741@@34.118.29.52@3306@Senderson
-
-SELECT * FROM users
-
-SHOW TABLES
