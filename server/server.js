@@ -10,7 +10,6 @@ import { WebSocketServer } from "ws";
 import cookieParser from "cookie-parser";
 import functions from "firebase-functions";
 import crypto from "crypto";
-import sqlite3 from "sqlite3";
 
 const PORT = 443;
 const app = express();
@@ -20,21 +19,16 @@ const db = mysql.createConnection({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   host: process.env.DB_HOST,
+  ssl: {
+    ca:process.env.DB_SSL
+  }
 });
+
+const userConnections = new Map()
 
 db.connect((err) => {
   if (err) return console.error(`Error with db: ${err}`);
   console.log("DB MySQL works well!");
-});
-
-sqlite3.verbose();
-const dbLite = new sqlite3.Database(":memory:", (err) => {
-  if (err) return console.error("DB Lite is doesn't work propertly!");
-  console.log("DB Lite is connected!");
-});
-
-dbLite.serialize(() => {
-  dbLite.run("CREATE TABLE users (id int,socket TEXT)");
 });
 
 // SERVER config
@@ -373,30 +367,17 @@ app.get("/last-message/:ownerID/:recipientID", (req, res) => {
     res.json(result);
   });
 });
+const test = {}
 
 // Send Message
 app.post("/send-message", async (req, res) => {
   const { ownerID, recipientID, message } = req.body;
-  const selectSocketFromDB = "SELECT socket from users where id =?";
-  
-  // Sqlite Nie jest w stanie przechowywać tak złożonych obiektów jak WS socket obkiekt
-  // Sqlite Nie jest w stanie przechowywać tak złożonych obiektów jak WS socket obkiekt
-  // Sqlite Nie jest w stanie przechowywać tak złożonych obiektów jak WS socket obkiekt
-  // Sqlite Nie jest w stanie przechowywać tak złożonych obiektów jak WS socket obkiekt
-  // Sqlite Nie jest w stanie przechowywać tak złożonych obiektów jak WS socket obkiekt
-  // Sqlite Nie jest w stanie przechowywać tak złożonych obiektów jak WS socket obkiekt
-  dbLite.get(selectSocketFromDB, [ownerID], (err, result) => {
-    if (err) return console.error(err);
-    console.log(JSON.parse(result["socket"]))
-    if(!result["socket"]) return
-    JSON.parse(result["socket"]).send("New Message!");
-  });
-
   const valuesDB = [ownerID, recipientID, new Date(), message];
   const addMessageDB =
     "INSERT INTO messages(ownerID,recipientID,date,message) values(?,?,?,?)";
   db.query(addMessageDB, valuesDB, (err) => {
     if (err) throw Error(`Error with adding message: ${err}`);
+    userConnections.get(String(recipientID)).send("New Message!")
     res.sendStatus(200);
   });
 });
@@ -406,26 +387,13 @@ wss.on("connection", (ws, req) => {
     "user"
   );
   console.log("WBSOCKET connected!");
-
-  const check = dbLite.get(
-    "SELECT id FROM users where id =?",
-    [id],
-    (err, result) => {
-      if (err) return console.error(err);
-      return result;
-    }
-  );
-
-  const addSocket = "INSERT INTO users(id,socket) values(?,?)";
-  if (!check["id"]) {
-    dbLite.run(addSocket, [id, JSON.stringify(ws)]);
-  }
+  
+     userConnections.set(id,ws)
 
 
   ws.on("close", () => {
     console.log("connection was closed!");
-    const removeFromDB = "DELETE from users where id =?";
-    dbLite.run(removeFromDB, [id]);
+    userConnections.delete(id)
   });
 });
 

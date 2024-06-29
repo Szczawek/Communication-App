@@ -16,18 +16,18 @@ export default function Messages({ ownerID, recipientID }) {
   useWaitingForMessage(ownerID, lastMessageRefresh);
 
   useEffect(() => {
-    if (messContainer.current) {
-      setMessageContainerHeight(messContainer.current.scrollHeight);
-      // First time loading and Scroll to the top
-      if (index === 20) {
+    // if (messContainer.current) {
+    //   setMessageContainerHeight(messContainer.current.scrollHeight);
+    //   // First time loading and Scroll to the top
+    //   if (index === 20) {
         messContainer.current.scrollTop = messContainer.current.scrollHeight;
-      } else {
-        messContainer.current.scrollTop =
-          messContainer.current.scrollHeight - messageContainerHeight;
-      }
-    }
-    if (messContainer.current && index === 20) {
-    }
+    //   } else {
+    //     messContainer.current.scrollTop =
+    //       messContainer.current.scrollHeight - messageContainerHeight;
+    //   }
+    // }
+    // if (messContainer.current && index === 20) {
+    // }
   }, [userMessages]);
 
   function addMessageAndIndex(data) {

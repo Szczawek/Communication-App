@@ -3,12 +3,10 @@ import { useEffect, useState } from "react";
 export default function useWaitingForMessage(id, refreshMessages) {
   const [ws, setWS] = useState();
   if (!id || id === 0) return;
-  console.log("con?");
   useEffect(() => {
-    return () => setWS(new WebSocket(`wss://localhost?user=${id}`));
+    return () => setWS(new WebSocket(`wss://${import.meta.env.VITE_DOMAIN}?user=${id}`));
   }, []);
   if (ws) {
-    console.log(2)
     ws.onopen = (e) => {
       console.log("connected!")
     }

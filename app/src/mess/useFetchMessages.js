@@ -6,8 +6,8 @@ export default function useFetchMessages(ownerID, recipientID) {
   const effect = useRef(false);
   const currentUser = useRef(recipientID);
 
-  function addMessage(message) {
-    setUserMessages((prev) => [...prev, message]);
+function addMessage(message) {
+      setUserMessages((prev) => [...prev, message]);
   }
 
   // Dynamic loading
