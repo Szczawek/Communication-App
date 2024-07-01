@@ -20,7 +20,7 @@ export default function Messages({ ownerID, recipientID }) {
     //   setMessageContainerHeight(messContainer.current.scrollHeight);
     //   // First time loading and Scroll to the top
     //   if (index === 20) {
-        messContainer.current.scrollTop = messContainer.current.scrollHeight;
+    messContainer.current.scrollTop = messContainer.current.scrollHeight;
     //   } else {
     //     messContainer.current.scrollTop =
     //       messContainer.current.scrollHeight - messageContainerHeight;
@@ -71,7 +71,12 @@ export default function Messages({ ownerID, recipientID }) {
             </p>
           )}
           {!userMessages[0] && !loading ? (
-            <p className="empty">Empty...</p>
+            <div className="empty">
+              <p className="waiting-message">Empty</p>
+              <div className="circle"></div>
+              <div className="circle"></div>
+              <div className="circle"></div>
+            </div>
           ) : (
             userMessages.map((e) => {
               return (

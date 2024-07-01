@@ -16,10 +16,8 @@ export default function useUserSearch(stopLoadingScreen) {
           }
         );
 
-        if (!res.ok) {
-          if (res.status === 404) return;
-          return console.error(`Error: ${res.status}`);
-        }
+        if (!res.ok) return console.error(`Error: ${res.status}`);
+        if (res.status === 204) return;
         const obj = await res.json();
         setUser(obj);
       } catch (err) {

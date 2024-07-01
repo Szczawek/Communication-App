@@ -17,11 +17,10 @@ export default function MessageTools({ addMessage, ownerID, recipientID }) {
           "Content-type": "application/json",
           token: localStorage.getItem("session"),
         },
-        credentials:"include",
+        credentials: "include",
         body: JSON.stringify(messData),
       });
       if (!res.ok) throw console.error(res.status);
-
       await addMessage({ ...messData, date: new Date() });
       setValue("");
       setTimeout(() => {
@@ -48,7 +47,7 @@ export default function MessageTools({ addMessage, ownerID, recipientID }) {
           ref={messageInput}
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder={`${warning ? "Warning" : "Aaa"}`}
+          placeholder={`${warning ? "Warning" : "ZzZ..."}`}
           minLength={1}
           maxLength={500}
           required
@@ -57,7 +56,10 @@ export default function MessageTools({ addMessage, ownerID, recipientID }) {
           type="text"
         />
       </label>
-      <button disabled={slow ? true : false} onClick={() => sendMessage()}>
+      <button
+        className="send-message"
+        disabled={slow ? true : false}
+        onClick={() => sendMessage()}>
         Send X
       </button>
     </div>

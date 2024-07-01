@@ -20,11 +20,11 @@ const db = mysql.createConnection({
   password: process.env.DB_PASSWORD,
   host: process.env.DB_HOST,
   ssl: {
-    ca:process.env.DB_SSL
-  }
+    ca: process.env.DB_SSL,
+  },
 });
 
-const userConnections = new Map()
+const userConnections = new Map();
 
 db.connect((err) => {
   if (err) return console.error(`Error with db: ${err}`);
@@ -227,10 +227,8 @@ function createSession(res, id) {
 app.get("/logged-in-user", async (req, res) => {
   try {
     const userIsLogged = req.cookies["user_id"];
-    console.log(userIsLogged);
     if (!userIsLogged) return res.status(204).json("User isn't logged-in!");
     const id = decrypt(userIsLogged, process.env.COOKIES_KEY);
-    console.log(id);
     const loadUserData =
       "SELECT id, nick,avatar,date, unqiue_name as unqiueName FROM users where id = ?";
     const userData = await new Promise((resolve) => {
@@ -253,7 +251,7 @@ app.get("/logged-in-user", async (req, res) => {
 
     const data = await {
       ...userData,
-      userFriends,
+      friends: userFriends,
     };
     res.json(data);
   } catch (err) {
@@ -288,7 +286,7 @@ app.get("/user-search/:nick", (req, res) => {
     "SELECT id, nick,avatar,unqiue_name as unqiueName from users where nick =? or unqiue_name =?";
   db.query(dbCommand, [nick, nick], (err, result) => {
     if (err) throw Error(`Error with user-search: ${err}`);
-    if (!result[0]) return res.sendStatus(404);
+    if (!result[0]) return res.sendStatus(204);
     res.json(result[0]);
   });
 });
@@ -308,8 +306,7 @@ async function removeLoggedInUser(res) {
 // Add/Remove friend with user firends list
 app.post("/friends-list-change", (req, res) => {
   const { action, personID, friendID } = req.body;
-
-  const addUser = "INSERT INTO user_friends(personID, friendID) values(?,?)";
+  const addUser = "INSERT into user_friends values(null,?,?)";
   const removeUser =
     "DELETE FROM user_friends where personID =? AND friendID =?";
 
@@ -367,17 +364,19 @@ app.get("/last-message/:ownerID/:recipientID", (req, res) => {
     res.json(result);
   });
 });
-const test = {}
+const test = {};
 
 // Send Message
 app.post("/send-message", async (req, res) => {
   const { ownerID, recipientID, message } = req.body;
+
   const valuesDB = [ownerID, recipientID, new Date(), message];
   const addMessageDB =
     "INSERT INTO messages(ownerID,recipientID,date,message) values(?,?,?,?)";
   db.query(addMessageDB, valuesDB, (err) => {
     if (err) throw Error(`Error with adding message: ${err}`);
-    userConnections.get(String(recipientID)).send("New Message!")
+    const user = userConnections.get(String(recipientID));
+    if (user) user.send("New Message!");
     res.sendStatus(200);
   });
 });
@@ -387,13 +386,12 @@ wss.on("connection", (ws, req) => {
     "user"
   );
   console.log("WBSOCKET connected!");
-  
-     userConnections.set(id,ws)
 
+  userConnections.set(id, ws);
 
   ws.on("close", () => {
     console.log("connection was closed!");
-    userConnections.delete(id)
+    userConnections.delete(id);
   });
 });
 

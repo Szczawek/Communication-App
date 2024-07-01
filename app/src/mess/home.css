@@ -1,28 +1,39 @@
 .home .friends-list {
   display: grid;
   padding-block: 2rem;
-  row-gap: 0.6rem;
+  row-gap: 1rem;
   justify-content: center;
 }
-
+.home .user-description {
+  height: 100%;
+  padding-block: 1rem;
+  border-left: 2px solid;
+  padding-left: 1rem;
+}
 .home .profil-link {
-  min-width: 320px;
-  padding: 0.4rem 0.8rem;
+  width: clamp(320px,70vw,620px);
   border-radius: 0.4rem;
+  border: 2px solid transparent;
+  padding-inline:1rem;
+  transition: filter,border-color, 300ms ease-out;
   background-color: var(--contrast-component-color);
+}
+.home .profil-link:is(:hover,:focus) {
+  filter:  brightness(50%);
+  border-color: white;
 }
 .home .profil-link a {
   display: grid;
   align-items: center;
-  gap: 2rem;
-  grid-template-columns: 2rem 1fr;
+  gap: 1.5rem;
+  grid-template-columns: max-content 1fr;
 }
 .home .unqiue_name {
   opacity: 0.8;
 }
 
 .home .avatar {
-  height: 100%;
+  width: 3.5rem;
   aspect-ratio: 1/1;
 }
 .home .avatar img {
