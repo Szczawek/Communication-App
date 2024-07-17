@@ -60,7 +60,7 @@ export default function MessageTools({ addMessage, ownerID, recipientID }) {
         className="send-message"
         disabled={slow ? true : false}
         onClick={() => sendMessage()}>
-        Send X
+        Send
       </button>
     </div>
   );

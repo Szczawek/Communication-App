@@ -20,7 +20,7 @@ export default function NavSettingsList({ user }) {
         if (e.key === "Enter" && !menuIsOpen) setMenuIsOpen(true);
       }}
       tabIndex={0}
-      className="option">
+      className="options">
       {menuIsOpen ? (
         <ul
           ref={parentElement}
@@ -33,9 +33,8 @@ export default function NavSettingsList({ user }) {
             }
           }}
           className="nav_setting">
-          <li className="link main_option">
+          <li className="profile-link">
             <Link
-              className="fn"
               ref={activeElement}
               onClick={() => {
                 setMenuIsOpen(false);
@@ -48,16 +47,16 @@ export default function NavSettingsList({ user }) {
           </li>
           <hr className="line" />
           <li className="link">
-            <Link className="fn">1</Link>
+            <Link>Notification</Link>
           </li>
           <li className="link">
-            <Link className="fn">2</Link>
+            <Link to={"settings"}>Setting</Link>
           </li>
           <li className="link">
-            <Link className="fn">3</Link>
+            <Link>Contact</Link>
           </li>
           <li className="link">
-            <button className="fn" onClick={() => logout(searchLoggedInUser)}>
+            <button className="logout-btn" onClick={() => logout(searchLoggedInUser)}>
               Logout
             </button>
           </li>

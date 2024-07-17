@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import "../mess/home.css";
+import "./home.css";
 export default function Home({ id }) {
   const [userFriends, setUserFriends] = useState([]);
   const effect = useRef(false);
@@ -29,11 +29,37 @@ export default function Home({ id }) {
 
   return (
     <div className="home">
+      <p className="ester-egg">You can move your friends where you want them to be placed!</p>
       <ul className="friends-list">
         {!userFriends[0] && <p>Empty...</p>}
-        {userFriends.map((e) => {
+        {userFriends.map((e, i) => {
           return (
-            <li className="profil-link" key={e["date"]}>
+            <li
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData(
+                  "text/plain",
+                  JSON.stringify({ index: i })
+                );
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = "move";
+              }}
+              onDrop={(e) => {
+                const { index } = JSON.parse(
+                  e.dataTransfer.getData("text/plain")
+                );
+                setUserFriends((prev) => {
+                  const copy = [...prev];
+                  copy.splice(index, 1);
+                  copy.splice(i, 0, userFriends[index]);
+
+                  return copy;
+                });
+              }}
+              className="profil-link"
+              key={e["date"]}>
               <Link to={e["unqiue_name"]}>
                 <div className="avatar">
                   <img src={e["avatar"]} alt="avatar" />

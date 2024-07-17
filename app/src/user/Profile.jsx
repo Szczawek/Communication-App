@@ -10,6 +10,7 @@ export default function Profile({ user, loggedInUser, changeFriendsLis }) {
     setFriendAccount(loggedInUser["friends"].includes(id));
   }, [user,loggedInUser]);
 
+  console.log(loggedInUser["id"],id)
   return (
     <div className="profile">
       <div className="baner">

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import MessageTools from "./MessageTools";
 import useFetchMessages from "./useFetchMessages";
-import useWaitingForMessage from "../main-component/waitingForMessage";
+import useWaitingForMessage from "../../main-component/waitingForMessage"
 
 export default function Messages({ ownerID, recipientID }) {
   const [index, setIndex] = useState(0);

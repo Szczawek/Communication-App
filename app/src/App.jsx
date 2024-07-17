@@ -15,6 +15,7 @@ const Info = lazy(() => import("./main-component/Info"));
 const UserSearch = lazy(() => import("./main-component/UserSearch"));
 const CreateAccount = lazy(() => import("./account/CreateAccount"));
 const Login = lazy(() => import("./account/Login"));
+const Settings = lazy(() => import("./main-component/Settings"));
 const ReturnToPath = lazy(() => import("./main-component/ReturnToPath"));
 const UserFunctions = createContext();
 
@@ -74,7 +75,6 @@ export default function App() {
         }
         return obj;
       });
-      
     } catch (err) {
       throw Error(
         `Error, the app now can't check if user is logged in: ${err}`
@@ -129,6 +129,7 @@ export default function App() {
               <Route path="/" element={<Navigation user={loggedInUser} />}>
                 <Route index element={<Home id={loggedInUser["id"]} />} />
                 <Route path="info" element={<Info />} />
+                <Route path="settings/*" element={<Settings />} />
                 <Route
                   path=":nick"
                   element={

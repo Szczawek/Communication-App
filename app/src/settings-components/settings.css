@@ -1,0 +1,9 @@
+.setting {
+  display: grid;
+  padding: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+
+}
+
+.setting .main-settings {
+}

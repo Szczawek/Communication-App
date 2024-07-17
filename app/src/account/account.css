@@ -1,3 +1,12 @@
+/* TO REMOVE  */
+
+.build-mode {
+  position: absolute;
+  top: 10%;
+  left: 0;
+  right: 0;
+}
+
 .account {
   display: grid;
   height: 100vh;
@@ -39,6 +48,8 @@
   animation: title-spining infinite 12s;
   font-size: 2.5rem;
 }
+
+
 @keyframes title-spining {
   0% {
   }

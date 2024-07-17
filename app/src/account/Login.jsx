@@ -55,6 +55,15 @@ export default function Login() {
         <header>
           <h2>Login</h2>
         </header>
+        <div className="build-mode">
+          <h3>Prod Mod</h3>
+          <p>
+            login: <span>test@test</span>
+          </p>
+          <p>
+            password: <span>test</span>
+          </p>
+        </div>
         <div className="labels">
           <label htmlFor="login-ac">
             <input

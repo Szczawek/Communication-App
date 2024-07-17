@@ -19,6 +19,7 @@ html {
   --transition-std: 300ms ease-in;
   --active-font-color: #ff1aff;
   --contrast-component-color: #94004a;
+  --pink-active-component-color: rgb(228, 54, 112);
 }
 
 button {
@@ -39,6 +40,10 @@ input,
 button,
 hr {
   border: none;
+  outline: none;
+}
+
+a:focus {
   outline: none;
 }
 
@@ -67,11 +72,21 @@ body {
 #root {
   display: grid;
   grid-template-rows: max-content 1fr;
+  height: 100vh;
+}
+/* All loading in the site  */
+.loading {
+  display: grid;
+  font-weight: bold;
+  font-size: 2rem;
+  place-content: center;
+}
+
+.full-screen.loading {
   min-height: 100vh;
 }
 
 /* NAVIGATION */
-
 .links-list {
   display: grid;
   max-width: max-content;
@@ -83,100 +98,96 @@ body {
   font-size: var(--main-font-size);
 }
 
-.link a {
-  transition: color 300ms ease-in-out;
+.links-list > .link > a {
   transition: color var(--transition-std);
 }
-.link a:is(:hover, :focus, :focus-visible, :focus-within) {
+
+.links-list > .link > a:is(:hover, :focus, :focus-visible, :focus-within) {
   color: var(--active-font-color);
 }
 .navigation .active {
   color: var(--active-font-color);
 }
 
-/* All loading in the site  */
-
-.loading {
-  display: grid;
-  font-weight: bold;
-  font-size: 2rem;
-  place-content: center;
-}
-
-.full-screen.loading {
-  min-height: 100vh;
-}
 .navigation {
   height: 5rem;
   background-color: #282428;
   display: grid;
-  box-shadow: 0 1rem 2rem #1a171a;
+  box-shadow: 0 0rem 2rem #070607;
   align-items: center;
 }
 .navigation .links-list {
   display: grid;
-  align-items: center;
-  min-width: 100%;
   grid-template-columns: repeat(3, max-content);
   justify-content: space-around;
-  justify-items: center;
+  align-items: center;
+  min-width: 100%;
 }
-.navigation .avatar {
-  height: 3rem;
-  border-radius: 50%;
+.navigation .options {
+  height: 3.5rem;
   aspect-ratio: 1/1;
-  overflow: hidden;
-  cursor: pointer;
-  object-fit: cover;
-}
-.nav_setting {
-  position: absolute;
-  top: 1rem;
-  border-radius: var(--input-border-r);
-  display: grid;
-  row-gap: 1rem;
-  z-index: 999;
-  padding-bottom: 1rem;
-  background-color: var(--contrast-component-color);
-}
-.nav_setting li:is(:not(.main_option)).fn {
-  padding: var(--component-padding);
-}
-.nav_setting .main_option {
-  padding: 1rem 1rem 0 1rem;
+  position: relative;
 }
 
-.nav_setting .main_option .fn {
-  border-radius: 50%;
+.navigation .avatar {
+  height: 3.5rem;
   aspect-ratio: 1/1;
-  height: 3rem;
-  transition: filter 300ms;
+  cursor: pointer;
 }
-.nav_setting
-  .main_option
-  .fn:is(:hover, :focus, :focus-visible, :focus-within) {
-  filter: brightness(70%);
+.navigation .avatar img {
+  object-fit: cover; 
+  border-radius: 50%;
 }
-.nav_setting > .link:is(:not(.main_option)) .fn {
+
+.nav_setting {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  right: 0;
+  width: min-content;
+  border-radius: var(--input-border-r);
+  display: grid;
+  z-index: 999;
+  background-color: var(--contrast-component-color);
+}
+.nav_setting .avatar {
+  height: 3.5rem;
+}
+.nav_setting li {
+  font-size: 1.2rem;
+  padding: var(--component-padding);
+}
+.nav_setting .profile-link {
+  display: grid;
+  justify-content: center;
+transition: filter var(--transition-std);
+}
+
+.nav_setting .profile-link:is(:hover,:focus) {
+  filter: brightness(200%);
+}
+.nav_setting > .link {
   display: grid;
   text-align: center;
   transition: background-color 300ms;
-  cursor: pointer;
   padding-inline: var(--component-padding);
+  cursor: pointer;
 }
 
-.nav_setting .link .fn:is(:hover, :focus, :focus-visible, :focus-within) {
-  background-color: rgb(224, 13, 83);
+.nav_setting .link:is(:hover, :focus, :focus-visible, :focus-within) {
+  background-color: var(--pink-active-component-color);
 }
 .nav_setting .line {
-  height: 2px;
+  height: 4px;
   width: 100%;
-  /* position: absolute; */
-  background-color: rgb(180, 18, 72);
+  background-color: rgb(255, 239, 8);
+  box-shadow: 0 .2rem 1rem rgb(255, 239, 8);
+}
+.nav_setting .logout-btn {
+  width: 100%;
 }
 
 /* NotFond */
-
 .empty-page {
   position: absolute;
   left: 0;
@@ -212,4 +223,16 @@ body {
   display: grid;
   place-content: center;
   height: 100%;
+}
+
+@media (width < 760px) {
+  .info {
+    grid-template-columns: 90%;
+  }
+}
+
+@media (width < 560px) {
+  .info {
+    font-size: 0.8rem;
+  }
 }

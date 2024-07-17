@@ -221,7 +221,6 @@ function createSession(res, id) {
     sameSite: "none",
     maxAge: 1000 * 60 * 60 * 24 * 30,
   });
-  console.log(1231313);
 }
 
 app.get("/logged-in-user", async (req, res) => {
@@ -283,7 +282,7 @@ app.get("/users/:id", async (req, res) => {
 app.get("/user-search/:nick", (req, res) => {
   const { nick } = req.params;
   const dbCommand =
-    "SELECT id, nick,avatar,unqiue_name as unqiueName from users where nick =? or unqiue_name =?";
+    "SELECT id, nick,avatar,unqiue_name as unqiueName from users where unqiue_name =?";
   db.query(dbCommand, [nick, nick], (err, result) => {
     if (err) throw Error(`Error with user-search: ${err}`);
     if (!result[0]) return res.sendStatus(204);
