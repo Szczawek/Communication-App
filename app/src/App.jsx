@@ -114,7 +114,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <Suspense fallback={<p className="full-screen loading">Loading...</p>}>
-        <UserFunctions.Provider value={{ refreshUser, searchLoggedInUser }}>
+        <UserFunctions.Provider value={{ refreshUser, searchLoggedInUser,loggedInUser }}>
           {loggedInUser["id"] === 0 && !loading ? (
             <Routes>
               <Route path="/account" element={<Account />}>

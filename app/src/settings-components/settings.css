@@ -1,9 +1,88 @@
 .setting {
   display: grid;
   padding: 1rem;
-  grid-template-columns: repeat(2, 1fr);
-
+  padding-top: 2.5rem;
+  grid-template-columns: 30% 1fr;
 }
 
-.setting .main-settings {
+.main-settings {
+  display: grid;
+  gap: 1rem;
+  padding-left: 2rem;
+}
+
+.account-settings {
+  display: grid;
+  gap: 2rem;
+}
+.form-title {
+  display: grid;
+  text-align: center;
+  place-content: center;
+}
+.edit-data {
+  display: grid;
+  position: relative;
+  row-gap: 1.8rem;
+}
+.edit-data label {
+  display: grid;
+  position: relative;
+  row-gap: 0.5rem;
+}
+
+.edit-data input {
+  padding: var(--input-padding);
+  border-radius: var(--input-border-r);
+}
+
+.edit-data .succeded-message {
+  position: absolute;
+  top: calc(50% - 0.75rem);
+  left: 0;
+  padding-block: 1.5rem;
+  z-index: 999;
+  right: 0;
+  font-weight: bold;
+  font-size: 1.1rem;
+  backdrop-filter: blur(10rem);
+  background-color: rgba(153, 142, 142, 0.199);
+  text-align: center;
+  color: green;
+}
+
+.edit-data .warning {
+  color: red;
+  position: absolute;
+  right: 5%;
+  bottom: -1.8rem;
+  font-size: 0.6rem;
+}
+
+.edit-data .confirm {
+  background-color: green;
+  width: max-content;
+  margin-inline: auto;
+  transition: filter, scale, bix-shadow, var(--transition-std);
+  padding: 0.4rem 1rem;
+  border-radius: 0.4rem;
+}
+.edit-data .confirm:is(:hover, :focus) {
+  filter: brightness(50%);
+  scale: 1.2;
+  box-shadow: 0 0 1rem yellow;
+}
+
+@media (width < 500px) {
+  .setting {
+    padding: 1rem;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+  }
+
+  .main-settings {
+    font-size: 0.6rem;
+    padding: 0;
+    grid-template-columns: repeat(auto-fill, minmax(3rem, 6rem));
+  }
 }

@@ -29,6 +29,7 @@ button {
   background-color: transparent;
 }
 a {
+  font-size: initial;
   color: initial;
   text-decoration: none;
 }
@@ -99,6 +100,7 @@ body {
 }
 
 .links-list > .link > a {
+  font-size: 1.5rem;
   transition: color var(--transition-std);
 }
 

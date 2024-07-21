@@ -51,7 +51,7 @@ export default function Login() {
   }
   return (
     <div className="login">
-      <form onSubmit={(e) => reqLoginAccount(e)}>
+      <form autoComplete={"on"} onSubmit={(e) => reqLoginAccount(e)}>
         <header>
           <h2>Login</h2>
         </header>
@@ -70,6 +70,7 @@ export default function Login() {
               ref={focusdElement}
               required
               placeholder="email"
+              name="email"
               id="login-ac"
               value={email}
               onChange={(e) => setEmail(e.target.value)}

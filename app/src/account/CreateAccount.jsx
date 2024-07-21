@@ -70,6 +70,7 @@ export default function CreateAccount() {
               required
               placeholder="nick"
               id="nick"
+              autoComplete={"off"}
               value={nick}
               onChange={(e) => setNick(e.target.value)}
             />
@@ -79,6 +80,7 @@ export default function CreateAccount() {
               required
               placeholder="unqiue name"
               id="cr-unqiue-name"
+              autoComplete={"off"}
               value={unqiueName}
               onChange={(e) => setUnqiueName(e.target.value)}
             />
@@ -99,6 +101,8 @@ export default function CreateAccount() {
               placeholder="password"
               id="cr-password"
               value={password}
+              name="new-password" 
+              autoComplete="new-password" 
               onChange={(e) => setPassword(e.target.value)}
               type="password"
             />
