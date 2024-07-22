@@ -131,6 +131,7 @@ export default function App() {
             refreshUser,
             searchLoggedInUser,
             loggedInUser,
+            changeFriendsList,
             menageNotificaion,
           }}>
           {loggedInUser["id"] === 0 && !loading ? (

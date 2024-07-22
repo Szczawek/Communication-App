@@ -7,3 +7,4 @@
 
 -- W menage friends dodać useMemo na coponenice Invite, żeby nie renderało się ponownie podczas zmian w jego rodzicu
 -- to samo w componencie z aktywnymi zaproszeniami od użytkownika 
+-- usuwać zaproszenie po ich zatwierdzeniu

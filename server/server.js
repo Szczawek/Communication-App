@@ -308,7 +308,7 @@ app.post("/friends-list-change", (req, res) => {
   const addUser = "INSERT into user_friends values(null,?,?)";
   const removeUser =
     "DELETE FROM user_friends where personID =? AND friendID =?";
-
+  console.log(action);
   const dbValues = [personID, friendID];
   let dbActionType;
   switch (action) {
@@ -428,6 +428,17 @@ app.put("/edit-profile", async (req, res) => {
   }
 });
 
+app.post("/remove-invite", (req, res) => {
+  const { ownerID, recipientID } = req.body;
+  const removeInviteCmd =
+    "DELETE FROM friendsWaiting where ownerID =? AND recipientID =?";
+  db.query(removeInviteCmd, [ownerID, recipientID], (err) => {
+    if (err)
+      return console.error(`Error with remove invite from friend: ${err}`);
+    res.sendStatus(200);
+  });
+});
+
 app.post("/send-invite", async (req, res) => {
   const { personID, friendID } = req.body;
   // TO REMOVE
@@ -462,7 +473,7 @@ app.post("/send-invite", async (req, res) => {
 
 app.get("/invite-from-friends/:id", (req, res) => {
   const { id } = req.params;
-  console.log(id)
+  console.log(id);
   const laodInviteFromFriendsCmd =
     "SELECT ownerID from friendsWaiting where recipientID =?";
   db.query(laodInviteFromFriendsCmd, [id], (err, result) => {

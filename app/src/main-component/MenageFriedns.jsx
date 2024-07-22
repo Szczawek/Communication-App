@@ -40,8 +40,11 @@ export default function MenageFriends({ changeFriendsList, id }) {
             </div>
           );
         })}
-        {!value[0] && !allMessLoaded ? <p>Loading...</p> : null}
-        {!value[0] && <p>There are no friends on your list...</p>}
+        {!value[0] && !allMessLoaded ? (
+          <p>Loading...</p>
+        ) : !value[0] ? (
+          <p>There are no friends on your list...</p>
+        ) : null}
         {!allMessLoaded && <p ref={setRef}>Look Here!</p>}
       </ul>
     </div>
