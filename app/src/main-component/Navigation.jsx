@@ -1,8 +1,7 @@
-
 import { Outlet, NavLink } from "react-router-dom";
 import NavSettingsList from "../navigation/NavSettingsList";
 
-export default function Navigation({ user }) {
+export default function Navigation({ user, notification }) {
   return (
     <>
       <header>
@@ -23,7 +22,14 @@ export default function Navigation({ user }) {
               </NavLink>
             </li>
             <li className="link">
-              <NavSettingsList user={user} />
+              <NavLink
+                className={({ isActive }) => (isActive ? "active" : "")}
+                to="menage-friends">
+                Friends
+              </NavLink>
+            </li>
+            <li className="link">
+              <NavSettingsList user={user} notification={notification} />
             </li>
           </ul>
         </nav>

@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { logout } from "./logout";
 import { UserFunctions } from "../App";
-export default function NavSettingsList({ user }) {
+export default function NavSettingsList({ user, notification }) {
   const { unqiueName, avatar } = user;
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const activeElement = useRef(null);
@@ -46,8 +46,17 @@ export default function NavSettingsList({ user }) {
             </Link>
           </li>
           <hr className="line" />
-          <li className="link">
-            <Link>Notification</Link>
+          <li className="link"> 
+            <Link>
+              Notification{" "}
+              <small className="notification">
+                {notification === 0
+                  ? ""
+                  : notification > 99
+                  ? 99
+                  : notification}
+              </small>
+            </Link>
           </li>
           <li className="link">
             <Link to={"settings"}>Setting</Link>
@@ -56,7 +65,9 @@ export default function NavSettingsList({ user }) {
             <Link>Contact</Link>
           </li>
           <li className="link">
-            <button className="logout-btn" onClick={() => logout(searchLoggedInUser)}>
+            <button
+              className="logout-btn"
+              onClick={() => logout(searchLoggedInUser)}>
               Logout
             </button>
           </li>

@@ -70,7 +70,6 @@ export default function Login() {
               ref={focusdElement}
               required
               placeholder="email"
-              name="email"
               id="login-ac"
               value={email}
               onChange={(e) => setEmail(e.target.value)}

@@ -12,7 +12,7 @@ box-shadow: 0 .2rem 1rem  rgb(0, 0, 0) ;
 }
 .profile {
   background-color: rgb(22, 21, 21);
-  border-bottom: 2px solid rgb(53, 4, 68);
+  border-bottom: 2px solid #350444;
 }
 
 .profile .baner {

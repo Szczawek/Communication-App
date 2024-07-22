@@ -17,10 +17,12 @@ const CreateAccount = lazy(() => import("./account/CreateAccount"));
 const Login = lazy(() => import("./account/Login"));
 const Settings = lazy(() => import("./main-component/Settings"));
 const ReturnToPath = lazy(() => import("./main-component/ReturnToPath"));
+const MenageFriends = lazy(() => import("./main-component/MenageFriedns"));
 const UserFunctions = createContext();
 
 export default function App() {
   const [refreshValue, setRefreshValue] = useState(false);
+  const [notification, setNotification] = useState(0);
   const effect = useRef(false);
   const [loading, setLoading] = useState(true);
   const [loggedInUser, setLoggedInUser] = useState({
@@ -111,10 +113,26 @@ export default function App() {
         break;
     }
   }
+
+  function menageNotificaion(action, value) {
+    switch (action) {
+      case "add":
+        setNotification((prev) => prev + value);
+        break;
+      case "remove":
+        setNotification((prev) => prev - value);
+    }
+  }
   return (
     <BrowserRouter>
       <Suspense fallback={<p className="full-screen loading">Loading...</p>}>
-        <UserFunctions.Provider value={{ refreshUser, searchLoggedInUser,loggedInUser }}>
+        <UserFunctions.Provider
+          value={{
+            refreshUser,
+            searchLoggedInUser,
+            loggedInUser,
+            menageNotificaion,
+          }}>
           {loggedInUser["id"] === 0 && !loading ? (
             <Routes>
               <Route path="/account" element={<Account />}>
@@ -126,9 +144,22 @@ export default function App() {
             </Routes>
           ) : (
             <Routes>
-              <Route path="/" element={<Navigation user={loggedInUser} />}>
+              <Route
+                path="/"
+                element={
+                  <Navigation user={loggedInUser} notification={notification} />
+                }>
                 <Route index element={<Home id={loggedInUser["id"]} />} />
                 <Route path="info" element={<Info />} />
+                <Route
+                  path="menage-friends"
+                  element={
+                    <MenageFriends
+                      changeFriendsLis={changeFriendsList}
+                      id={loggedInUser["id"]}
+                    />
+                  }
+                />
                 <Route path="settings/*" element={<Settings />} />
                 <Route
                   path=":nick"

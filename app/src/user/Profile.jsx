@@ -4,13 +4,11 @@ export default function Profile({ user, loggedInUser, changeFriendsLis }) {
   const { nick, avatar, unqiueName, id, baner } = user;
   const [friendAccount, setFriendAccount] = useState(false);
   const [slowDown, setSlowDown] = useState(false);
-  console.log(loggedInUser);
   useEffect(() => {
     if (loggedInUser["id"] === id) return;
     setFriendAccount(loggedInUser["friends"].includes(id));
-  }, [user,loggedInUser]);
+  }, [user, loggedInUser]);
 
-  console.log(loggedInUser["id"],id)
   return (
     <div className="profile">
       <div className="baner">
@@ -37,7 +35,9 @@ export default function Profile({ user, loggedInUser, changeFriendsLis }) {
             onClick={async () => {
               try {
                 const res = await fetch(
-                  `${import.meta.env.VITE_URL}/friends-list-change`,
+                  `${import.meta.env.VITE_URL}/${
+                    friendAccount ? "friends-list-change" : "send-invite"
+                  }`,
                   {
                     method: "POST",
                     headers: {
@@ -46,26 +46,30 @@ export default function Profile({ user, loggedInUser, changeFriendsLis }) {
                     },
                     credentials: "include",
                     body: JSON.stringify({
-                      action: friendAccount ? "remove" : "add",
+                      action: friendAccount ? "remove" : null,
                       personID: loggedInUser["id"],
                       friendID: id,
                     }),
                   }
                 );
                 if (!res.ok) throw res.status;
-                console.log("send")
 
                 setSlowDown(true);
                 setTimeout(() => {
                   setSlowDown(false);
-                }, 1000);
-                changeFriendStatus(
-                  friendAccount ? "remove" : "add",
-                  loggedInUser["id"],
-                  id,
-                  changeFriendsLis
-                );
-                setFriendAccount((prev) => !prev);
+                }, 1500);
+                // to edit
+                // to edit
+                if (friendAccount) {
+                  setFriendAccount(false);
+                  changeFriendStatus(
+                    "remove",
+                    loggedInUser["id"],
+                    id,
+                    changeFriendsLis
+                  );
+                }
+                // to edit
               } catch (err) {
                 throw Error(
                   `Error with add/remove firend with firends list: ${err}`

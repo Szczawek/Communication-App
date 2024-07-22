@@ -152,12 +152,24 @@ body {
   z-index: 999;
   background-color: var(--contrast-component-color);
 }
+
+
 .nav_setting .avatar {
   height: 3.5rem;
 }
 .nav_setting li {
   font-size: 1.2rem;
   padding: var(--component-padding);
+}
+
+.nav_setting .notification {
+  color: red;
+  padding: .2rem .4rem;
+}
+.nav_setting a {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr max-content;
 }
 .nav_setting .profile-link {
   display: grid;

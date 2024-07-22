@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import useInfinityScroll from "./useInfinityScroll";
 import "./home.css";
 export default function Home({ id }) {
   const [userFriends, setUserFriends] = useState([]);
   const effect = useRef(false);
-
+  const test = useInfinityScroll("sds");
+  console.log(test);
   useEffect(() => {
     if (effect.current || id === 0) return;
     async function loadUserFriends() {
@@ -29,7 +31,9 @@ export default function Home({ id }) {
 
   return (
     <div className="home">
-      <p className="ester-egg">You can move your friends where you want them to be placed!</p>
+      <p className="ester-egg">
+        You can move your friends where you want them to be placed!
+      </p>
       <ul className="friends-list">
         {!userFriends[0] && <p>Empty...</p>}
         {userFriends.map((e, i) => {

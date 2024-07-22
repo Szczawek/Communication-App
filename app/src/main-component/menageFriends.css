@@ -1,0 +1,41 @@
+.friends-list {
+  display: grid;
+  justify-content: center;
+  gap: 1rem;
+  padding-block: 2rem;
+}
+.friend-container {
+  display: grid;
+  height: 300px;
+  width: clamp(320px, 70vw, 620px);
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  background-color: var(--contrast-component-color);
+  grid-template-columns: max-content 1fr;
+  gap: 1rem;
+}
+.friend-info {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+}
+.friend-container .avatar {
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+  overflow: hidden;
+  aspect-ratio: 1/1;
+}
+
+.remove-friend {
+  background-color: red;
+  height: max-content;
+  padding: 0.2rem 0.4rem;
+  transition: background-color, scale, translate, var(--transition-std);
+  border-radius: var(--input-border-r);
+}
+.remove-friend:is(:hover, :focus) {
+  background-color: #350444;
+  scale: 1.2;
+  translate: 0 0.5rem;
+}
