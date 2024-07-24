@@ -1,46 +1,16 @@
-.home .friends-list {
+.home {
+  padding-top: 1rem;
   display: grid;
-  row-gap: 1rem;
   justify-content: center;
-}
-.home .user-description {
-  height: 100%;
-  padding-block: 1rem;
-  border-left: 2px solid;
-  padding-left: 1rem;
-}
-.home .profil-link {
-  width: clamp(320px,70vw,620px);
-  border-radius: 0.4rem;
-  border: 2px solid transparent;
-  padding-inline:1rem;
-  transition: filter,border-color, 300ms ease-out;
-  background-color: var(--contrast-component-color);
-}
-.home .profil-link:is(:hover,:focus) {
-  filter:  brightness(50%);
-  border-color: white;
-}
-.home .profil-link a {
-  display: grid;
-  align-items: center;
-  gap: 1.5rem;
-  grid-template-columns: max-content 1fr;
-}
-.home .unqiue_name {
-  opacity: 0.8;
-}
-
-.home .avatar {
-  width: 3.5rem;
-  aspect-ratio: 1/1;
-}
-.home .avatar img {
-  border-radius: 50%;
-}
-
-.home .ester-egg {
   text-align: center;
-  padding-block: 1rem;
-  color: gray;
+}
+.friends-list {
+  display: grid;
+  gap: 1rem;
+  padding: 2rem 1rem;
+  width: clamp(320px, 100vw, 690px);
+}
+.home .profile-link .avatar {
+  aspect-ratio: 1/1;
+  height: 6rem;
 }

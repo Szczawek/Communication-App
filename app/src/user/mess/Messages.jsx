@@ -1,76 +1,52 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef } from "react";
 import MessageTools from "./MessageTools";
-import useFetchMessages from "./useFetchMessages";
-import useWaitingForMessage from "../../main-component/waitingForMessage"
-
+import { loadLastMessage } from "./loadLastMessage";
+import useInfinityScroll from "../../main-component/useInfinityScroll";
+import { UserFunctions } from "../../App";
 export default function Messages({ ownerID, recipientID }) {
-  const [index, setIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [stopScrolling, setStopScrolling] = useState(false);
-  const loadingElement = useRef(null);
+  const { notification } = useContext(UserFunctions);
   const messContainer = useRef(null);
-  const { userMessages, addMessage, lastMessageRefresh, loadMessages, limit } =
-    useFetchMessages(ownerID, recipientID, index);
-  const [messageContainerHeight, setMessageContainerHeight] = useState(0);
+  const elementToSpy = useRef();
+  const { value, setIsElementSet, allValueLoaded, setValue } =
+    useInfinityScroll(
+      `download-messages/${ownerID}/${recipientID}/0`,
+      elementToSpy.current
+    );
 
-  useWaitingForMessage(ownerID, lastMessageRefresh);
+  const setRef = useCallback((element) => {
+    if (!element) return;
+    elementToSpy.current = element;
+    setIsElementSet(true);
+  });
 
   useEffect(() => {
-    // if (messContainer.current) {
-    //   setMessageContainerHeight(messContainer.current.scrollHeight);
-    //   // First time loading and Scroll to the top
-    //   if (index === 20) {
     messContainer.current.scrollTop = messContainer.current.scrollHeight;
-    //   } else {
-    //     messContainer.current.scrollTop =
-    //       messContainer.current.scrollHeight - messageContainerHeight;
-    //   }
-    // }
-    // if (messContainer.current && index === 20) {
-    // }
-  }, [userMessages]);
+  }, [value]);
 
   function addMessageAndIndex(data) {
-    addMessage(data);
-    setIndex((prev) => prev + 1);
+    setValue((prev) => [...prev, data]);
+    // setIndex((prev) => prev + 1);
   }
-
   useEffect(() => {
-    const observer = new IntersectionObserver(spyLoadingElement);
-    if (observer && loadingElement.current) {
-      observer.observe(loadingElement.current, { thresholds: 1.0 });
+    if (notification != 0 && ownerID != recipientID) {
+      const call = async () => {
+        const valueToAdd = await loadLastMessage(ownerID, recipientID);
+        setValue((prev) => [...prev, ...valueToAdd]);
+        console.log("New mess");
+      };
+      call()
     }
-    return () => {
-      if (observer) {
-        observer.disconnect();
-      }
-    };
-  }, [index]);
-
-  async function spyLoadingElement(e) {
-    if (stopScrolling || (index === limit && index !== 0)) return;
-    if (e[0].isIntersecting) {
-      await loadMessages(index);
-      if (limit - (index + 20) <= 0 && index !== 0) {
-        setIndex((prev) => prev + limit - index);
-        setStopScrolling(true);
-        setLoading(false);
-        return;
-      }
-      setIndex((prev) => prev + 20);
-    }
-  }
-
+  }, [notification]);
   return (
     <div className="container">
       <div className="messages-window">
         <div className="messages" ref={messContainer}>
-          {loading && (
-            <p ref={loadingElement} className="loading">
+          {!allValueLoaded && (
+            <p ref={setRef} className="loading">
               Loading...
             </p>
           )}
-          {!userMessages[0] && !loading ? (
+          {!value[0] && allValueLoaded ? (
             <div className="empty">
               <p className="waiting-message">Empty</p>
               <div className="circle"></div>
@@ -78,7 +54,7 @@ export default function Messages({ ownerID, recipientID }) {
               <div className="circle"></div>
             </div>
           ) : (
-            userMessages.map((e) => {
+            value.map((e) => {
               return (
                 <p
                   key={e["date"]}

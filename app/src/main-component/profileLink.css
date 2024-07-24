@@ -1,0 +1,20 @@
+.profile-link {
+  display: grid;
+  grid-template-columns: 30% 1fr;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--contrast-component-color);
+  padding: var(--input-padding);
+  border-radius: var(--input-border-r);
+}
+
+.profile-link .info {
+  word-wrap: break-word;
+}
+.profile-link .unqiue-name {
+  opacity: 0.6;
+}
+
+.profile-link .avatar img {
+  border-radius: 50%;
+}

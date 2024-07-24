@@ -1,52 +1,43 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import useInfinityScroll from "./useInfinityScroll";
-import InviteFromFriends from "../menage-friends/InviteFromFriends";
-import "./menageFriends.css";
-export default function MenageFriends({ changeFriendsList, id }) {
-  const botomOpponent = useRef(null);
-  const { value, allMessLoaded, setIsElementSet } = useInfinityScroll(
-    `users/${id}`,
-    botomOpponent.current
-  );
-  const setRef = useCallback((element) => {
-    if (element) {
-      setIsElementSet(true);
-      botomOpponent.current = element;
-      console.log("calback");
-    }
-  }, []);
+  import { useCallback, useRef } from "react";
+  import useInfinityScroll from "./useInfinityScroll";
+  import InviteFromFriends from "../friends-menager/InviteFromFriends";
+  import ProfileLink from "./ProfileLink";
+  import "../friends-menager/friends-menager.css";
 
-  return (
-    <div className="menage-firends">
-      <InviteFromFriends id={id} />
-      <ul className="friends-list">
-        {value.map((e) => {
-          return (
-            <div key={e["id"]} className="friend-container">
-              <div className="avatar">
-                <img src={e["avatar"]} alt="avatar" />
-              </div>
-              <div className="friend-info">
-                <div className="">
-                  <p className="name">{e["name"]}</p>
-                  <p className="unqiue-name">{e["unqiue_name"]}</p>
-                </div>
+  export default function MenageFriends({ changeFriendsList, id }) {
+    const botomOpponent = useRef(null);
+    const { value, allValueLoaded, setIsElementSet, setValue } =
+      useInfinityScroll(`users/${id}`, botomOpponent.current);
+    const setRef = useCallback((element) => {
+      if (element) {
+        setIsElementSet(true);
+        botomOpponent.current = element;
+        console.log("calback");
+      }
+    }, []);
+
+    return (
+      <div className="menage-friends">
+        <InviteFromFriends id={id} />
+        <ul className="friends-list">
+          {value.map((e, i) => {
+            return (
+              <div key={e["date"]} className="">
+                <ProfileLink data={e} setArray={setValue} index={i} />
                 <button
                   className="remove-friend"
                   onClick={() => changeFriendsList("remove", e["id"])}>
                   Remove
                 </button>
               </div>
-            </div>
-          );
-        })}
-        {!value[0] && !allMessLoaded ? (
-          <p>Loading...</p>
-        ) : !value[0] ? (
-          <p>There are no friends on your list...</p>
-        ) : null}
-        {!allMessLoaded && <p ref={setRef}>Look Here!</p>}
-      </ul>
-    </div>
-  );
-}
+            );
+          })}
+
+          {!value[0] && allValueLoaded ? (
+            <p>There are no friends on your list...</p>
+          ) : null}
+          {!allValueLoaded && <p ref={setRef}>Loading...</p>}
+        </ul>
+      </div>
+    );
+  }

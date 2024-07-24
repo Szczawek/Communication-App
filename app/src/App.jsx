@@ -6,8 +6,10 @@ import {
   Suspense,
   useState,
   createContext,
+  useMemo,
 } from "react";
 import "./styles.css";
+import useWebSocketTunel from "./main-component/useWebSocketTunel";
 const Account = lazy(() => import("./account/Account"));
 const Navigation = lazy(() => import("./main-component/Navigation"));
 const Home = lazy(() => import("./main-component/Home"));
@@ -32,6 +34,10 @@ export default function App() {
     id: 0,
     friends: [],
   });
+  const wss = useWebSocketTunel(
+    loggedInUser["id"],
+    menageNotificaion
+  );
 
   useEffect(() => {
     if (effect.current) return;
@@ -128,6 +134,7 @@ export default function App() {
       <Suspense fallback={<p className="full-screen loading">Loading...</p>}>
         <UserFunctions.Provider
           value={{
+            notification,
             refreshUser,
             searchLoggedInUser,
             loggedInUser,

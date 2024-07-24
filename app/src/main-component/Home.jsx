@@ -1,82 +1,40 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import useInfinityScroll from "./useInfinityScroll";
-import "./home.css";
-export default function Home({ id }) {
-  const [userFriends, setUserFriends] = useState([]);
-  const effect = useRef(false);
-  const test = useInfinityScroll("sds");
-  console.log(test);
-  useEffect(() => {
-    if (effect.current || id === 0) return;
-    async function loadUserFriends() {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_URL}/users/${id}`, {
-          credentials: "include",
-          headers: {
-            token: localStorage.getItem("session"),
-          },
-        });
-        if (res.status === 204) return;
-        if (!res.ok) throw console.error(res.status);
-        const obj = await res.json();
-        setUserFriends((prev) => [...prev, ...obj]);
-      } catch (err) {
-        throw Error(`Error with dowloading user friends: ${err}`);
-      }
-    }
-    loadUserFriends();
-    return () => (effect.current = true);
-  }, [id]);
+  import { useCallback, useRef } from "react";
+  import ProfileLink from "./ProfileLink";
+  import useInfinityScroll from "./useInfinityScroll";
+  import "./home.css";
 
-  return (
-    <div className="home">
-      <p className="ester-egg">
-        You can move your friends where you want them to be placed!
-      </p>
-      <ul className="friends-list">
-        {!userFriends[0] && <p>Empty...</p>}
-        {userFriends.map((e, i) => {
-          return (
-            <li
-              draggable
-              onDragStart={(e) => {
-                e.dataTransfer.setData(
-                  "text/plain",
-                  JSON.stringify({ index: i })
-                );
-              }}
-              onDragOver={(e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = "move";
-              }}
-              onDrop={(e) => {
-                const { index } = JSON.parse(
-                  e.dataTransfer.getData("text/plain")
-                );
-                setUserFriends((prev) => {
-                  const copy = [...prev];
-                  copy.splice(index, 1);
-                  copy.splice(i, 0, userFriends[index]);
+  export default function Home({ id }) {
+    const elementToSpy = useRef();
+    const { value, allValueLoaded, setIsElementSet, setValue } =
+      useInfinityScroll(`users/${id}`, elementToSpy.current);
 
-                  return copy;
-                });
-              }}
-              className="profil-link"
-              key={e["date"]}>
-              <Link to={e["unqiue_name"]}>
-                <div className="avatar">
-                  <img src={e["avatar"]} alt="avatar" />
-                </div>
-                <div className="user-description">
-                  <p className="nick">{e["nick"]}</p>
-                  <p className="unqiue_name">{e["unqiue_name"]}</p>
-                </div>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-}
+    const setRef = useCallback((element) => {
+      if (!element) return;
+      elementToSpy.current = element;
+      setIsElementSet(true);
+    }, []);
+
+    return (
+      <div className="home">
+        <p className="ester-egg">
+          You can move your friends where you want them to be placed!
+        </p>
+        <ul className="friends-list">
+          {value.map((e, i) => {
+            return (
+              <ProfileLink
+                key={e["date"]}
+                data={e}
+                setArray={setValue}
+                index={i}
+              />
+            );
+          })}
+        </ul>
+        {!allValueLoaded && <p ref={setRef}>Loading...</p>}
+        {!value[0] && allValueLoaded ? (
+          <p className="empty-list">Empty...</p>
+        ) : null}
+      </div>
+    );
+  }

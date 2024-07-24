@@ -13,15 +13,21 @@ export default function NavSettingsList({ user, notification }) {
     if (activeElement.current) {
       activeElement.current.focus();
     }
-  }, [menuIsOpen, activeElement.current]);
+  }, [menuIsOpen]);
   return (
-    <div
-      onKeyDown={(e) => {
-        if (e.key === "Enter" && !menuIsOpen) setMenuIsOpen(true);
-      }}
-      tabIndex={0}
-      className="options">
-      {menuIsOpen ? (
+    <>
+      {!menuIsOpen ? (
+        <div
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !menuIsOpen) setMenuIsOpen(true);
+          }}
+          tabIndex={0}
+          className="options">
+          <div className="avatar" onClick={() => setMenuIsOpen(true)}>
+            <img src={!avatar ? "./images/user.jpg" : avatar} alt="avatar" />
+          </div>
+        </div>
+      ) : (
         <ul
           ref={parentElement}
           onBlur={(e) => {
@@ -29,11 +35,11 @@ export default function NavSettingsList({ user, notification }) {
               !e.relatedTarget ||
               !parentElement.current.contains(e.relatedTarget)
             ) {
-              setMenuIsOpen(false);
+              // setMenuIsOpen(false);
             }
           }}
           className="nav_setting">
-          <li className="profile-link">
+          <li className="avatar-link">
             <Link
               ref={activeElement}
               onClick={() => {
@@ -46,9 +52,9 @@ export default function NavSettingsList({ user, notification }) {
             </Link>
           </li>
           <hr className="line" />
-          <li className="link"> 
+          <li className="link">
             <Link>
-              Notification{" "}
+              Notification
               <small className="notification">
                 {notification === 0
                   ? ""
@@ -72,11 +78,7 @@ export default function NavSettingsList({ user, notification }) {
             </button>
           </li>
         </ul>
-      ) : (
-        <div className="avatar" onClick={() => setMenuIsOpen(true)}>
-          <img src={!avatar ? "./images/user.jpg" : avatar} alt="avatar" />
-        </div>
       )}
-    </div>
+    </>
   );
 }

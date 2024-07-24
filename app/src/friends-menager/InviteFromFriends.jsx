@@ -4,6 +4,7 @@ export default function InviteFromFriends({ id }) {
   const [invites, setInvites] = useState([]);
   const [confrimMessage, setConfirmMessage] = useState(false);
   const { changeFriendsList } = useContext(UserFunctions);
+  const [loading, setLoading] = useState(true);
   const effect = useRef(false);
 
   async function acceptInvite(friendID) {
@@ -50,12 +51,11 @@ export default function InviteFromFriends({ id }) {
         transferOptions
       );
       if (!res.ok) {
-        console.log(res.status);
-        if (res.status === 404) return;
+        if (res.status === 404) return setLoading(false);
         throw res.status;
       }
       const obj = await res.json();
-      console.log(obj);
+      setLoading(false);
       setInvites([...obj]);
     } catch (err) {
       console.error(`Error with loading friends list:  ${err}`);
@@ -88,6 +88,7 @@ export default function InviteFromFriends({ id }) {
           );
         })}
       </div>
+      {!invites[0] && !loading ? <p className="empty-list">You don't have any invites</p> : null}
     </div>
   );
 }

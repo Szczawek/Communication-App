@@ -127,6 +127,9 @@ body {
 }
 .navigation .options {
   height: 3.5rem;
+  transition: filter, scale, var(--transition-std);
+  border: none;
+  outline: none;
   aspect-ratio: 1/1;
   position: relative;
 }
@@ -135,24 +138,29 @@ body {
   height: 3.5rem;
   aspect-ratio: 1/1;
   cursor: pointer;
+  transition: scale, fillter, var(--transition-std);
 }
+
+.navigation .options:is(:hover, :focus, :focus-visible, :focus-within) .avatar,
+.navigation .avatar:is(:hover, :focus, :focus-visible, :focus-within) {
+  scale: 1.1;
+  filter: brightness(150%);
+}
+
 .navigation .avatar img {
-  object-fit: cover; 
+  object-fit: cover;
   border-radius: 50%;
 }
 
 .nav_setting {
   position: absolute;
+  right: 5%;
+  z-index: 99999;
   overflow: hidden;
-  top: 0;
-  right: 0;
-  width: min-content;
   border-radius: var(--input-border-r);
   display: grid;
-  z-index: 999;
-  background-color: var(--contrast-component-color);
+  background-color: var(--contrast-component-color);  
 }
-
 
 .nav_setting .avatar {
   height: 3.5rem;
@@ -164,21 +172,16 @@ body {
 
 .nav_setting .notification {
   color: red;
-  padding: .2rem .4rem;
+  padding: 0.2rem 0.4rem;
 }
 .nav_setting a {
   display: grid;
   align-items: center;
   grid-template-columns: 1fr max-content;
 }
-.nav_setting .profile-link {
+.nav_setting .avatar-link {
   display: grid;
   justify-content: center;
-transition: filter var(--transition-std);
-}
-
-.nav_setting .profile-link:is(:hover,:focus) {
-  filter: brightness(200%);
 }
 .nav_setting > .link {
   display: grid;
@@ -195,7 +198,7 @@ transition: filter var(--transition-std);
   height: 4px;
   width: 100%;
   background-color: rgb(255, 239, 8);
-  box-shadow: 0 .2rem 1rem rgb(255, 239, 8);
+  box-shadow: 0 0.2rem 1rem rgb(255, 239, 8);
 }
 .nav_setting .logout-btn {
   width: 100%;

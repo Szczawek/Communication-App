@@ -259,22 +259,23 @@ app.get("/logged-in-user", async (req, res) => {
   }
 });
 
-// Get a specific group of users
+// Get user friends
 app.get("/users/:id", async (req, res) => {
   const { id } = req.params;
-  const dbCommand = " select friendID from user_friends where personID =?";
+  const dbCommand = "SELECT friendID from user_friends where personID =?";
   const friendsID = await new Promise((resolve) => {
     db.query(dbCommand, [id], (err, result) => {
       if (err) throw Error(`Error with fetching users: ${err}`);
       resolve(result);
     });
   });
+
   const idList = friendsID.map((e) => e["friendID"]);
   if (!idList[0]) return res.sendStatus(404);
-  const selectFriends = `SELECT * FROM users where id IN (${idList})`;
+  const selectFriends = `SELECT nick, avatar, date, id, unqiue_name as unqiueName FROM users where id IN (${idList})`;
   db.query(selectFriends, (err, result) => {
     if (err) throw Error(`Error with firends data: ${err}`);
-    res.json(result);
+    res.json({ value: result, limit: 100 });
   });
 });
 
@@ -336,10 +337,9 @@ app.post("/logout", async (req, res) => {
 // load messages
 app.get("/download-messages/:ownerID/:recipientID/:index", async (req, res) => {
   const { ownerID, recipientID, index } = req.params;
-
   const dbValues = [ownerID, recipientID, recipientID, ownerID];
   const numberOfMessagesCommand =
-    "SELECT COUNT(id) as messagesNumber FROM messages where ownerID =22 AND recipientID = 22 OR ownerID =22 AND recipientID =22";
+    "SELECT COUNT(id) as messagesNumber FROM messages where ownerID =? AND recipientID = ? OR ownerID =? AND recipientID =?";
   const messagesNumber = await new Promise((resolve) => {
     db.query(numberOfMessagesCommand, dbValues, (err, result) => {
       if (err) throw Error(`Error with downloads-messages: ${err}`);
@@ -350,7 +350,10 @@ app.get("/download-messages/:ownerID/:recipientID/:index", async (req, res) => {
   const downloadMessagesCommand = `SELECT * FROM messages where ownerID =? AND recipientID =? OR ownerID =? AND recipientID =? ORDER BY id DESC LIMIT 20 OFFSET ${index}`;
   db.query(downloadMessagesCommand, dbValues, (err, result) => {
     if (err) throw Error(`Error with downloads-messages: ${err}`);
-    res.json({ messages: result, limit: messagesNumber["messagesNumber"] });
+    res.json({
+      value: result[0] ? result.reverse() : result,
+      limit: messagesNumber["messagesNumber"],
+    });
   });
 });
 
@@ -484,10 +487,15 @@ app.get("/invite-from-friends/:id", (req, res) => {
   });
 });
 
+app.post("/end-session", (req, res) => {
+  const addSesssonTime = "INSERT INTO active_user";
+});
+
 wss.on("connection", (ws, req) => {
-  const id = new URL(req.url, `https://${req.headers.host}`).searchParams.get(
-    "user"
+  const id = new URL(req.url, `wss://${req.headers.host}`).searchParams.get(
+    "userID"
   );
+
   console.log("WBSOCKET connected!");
 
   userConnections.set(id, ws);
