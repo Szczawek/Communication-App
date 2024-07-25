@@ -1,9 +1,11 @@
 .menage-friends {
   display: grid;
   text-align: center;
-  padding: 2rem 1rem;
+  grid-template-columns: 30% calc(70% - 2rem);
+  justify-items: center;
+  /* overflow: hidden; */
+  padding-block: 2rem;
   gap: 2rem;
-  grid-template-columns: 30% 60%;
 }
 
 .friends-list {
@@ -15,7 +17,6 @@
 .friend-container {
   display: grid;
   height: 300px;
-  width: clamp(320px, 70vw, 620px);
   align-items: center;
   padding: 0.5rem 1rem;
   border-radius: 1rem;
@@ -35,15 +36,16 @@
   aspect-ratio: 1/1;
 }
 
+.remove-friend-container {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+}
 .remove-friend {
   background-color: red;
-  height: max-content;
   padding: 0.2rem 0.4rem;
-  transition: background-color, scale, translate, var(--transition-std);
-  border-radius: var(--input-border-r);
+  transition: background-color var(--transition-std);
+  border-radius: 0 var(--input-border-r) var(--input-border-r) 0;
 }
-.remove-friend:is(:hover, :focus) {
+.remove-friend:is(:hover, :focus, :focus-within, :focus-visible) {
   background-color: #350444;
-  scale: 1.2;
-  translate: 0 0.5rem;
 }

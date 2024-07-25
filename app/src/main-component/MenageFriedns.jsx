@@ -22,7 +22,7 @@
         <ul className="friends-list">
           {value.map((e, i) => {
             return (
-              <div key={e["date"]} className="">
+              <div key={e["date"]} className="remove-friend-container">
                 <ProfileLink data={e} setArray={setValue} index={i} />
                 <button
                   className="remove-friend"

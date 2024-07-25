@@ -14,3 +14,15 @@
     - Dodać sesje użytkownika(na razie tylko przy wychodzeniu ze strony), po wyjściu aktywuje się event window.addEventListener('beforeunload'). Wyśle on całą date do db
         - "wymaga tego u góry" Przy logowaniu pobrać powiadomienia wszystkich wiadomości, które zostały wysłałane w czasie późniejszy, niż sesja, którą jest dodana do db, po pobraniu usunąć ją 
         
+# Api 
+ -- UserContection Map() zmienić na db
+ 
+
+# FireFox 
+-- Bez żadnego powodu na firefox po kliknięciu enter by otworzył sub okno w na, to aktywuję onBlur w ul(zamyka okno) #50% powodzenia naprawy
+
+# Settings 
+
+-- Zrobić w CreateAcount, AccountSetting drugi input password na potwierdzenia prawidłowości hasło;
+-- W AccountSetting w puste inputy do zmiany danych stawić aktualne dane;
+-- dodać w CreateAccount, AccountSettings ikone oka, która pokazuję hasło;

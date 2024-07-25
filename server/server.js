@@ -499,7 +499,7 @@ wss.on("connection", (ws, req) => {
   console.log("WBSOCKET connected!");
 
   userConnections.set(id, ws);
-
+  console.log(userConnections);
   ws.on("close", () => {
     console.log("connection was closed!");
     userConnections.delete(id);

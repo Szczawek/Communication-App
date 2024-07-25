@@ -88,12 +88,6 @@ body {
 }
 
 /* NAVIGATION */
-.links-list {
-  display: grid;
-  max-width: max-content;
-  gap: 1rem;
-  grid-auto-flow: column;
-}
 
 .link {
   font-size: var(--main-font-size);
@@ -108,7 +102,7 @@ body {
   color: var(--active-font-color);
 }
 .navigation .active {
-  color: var(--active-font-color);
+  color: lightgreen;
 }
 
 .navigation {
@@ -120,10 +114,12 @@ body {
 }
 .navigation .links-list {
   display: grid;
-  grid-template-columns: repeat(3, max-content);
+  padding-inline: 1rem;
+  gap: 1rem;
+  outline: none;
+  grid-auto-flow: column;
   justify-content: space-around;
   align-items: center;
-  min-width: 100%;
 }
 .navigation .options {
   height: 3.5rem;
@@ -159,9 +155,16 @@ body {
   overflow: hidden;
   border-radius: var(--input-border-r);
   display: grid;
-  background-color: var(--contrast-component-color);  
+  background-color: var(--contrast-component-color);
 }
-
+.open-menu {
+  display: none;
+  margin-left: auto;
+  padding: 0.5rem 2rem 0.5rem 0.5rem;
+}
+.open-menu img {
+  height: 3rem;
+}
 .nav_setting .avatar {
   height: 3.5rem;
 }
@@ -219,17 +222,17 @@ body {
 
 /* INFO */
 
-.info {
+main > .info {
   height: 100%;
   gap: 1rem;
   display: grid;
   grid-template-columns: 50%;
   place-content: center;
 }
-.info h1 {
+main > .info h1 {
   text-align: center;
 }
-.info p {
+main > .info p {
   font-size: 1.8rem;
   font-weight: bold;
   color: lightgreen;
@@ -243,13 +246,72 @@ body {
 }
 
 @media (width < 760px) {
-  .info {
+  main > .info {
     grid-template-columns: 90%;
   }
 }
 
+@keyframes move_to_left {
+  0% {
+    translate: -100% 0;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
 @media (width < 560px) {
-  .info {
+  main > .info {
     font-size: 0.8rem;
+  }
+
+  .navigation .links-list {
+    padding-block: 2rem;
+    top: 0;
+    z-index: 9999;
+    animation: move_to_left 0.8s;
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    backdrop-filter: blur(200px);
+    justify-items: center;
+    grid-auto-flow: row;
+    border-bottom: 2px solid yellow;
+    box-shadow: 0 0.1rem 10rem yellow;
+  }
+  .nav_setting {
+    animation: move_to_left 0.8s;
+    background-color: transparent;
+    position: relative;
+    border-radius: 0;
+    width: 100%;
+    right: 0;
+  }
+  @keyframes spin {
+    25% {
+      translate: -2rem 1rem;
+    }
+    50% {
+      translate: -4rem 0.5rem;
+    }
+    75% {
+      translate: -2rem -1rem;
+    }
+    100% {
+      translate: 0 0;
+    }
+  }
+  .open-menu {
+    display: grid;
+  }
+  .open-menu:is(:hover, :focus, :focus-visible, :focus-within) {
+    animation: spin 5s infinite;
+  }
+  .navigation .links-list.hide {
+    display: none;
   }
 }
