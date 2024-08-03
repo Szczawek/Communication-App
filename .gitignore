@@ -28,8 +28,6 @@ dist-ssr
 *.key
 *.sql
 
-
-
 # Firebase cache
 .firebase/
 
