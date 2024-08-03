@@ -2,26 +2,29 @@
 // import { initializeApp } from "firebase/app";
 
 // const firebaseConfig = {
-//   apiKey: "AIzaSyA-OuqlDIHvNSEdUZOYVcRh6z-LZkqHs3o",
-//   authDomain: "communication-app-d664f.firebaseapp.com",
-//   projectId: "communication-app-d664f",
-//   storageBucket: "communication-app-d664f.appspot.com",
-//   messagingSenderId: "1046917195039",
-//   appId: "1:1046917195039:web:90e00768cbd550f9effc2a",
-//   measurementId: "G-0STYH8ZH5W",
+//   apiKey: import.meta.env.VITE_API_KEY,
+//   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+//   projectId: import.meta.env.VITE_PROJECT_ID,
+//   storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+//   messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+//   appId: import.meta.env.VITE_APP_ID,
+//   measurementId: import.meta.env.VITE_MEASUREMENT_ID,
 // };
 
 // // // Initialize Firebase
 // const app = initializeApp(firebaseConfig);
-// const provider = new GoogleAuthProvider();;
 
-// const auth = getAuth();
+// const auth = getAuth(app);
 // async function loginWithGoogle() {
 //   try {
+//     const provider = new GoogleAuthProvider();
+//     provider.setCustomParameters({
+//       prompt: "select_account",
+//     });
 //     const data = await signInWithPopup(auth, provider);
-//     const credential = GoogleAuthProvider.credentialFromResult(result);
+//     const credential = GoogleAuthProvider.credentialFromResult(data);
 //     const token = credential.accessToken;
-//     const user = result.user;
+//     const user = data.user;
 //     console.log(data, token, user);
 //   } catch (err) {
 //     console.error(`Error with login: ${err}`);
