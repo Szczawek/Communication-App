@@ -8,7 +8,7 @@
 }
 
 .content {
-box-shadow: 0 .2rem 1rem  rgb(0, 0, 0) ;
+  box-shadow: 0 0.2rem 1rem rgb(0, 0, 0);
 }
 .profile {
   background-color: rgb(22, 21, 21);
@@ -46,7 +46,7 @@ box-shadow: 0 .2rem 1rem  rgb(0, 0, 0) ;
   right: -5%;
 }
 
-.avatar > img {
+.profile .avatar > img {
   width: 100%;
   border-radius: 50%;
   position: relative;
@@ -215,4 +215,34 @@ box-shadow: 0 .2rem 1rem  rgb(0, 0, 0) ;
   grid-column: 1/3;
   text-align: center;
   padding: 0.4rem 1rem;
+}
+
+.edit-profile-window input[type="file"] {
+  display: none;
+}
+
+.edit-profile-window .avatar,
+.edit-profile-window .banner {
+  display: grid;
+  cursor: pointer;
+  overflow: hidden;
+  max-width: max-content;
+  background-color: yellow;
+  position: relative;
+}
+
+.edit-profile-window .avatar img {
+  max-width: 6rem;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
+}
+
+.edit-profile-window .avatar::before,
+.edit-profile-window .banner::before {
+  content: url("./images/add_new_photo.svg");
+  display: grid;
+  place-content: center;
+  position: absolute;
+  width: 100%;
+  aspect-ratio: 1/1;
 }

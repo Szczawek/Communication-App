@@ -1,25 +1,20 @@
 import { useEffect, useState } from "react";
 import { changeFriendStatus } from "./changeFriendStatus";
 export default function Profile({ user, loggedInUser, changeFriendsLis }) {
-  const { nick, avatar, unqiueName, id, baner } = user;
+  const { nick, avatar, unqiueName, id, banner } = user;
   const [friendAccount, setFriendAccount] = useState(false);
   const [slowDown, setSlowDown] = useState(false);
   useEffect(() => {
     if (loggedInUser["id"] === id) return;
     setFriendAccount(loggedInUser["friends"].includes(id));
   }, [user, loggedInUser]);
-
   return (
     <div className="profile">
       <div className="baner">
-        <img src={!baner ? "./images/baner.jpg" : baner} alt="baner" />
+        <img src={banner} alt="banner" />
         <div className="circle">
           <div className="avatar">
-            <img
-              className="profile_img"
-              src={!avatar ? "./images/user.jpg" : avatar}
-              alt="avatar"
-            />
+            <img className="profile_img" src={avatar} alt="avatar" />
           </div>
         </div>
       </div>
@@ -42,7 +37,7 @@ export default function Profile({ user, loggedInUser, changeFriendsLis }) {
                     method: "POST",
                     headers: {
                       "Content-type": "application/json",
-                      token: localStorage.getItem("session"),
+                      token: sessionStorage.getItem("session"),
                     },
                     credentials: "include",
                     body: JSON.stringify({

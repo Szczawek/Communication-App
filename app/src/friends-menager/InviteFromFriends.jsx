@@ -18,7 +18,7 @@ export default function InviteFromFriends({ id }) {
         method: "POST",
         headers: {
           "Content-type": "Application/json",
-          token: localStorage.getItem("session"),
+          token: sessionStorage.getItem("session"),
         },
         credentials: "include",
         body: JSON.stringify(data),
@@ -42,7 +42,7 @@ export default function InviteFromFriends({ id }) {
     try {
       const transferOptions = {
         headers: {
-          token: localStorage.getItem("session"),
+          token: sessionStorage.getItem("session"),
         },
         credentials: "include",
       };
@@ -88,7 +88,9 @@ export default function InviteFromFriends({ id }) {
           );
         })}
       </div>
-      {!invites[0] && !loading ? <p className="empty-list">You don't have any invites</p> : null}
+      {!invites[0] && !loading ? (
+        <p className="empty-list">You don't have any invites</p>
+      ) : null}
     </div>
   );
 }

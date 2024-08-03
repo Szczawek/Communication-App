@@ -15,7 +15,7 @@ export default function MessageTools({ addMessage, ownerID, recipientID }) {
         method: "POST",
         headers: {
           "Content-type": "application/json",
-          token: localStorage.getItem("session"),
+          token: sessionStorage.getItem("session"),
         },
         credentials: "include",
         body: JSON.stringify(messData),

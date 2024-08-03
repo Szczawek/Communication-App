@@ -24,7 +24,7 @@ export default function AccountSettings() {
         method: "PUT",
         headers: {
           "Content-type": "Application/json",
-          token: localStorage.getItem("session"),
+          token: sessionStorage.getItem("session"),
         },
         credentials: "include",
         body: JSON.stringify(data),

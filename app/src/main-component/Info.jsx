@@ -5,6 +5,7 @@ import Test from "./Test";
 export default function Info() {
   return (
     <div className="info">
+      <Test></Test>
       <h1>
         The application was created for better communication between people.
         Sending and receiving messages in real time is the best example of our

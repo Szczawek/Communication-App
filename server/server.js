@@ -7,9 +7,12 @@ import bcrypt from "bcrypt";
 import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import { WebSocketServer } from "ws";
+import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import functions from "firebase-functions";
+import multer, { memoryStorage } from "multer";
 import crypto from "crypto";
+// import { loginWithGoogle } from "./firebaseSetup.js";
 
 const PORT = 443;
 const app = express();
@@ -24,7 +27,27 @@ const db = mysql.createConnection({
   },
 });
 
+// WSS ID
 const userConnections = new Map();
+
+// Multer config
+
+const multerStorage = multer.memoryStorage();
+const uploadImage = multer({ storage: multerStorage });
+
+function filterImage(req, file, cb) {
+  try {
+    const allowedType = ["image/jpeg", "images/jpg", "image/png"];
+    console.log(file.mimetype);
+    if (allowedType.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Invalid file type"), false);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 db.connect((err) => {
   if (err) return console.error(`Error with db: ${err}`);
@@ -118,18 +141,36 @@ const authorization = (req, res, next) => {
   if (count >= 1000) return res.sendStatus(403);
   count++;
   const token = req.cookies["session"];
-  if (!token) {
-    const newToken = "1233";
-    res.cookie("session", newToken, {
+  const recivedToken = req.headers.token;
+  if (!token || !recivedToken || recivedToken == "null") {
+    const random = () => {
+      const nums = [];
+      let count = 0;
+      while (count <= 10) {
+        nums.push(Math.floor(Math.random() * 10));
+        count++;
+      }
+      return nums;
+    };
+    const secureToken = jwt.sign(
+      { pass: `ShQ${random()}` },
+      process.env.JWT_TOKEN,
+      {
+        expiresIn: "30d",
+      }
+    );
+
+    res.cookie("session", secureToken, {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: 1000 * 60 * 60 * 7,
+      maxAge: 1000 * 60 * 60 * 30,
     });
-    return res.json({ token: newToken });
+    return res.json({ token: secureToken });
   }
-  const recivedToken = req.headers.token;
-  if (token === recivedToken) {
+  const checkToken = jwt.verify(recivedToken, process.env.JWT_TOKEN);
+  const correctToken = jwt.verify(token, process.env.JWT_TOKEN);
+  if (checkToken["pass"] === correctToken["pass"]) {
     next();
   } else {
     res.sendStatus(403);
@@ -169,7 +210,7 @@ app.post("/login", async (req, res) => {
 
 app.post("/create-account", async (req, res) => {
   try {
-    const { nick, email, unqiueName, avatar, password } = req.body;
+    const { nick, email, unqiueName, avatar, password, banner } = req.body;
 
     const selectUser = "SELECT id FROM users where email =? OR unqiue_name =?";
     const isUserAlreadyExist = await new Promise((resolve) => {
@@ -184,7 +225,8 @@ app.post("/create-account", async (req, res) => {
     if (isUserAlreadyExist[0]) return res.sendStatus(400);
     const encryptedPassword = await bcrypt.hash(password, 10);
     const values = [
-      avatar ? avatar : "./images/user.jpg",
+      avatar,
+      banner,
       nick,
       unqiueName,
       encryptedPassword,
@@ -193,7 +235,7 @@ app.post("/create-account", async (req, res) => {
     ];
 
     const addUserDBCommand =
-      "INSERT INTO users(avatar,nick,unqiue_name,password,email,date) values(?,?,?,?,?,?)";
+      "INSERT INTO users(avatar,banner,nick,unqiue_name,password,email,date) values(?,?,?,?,?,?,?)";
     await new Promise((resolve) => {
       db.query(addUserDBCommand, values, (err) => {
         if (err)
@@ -228,9 +270,10 @@ app.get("/logged-in-user", async (req, res) => {
     const userIsLogged = req.cookies["user_id"];
     if (!userIsLogged) return res.status(204).json("User isn't logged-in!");
     const id = decrypt(userIsLogged, process.env.COOKIES_KEY);
+
     const loadUserData =
-      "SELECT id, nick,avatar,date, unqiue_name as unqiueName FROM users where id = ?";
-    const userData = await new Promise((resolve) => {
+      "SELECT id, nick,avatar,banner,date, unqiue_name as unqiueName FROM users where id = ?";
+    const userData = new Promise((resolve) => {
       db.query(loadUserData, [id], (err, result) => {
         if (err) throw Error(`There is a problem with user data: ${err}`);
         resolve(result[0]);
@@ -239,7 +282,7 @@ app.get("/logged-in-user", async (req, res) => {
 
     const loadUserFriends =
       "SELECT friendID FROM user_friends where `personID` = ?";
-    const userFriends = await new Promise((resolve) => {
+    const userFriends = new Promise((resolve) => {
       db.query(loadUserFriends, [id], (err, result) => {
         if (err) throw Error(`Error with user friends db: ${err}`);
         if (!result[0]) resolve([]);
@@ -248,11 +291,8 @@ app.get("/logged-in-user", async (req, res) => {
       });
     });
 
-    const data = await {
-      ...userData,
-      friends: userFriends,
-    };
-    res.json(data);
+    const [data, friendsList] = await Promise.all([userData, userFriends]);
+    res.json({ ...data, friends: friendsList });
   } catch (err) {
     console.error(`Error with /logged-in-user route: ${err}`);
     res.sendStatus(403);
@@ -283,7 +323,7 @@ app.get("/users/:id", async (req, res) => {
 app.get("/user-search/:nick", (req, res) => {
   const { nick } = req.params;
   const dbCommand =
-    "SELECT id, nick,avatar,unqiue_name as unqiueName from users where unqiue_name =?";
+    "SELECT id, nick,avatar,banner,unqiue_name as unqiueName from users where unqiue_name =?";
   db.query(dbCommand, [nick, nick], (err, result) => {
     if (err) throw Error(`Error with user-search: ${err}`);
     if (!result[0]) return res.sendStatus(204);
@@ -309,7 +349,6 @@ app.post("/friends-list-change", (req, res) => {
   const addUser = "INSERT into user_friends values(null,?,?)";
   const removeUser =
     "DELETE FROM user_friends where personID =? AND friendID =?";
-  console.log(action);
   const dbValues = [personID, friendID];
   let dbActionType;
   switch (action) {
@@ -366,7 +405,6 @@ app.get("/last-message/:ownerID/:recipientID", (req, res) => {
     res.json(result);
   });
 });
-const test = {};
 
 // Send Message
 app.post("/send-message", async (req, res) => {
@@ -421,7 +459,6 @@ app.put("/edit-profile", async (req, res) => {
       .filter((e) => e != null)
       .join(", ");
     const editProfileDataCmd = `UPDATE users set ${valuesToEdit} WHERE id =?`;
-    console.log(valuesToEdit, editProfileDataCmd);
     db.query(editProfileDataCmd, value, (err) => {
       if (err) throw `Error with /edit-profile #edit data: ${err}`;
       res.send("ok");
@@ -429,6 +466,12 @@ app.put("/edit-profile", async (req, res) => {
   } catch (err) {
     console.error(err);
   }
+});
+
+app.post("/edit-images", uploadImage.single("new-img"), (req, res) => {
+  // console.log(req);
+  console.log(req.file)
+  res.send("ok");
 });
 
 app.post("/remove-invite", (req, res) => {
@@ -465,7 +508,6 @@ app.post("/send-invite", async (req, res) => {
   // TO REMOVE
   // TO REMOVE
   if (!tryOne) return res.sendStatus(200);
-  console.log(1);
   const sendInviteCmd =
     "INSERT INTO friendsWaiting(ownerID, recipientID) values(?,?)";
   db.query(sendInviteCmd, [personID, friendID], (err) => {
@@ -476,7 +518,6 @@ app.post("/send-invite", async (req, res) => {
 
 app.get("/invite-from-friends/:id", (req, res) => {
   const { id } = req.params;
-  console.log(id);
   const laodInviteFromFriendsCmd =
     "SELECT ownerID from friendsWaiting where recipientID =?";
   db.query(laodInviteFromFriendsCmd, [id], (err, result) => {
@@ -487,9 +528,19 @@ app.get("/invite-from-friends/:id", (req, res) => {
   });
 });
 
+// NOT COMPLITED
+// NOT COMPLITED
+// NOT COMPLITED
 app.post("/end-session", (req, res) => {
   const addSesssonTime = "INSERT INTO active_user";
 });
+
+// app.get("/google-login", (req, res) => {
+//   console.log(12431323);
+//   loginWithGoogle()
+//   // console.log(loginWithGoogle)
+//   res.json({ login: "sd" });
+// });
 
 wss.on("connection", (ws, req) => {
   const id = new URL(req.url, `wss://${req.headers.host}`).searchParams.get(
@@ -499,7 +550,6 @@ wss.on("connection", (ws, req) => {
   console.log("WBSOCKET connected!");
 
   userConnections.set(id, ws);
-  console.log(userConnections);
   ws.on("close", () => {
     console.log("connection was closed!");
     userConnections.delete(id);
@@ -512,6 +562,7 @@ server.listen(PORT, (err) => {
 });
 
 export const api = functions
+  .runWith({ enforceAppCheck: true, vpcConnector: "db-test-two" })
   .region("europe-central2")
   .https.onRequest((req, res) => {
     server.emit("request", req, res);

@@ -3,7 +3,7 @@ export async function logout(searchLoggedInUser) {
     const res = await fetch(`${import.meta.env.VITE_URL}/logout`, {
       method: "POST",
       headers: {
-        token: localStorage.getItem("session"),
+        token: sessionStorage.getItem("session"),
       },
       credentials: "include",
     });

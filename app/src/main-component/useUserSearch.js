@@ -12,7 +12,7 @@ export default function useUserSearch(stopLoadingScreen) {
           `${import.meta.env.VITE_URL}/user-search/${nick}`,
           {
             credentials: "include",
-            headers: { token: localStorage.getItem("session") },
+            headers: { token: sessionStorage.getItem("session") },
           }
         );
 

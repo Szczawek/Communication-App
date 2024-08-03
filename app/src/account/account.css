@@ -2,7 +2,7 @@
 
 .build-mode {
   position: absolute;
-  top: 10%;
+  top: 1rem;
   left: 0;
   right: 0;
 }
@@ -26,7 +26,7 @@
     )
     30;
   border-radius: 0.2rem;
-  height: 500px;
+  height: 700px;
   grid-template-rows: 1fr max-content;
 }
 .account form {
@@ -48,7 +48,6 @@
   animation: title-spining infinite 12s;
   font-size: 2.5rem;
 }
-
 
 @keyframes title-spining {
   0% {
@@ -89,14 +88,16 @@
     transform: 0 0;
   }
 }
-.account .labels {
+.account .labels-container {
   display: grid;
-  position: relative;
+  justify-content: center;
   grid-auto-rows: max-content;
-  row-gap: 1.5rem;
+  row-gap: 2rem;
 }
 .account label {
+  position: relative;
   height: max-content;
+  width: max-content;
 }
 .account input {
   font-size: 1rem;
@@ -125,12 +126,12 @@
 }
 
 .account .warning {
-  height: 1rem;
   position: absolute;
-  right: 0;
-  left: 0;
+  height: 1rem;
   bottom: -1.5rem;
-  color: red;
+  left: 0;
+  right: 0;
+  color: orange;
 }
 
 .account .panel {
@@ -150,6 +151,19 @@
 
 .account .panel .link {
   padding-block: 0.2rem;
+}
+
+.account .descryption-fn {
+  font-size: 0.6rem;
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: grid;
+  align-items: center;
+  grid-template-columns: repeat(2, max-content);
+  justify-content: space-between;
+  bottom: -2rem;
+  padding-inline: 0.5rem;
 }
 
 @media (width < 417px) {

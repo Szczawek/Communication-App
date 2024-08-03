@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { UserFunctions } from "../App";
 export default function Login() {
   const [email, setEmail] = useState("");
+  const [isPasswordShowed, setIsShowedPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [warning, setWarning] = useState(false);
   const focusdElement = useRef(null);
+  const passwordInpElement = useRef(null);
   const navigate = useNavigate();
   const { searchLoggedInUser } = useContext(UserFunctions);
   useEffect(() => {
@@ -16,38 +18,50 @@ export default function Login() {
   useEffect(() => {
     if (warning) setWarning(false);
   }, [email, password]);
+
+  function showPassword() {
+    setIsShowedPassword((prev) => !prev);
+    const passInp = passwordInpElement.current;
+    if (isPasswordShowed) {
+      passInp.type = "password";
+    } else {
+      passInp.type = "text";
+    }
+  }
+
   async function reqLoginAccount(e) {
     e.preventDefault();
-    try {
-      setLoading(true);
-      const data = {
-        email,
-        password,
-      };
-      const fetchOptions = {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          token: localStorage.getItem("session"),
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-      };
-      const res = await fetch(
-        `${import.meta.env.VITE_URL}/login`,
-        fetchOptions
-      );
-      setLoading(false);
+    console.log(1);
+    // try {
+    //   setLoading(true);
+    //   const data = {
+    //     email,
+    //     password,
+    //   };
+    //   const fetchOptions = {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-type": "application/json",
+    //       token: sessionStorage.getItem("session"),
+    //     },
+    //     credentials: "include",
+    //     body: JSON.stringify(data),
+    //   };
+    //   const res = await fetch(
+    //     `${import.meta.env.VITE_URL}/login`,
+    //     fetchOptions
+    //   );
+    //   setLoading(false);
 
-      if (!res.ok) {
-        if (res.status === 401) return setWarning(true);
-        return console.error(`Error with login: ${res.status}}`);
-      }
-      await searchLoggedInUser();
-      navigate("/info");
-    } catch (err) {
-      throw Error(`Error durning login to account: ${err}`);
-    }
+    //   if (!res.ok) {
+    //     if (res.status === 401) return setWarning(true);
+    //     return console.error(`Error with login: ${res.status}}`);
+    //   }
+    //   await searchLoggedInUser();
+    //   navigate("/info");
+    // } catch (err) {
+    //   throw Error(`Error durning login to account: ${err}`);
+    // }
   }
   return (
     <div className="login">
@@ -64,28 +78,56 @@ export default function Login() {
             password: <span>test</span>
           </p>
         </div>
-        <div className="labels">
+        <div className="labels-container">
           <label htmlFor="login-ac">
             <input
-              ref={focusdElement}
-              required
-              placeholder="email"
               id="login-ac"
+              required
+              ref={focusdElement}
+              placeholder="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               type="email"
+              maxLength={25}
             />
           </label>
           <label htmlFor="password-ac">
             <input
+              id="password-ac"
               required
               placeholder="password"
-              id="password-ac"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
+              maxLength={30}
             />
           </label>
+          {/* <button type="button" ref={passwordInpElement} onClick={()=>showPassword()}>
+              {isPasswordShowed ? (
+                <img src="../images/eye.svg" alt="hide password" />
+              ) : (
+                <img src="../images/closed_eye.svg" alt="show password" />
+              )}
+            </button> */}
+          <button
+            type="button"
+            ref={passwordInpElement}
+            onClick={() => {
+              console.log(2)
+              setIsShowedPassword((prev) => !prev);
+              const passInp = passwordInpElement.current;
+              if (isPasswordShowed) {
+                // passInp.type = "password";
+              } else {
+                passInp.type = "text";
+              }
+            }}>
+            {isPasswordShowed ? (
+              <img src="../images/eye.svg" alt="hide password" />
+            ) : (
+              <img src="../images/closed_eye.svg" alt="show password" />
+            )}
+          </button>
           <small className="warning">
             {warning && "Email or Password are invalid!"}
           </small>

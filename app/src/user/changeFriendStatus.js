@@ -7,10 +7,10 @@ export async function changeFriendStatus(
   const data = { action, personID, friendID };
   try {
     const res = await fetch(`${import.meta.env.VITE_URL}/friends-list-change`, {
-      method: "POST", 
+      method: "POST",
       headers: {
         "Content-type": "application/json",
-        token: localStorage.getItem("session"),
+        token: sessionStorage.getItem("session"),
       },
       body: JSON.stringify(data),
     });

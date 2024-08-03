@@ -4,7 +4,7 @@ export async function loadLastMessage(ownerID, recipientID) {
       `${import.meta.env.VITE_URL}/last-message/${ownerID}/${recipientID}`,
       {
         credentials: "include",
-        headers: { token: localStorage.getItem("session") },
+        headers: { token: sessionStorage.getItem("session") },
       }
     );
     if (!res.ok) throw Error(res.status);

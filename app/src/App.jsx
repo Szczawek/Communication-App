@@ -22,22 +22,21 @@ const ReturnToPath = lazy(() => import("./main-component/ReturnToPath"));
 const MenageFriends = lazy(() => import("./main-component/MenageFriedns"));
 const UserFunctions = createContext();
 
+const stdData = {
+  nick: "User",
+  avatar: "./images/user.jpg",
+  banner: "./images/banner.jpg",
+  unqiueName: "#9132",
+  id: 0,
+  friends: [],
+};
 export default function App() {
   const [refreshValue, setRefreshValue] = useState(false);
   const [notification, setNotification] = useState(0);
   const effect = useRef(false);
   const [loading, setLoading] = useState(true);
-  const [loggedInUser, setLoggedInUser] = useState({
-    nick: "User",
-    avatar: "./images/user.jpg",
-    unqiueName: "#9132",
-    id: 0,
-    friends: [],
-  });
-  const wss = useWebSocketTunel(
-    loggedInUser["id"],
-    menageNotificaion
-  );
+  const [loggedInUser, setLoggedInUser] = useState(stdData);
+  const wss = useWebSocketTunel(loggedInUser["id"], menageNotificaion);
 
   useEffect(() => {
     if (effect.current) return;
@@ -47,12 +46,12 @@ export default function App() {
 
   async function createSession() {
     try {
-      if (!localStorage.getItem("session")) {
+      if (!sessionStorage.getItem("session")) {
         const res = await fetch(`${import.meta.env.VITE_URL}`, {
           credentials: "include",
         });
         const obj = await res.json();
-        localStorage.setItem("session", obj["token"]);
+        sessionStorage.setItem("session", obj["token"]);
       }
       await searchLoggedInUser();
     } catch (err) {
@@ -65,11 +64,11 @@ export default function App() {
       const res = await fetch(`${import.meta.env.VITE_URL}/logged-in-user`, {
         credentials: "include",
         headers: {
-          token: localStorage.getItem("session"),
+          token: sessionStorage.getItem("session"),
         },
       });
       if (res.status === 204) {
-        setLoggedInUser({ id: 0 });
+        setLoggedInUser(stdData);
         return;
       }
       if (!res.ok) return console.error(`Error with server: ${res.status}`);
@@ -129,6 +128,9 @@ export default function App() {
         setNotification((prev) => prev - value);
     }
   }
+
+  console.log(loggedInUser)
+
   return (
     <BrowserRouter>
       <Suspense fallback={<p className="full-screen loading">Loading...</p>}>
