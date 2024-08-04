@@ -19,7 +19,8 @@ export default function Login() {
     if (warning) setWarning(false);
   }, [email, password]);
 
-  function showPassword() {
+  function showPassword(e) {
+    e.preventDefault();
     setIsShowedPassword((prev) => !prev);
     const passInp = passwordInpElement.current;
     if (isPasswordShowed) {
@@ -29,43 +30,39 @@ export default function Login() {
     }
   }
 
-  async function reqLoginAccount(e) {
+  async function loginToAccount(e) {
     e.preventDefault();
-    console.log(1);
-    // try {
-    //   setLoading(true);
-    //   const data = {
-    //     email,
-    //     password,
-    //   };
-    //   const fetchOptions = {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-type": "application/json",
-    //       token: sessionStorage.getItem("session"),
-    //     },
-    //     credentials: "include",
-    //     body: JSON.stringify(data),
-    //   };
-    //   const res = await fetch(
-    //     `${import.meta.env.VITE_URL}/login`,
-    //     fetchOptions
-    //   );
-    //   setLoading(false);
+    try {
+      setLoading(true);
+      const data = {
+        email,
+        password,
+      };
+      const fetchOptions = {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          token: sessionStorage.getItem("session"),
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
+      };
+      const res = await fetch(`${process.env.VITE_URL}/login`, fetchOptions);
+      setLoading(false);
 
-    //   if (!res.ok) {
-    //     if (res.status === 401) return setWarning(true);
-    //     return console.error(`Error with login: ${res.status}}`);
-    //   }
-    //   await searchLoggedInUser();
-    //   navigate("/info");
-    // } catch (err) {
-    //   throw Error(`Error durning login to account: ${err}`);
-    // }
+      if (!res.ok) {
+        if (res.status === 401) return setWarning(true);
+        return console.error(`Error with login: ${res.status}}`);
+      }
+      await searchLoggedInUser();
+      navigate("/info");
+    } catch (err) {
+      throw Error(`Error durning login to account: ${err}`);
+    }
   }
   return (
     <div className="login">
-      <form autoComplete={"on"} onSubmit={(e) => reqLoginAccount(e)}>
+      <form autoComplete={"on"} onSubmit={loginToAccount}>
         <header>
           <h2>Login</h2>
         </header>
@@ -94,6 +91,7 @@ export default function Login() {
           <label htmlFor="password-ac">
             <input
               id="password-ac"
+              ref={passwordInpElement}
               required
               placeholder="password"
               value={password}
@@ -101,33 +99,14 @@ export default function Login() {
               type="password"
               maxLength={30}
             />
-          </label>
-          {/* <button type="button" ref={passwordInpElement} onClick={()=>showPassword()}>
+            <button type="button" className="eye" onClick={showPassword}>
               {isPasswordShowed ? (
                 <img src="../images/eye.svg" alt="hide password" />
               ) : (
                 <img src="../images/closed_eye.svg" alt="show password" />
               )}
-            </button> */}
-          <button
-            type="button"
-            ref={passwordInpElement}
-            onClick={() => {
-              console.log(2)
-              setIsShowedPassword((prev) => !prev);
-              const passInp = passwordInpElement.current;
-              if (isPasswordShowed) {
-                // passInp.type = "password";
-              } else {
-                passInp.type = "text";
-              }
-            }}>
-            {isPasswordShowed ? (
-              <img src="../images/eye.svg" alt="hide password" />
-            ) : (
-              <img src="../images/closed_eye.svg" alt="show password" />
-            )}
-          </button>
+            </button>
+          </label>
           <small className="warning">
             {warning && "Email or Password are invalid!"}
           </small>

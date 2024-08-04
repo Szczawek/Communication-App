@@ -6,7 +6,7 @@ export default function useWaitingForMessage(id, refreshMessages) {
   if (!id || id === 0) return;
   useEffect(() => {
     return () =>
-      setWS(new WebSocket(`wss://${import.meta.env.VITE_DOMAIN}?userID=${id}`));
+      setWS(new WebSocket(`wss://${process.env.VITE_DOMAIN}?userID=${id}`));
   }, []);
   if (ws) {
     ws.onopen = (e) => {

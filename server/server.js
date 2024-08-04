@@ -31,14 +31,17 @@ const db = mysql.createConnection({
 const userConnections = new Map();
 
 // Multer config
-
+// Size is in bytes
 const multerStorage = multer.memoryStorage();
-const uploadImage = multer({ storage: multerStorage });
+const uploadImage = multer({
+  storage: multerStorage,
+  size: 400000,
+  fileFilter: filterImage,
+});
 
 function filterImage(req, file, cb) {
   try {
     const allowedType = ["image/jpeg", "images/jpg", "image/png"];
-    console.log(file.mimetype);
     if (allowedType.includes(file.mimetype)) {
       cb(null, true);
     } else {
@@ -468,11 +471,16 @@ app.put("/edit-profile", async (req, res) => {
   }
 });
 
-app.post("/edit-images", uploadImage.single("new-img"), (req, res) => {
-  // console.log(req);
-  console.log(req.file)
-  res.send("ok");
-});
+app.post("/edit-images",uploadImage.fields([
+    { name: "avatar", maxCount: 1 },
+    { name: "banner", maxCount: 1 },
+  ]),
+  (req, res) => {
+    const {avatar,banner} = req.files
+    const editImgCmd = "UPDATE users set"
+    res.send("ok");
+  }
+);
 
 app.post("/remove-invite", (req, res) => {
   const { ownerID, recipientID } = req.body;

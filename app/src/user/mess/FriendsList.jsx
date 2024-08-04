@@ -8,7 +8,7 @@ export default function Messages({ id }) {
     if (effect.current) return;
     async function downloadMessages() {
       try {
-        const res = await fetch(`${import.meta.env.VITE_URL}/users/${id}`, {
+        const res = await fetch(`${process.env.VITE_URL}/users/${id}`, {
           credentials: "include",
         });
         if (res.status === 204) return;

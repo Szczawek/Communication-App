@@ -47,7 +47,7 @@ export default function App() {
   async function createSession() {
     try {
       if (!sessionStorage.getItem("session")) {
-        const res = await fetch(`${import.meta.env.VITE_URL}`, {
+        const res = await fetch(`${process.env.VITE_URL}`, {
           credentials: "include",
         });
         const obj = await res.json();
@@ -61,7 +61,7 @@ export default function App() {
 
   async function searchLoggedInUser() {
     try {
-      const res = await fetch(`${import.meta.env.VITE_URL}/logged-in-user`, {
+      const res = await fetch(`${process.env.VITE_URL}/logged-in-user`, {
         credentials: "include",
         headers: {
           token: sessionStorage.getItem("session"),
@@ -129,8 +129,6 @@ export default function App() {
     }
   }
 
-  console.log(loggedInUser)
-
   return (
     <BrowserRouter>
       <Suspense fallback={<p className="full-screen loading">Loading...</p>}>
@@ -172,14 +170,15 @@ export default function App() {
                 />
                 <Route path="settings/*" element={<Settings />} />
                 <Route
-                  path=":nick"
+                  path=":nick/*"
                   element={
                     <UserSearch
                       loggedInUser={loggedInUser}
                       changeFriendsLis={changeFriendsList}
                     />
-                  }
-                />
+                  }>
+        
+                </Route>
               </Route>
               <Route path="*" element={<ReturnToPath path={"/info"} />} />
             </Routes>

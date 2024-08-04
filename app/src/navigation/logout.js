@@ -1,6 +1,6 @@
 export async function logout(searchLoggedInUser) {
   try {
-    const res = await fetch(`${import.meta.env.VITE_URL}/logout`, {
+    const res = await fetch(`${process.env.VITE_URL}/logout`, {
       method: "POST",
       headers: {
         token: sessionStorage.getItem("session"),

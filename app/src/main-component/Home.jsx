@@ -13,7 +13,6 @@
       elementToSpy.current = element;
       setIsElementSet(true);
     }, []);
-
     return (
       <div className="home">
         <p className="ester-egg">

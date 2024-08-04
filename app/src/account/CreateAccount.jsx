@@ -81,7 +81,7 @@ export default function CreateAccount() {
     };
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_URL}/create-account`,
+        `${process.env.VITE_URL}/create-account`,
         fetchOptions
       );
       if (!res.ok) {

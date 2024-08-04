@@ -166,6 +166,14 @@
   padding-inline: 0.5rem;
 }
 
+.account .eye {
+  display: grid;
+  align-items: center;
+  position: absolute;
+  right: -2rem;
+  top: 0;
+  bottom: 0;
+}
 @media (width < 417px) {
   .account form {
     max-width: calc(100vw - 4px);

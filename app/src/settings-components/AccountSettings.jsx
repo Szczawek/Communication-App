@@ -30,7 +30,7 @@ export default function AccountSettings() {
         body: JSON.stringify(data),
       };
       const res = await fetch(
-        `${import.meta.env.VITE_URL}/edit-profile`,
+        `${process.env.VITE_URL}/edit-profile`,
         transferSettings
       );
       if (!res.ok) {

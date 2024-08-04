@@ -8,13 +8,10 @@ export default function useUserSearch(stopLoadingScreen) {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await fetch(
-          `${import.meta.env.VITE_URL}/user-search/${nick}`,
-          {
-            credentials: "include",
-            headers: { token: sessionStorage.getItem("session") },
-          }
-        );
+        const res = await fetch(`${process.env.VITE_URL}/user-search/${nick}`, {
+          credentials: "include",
+          headers: { token: sessionStorage.getItem("session") },
+        });
 
         if (!res.ok) return console.error(`Error: ${res.status}`);
         if (res.status === 204) return;
