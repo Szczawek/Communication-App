@@ -129,6 +129,13 @@ export default function App() {
     }
   }
 
+  function editProfileImages(avatar,banner) {
+    const test = {...loggedInUser, avatar,banner}
+    console.log(test)
+    console.log(...args)
+    // setLoggedInUser(prev => ({...prev}))
+  }
+
   return (
     <BrowserRouter>
       <Suspense fallback={<p className="full-screen loading">Loading...</p>}>
@@ -140,6 +147,7 @@ export default function App() {
             loggedInUser,
             changeFriendsList,
             menageNotificaion,
+            editProfileImages
           }}>
           {loggedInUser["id"] === 0 && !loading ? (
             <Routes>

@@ -12,10 +12,15 @@ export default function ShowCase({ user, loggedInUser, changeFriendsLis }) {
   return (
     <div className="show-case">
       <div className="baner">
-        <img src={banner} alt="banner" />
+        <img loading="lazy" src={banner} alt="banner" />
         <div className="circle">
           <div className="avatar">
-            <img className="profile_img" src={avatar} alt="avatar" />
+            <img
+              loading="lazy"
+              className="profile_img"
+              src={avatar}
+              alt="avatar"
+            />
           </div>
         </div>
       </div>
@@ -24,7 +29,9 @@ export default function ShowCase({ user, loggedInUser, changeFriendsLis }) {
           <p className="nick">{nick}</p>
           <p className="unqiue-name">{unqiueName}</p>
         </div>
-        {loggedInUser["id"] === id ? <Link to={"edit-profile-info"}>Edit</Link> : (
+        {loggedInUser["id"] === id ? (
+          <Link to={"edit-profile-info"}>Edit</Link>
+        ) : (
           <button
             className="friend"
             disabled={slowDown ? true : false}

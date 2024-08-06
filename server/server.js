@@ -10,9 +10,10 @@ import { WebSocketServer } from "ws";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import functions from "firebase-functions";
-import multer, { memoryStorage } from "multer";
+import multer from "multer";
 import crypto from "crypto";
-// import { loginWithGoogle } from "./firebaseSetup.js";
+import { auth, bucket } from "./firebaseSetup.js";
+import { getDownloadURL } from "firebase-admin/storage";
 
 const PORT = 443;
 const app = express();
@@ -32,10 +33,11 @@ const userConnections = new Map();
 
 // Multer config
 // Size is in bytes
+// # Max size of one image is 400KB but in edit-profile is possible to load two images
 const multerStorage = multer.memoryStorage();
 const uploadImage = multer({
   storage: multerStorage,
-  size: 400000,
+  size: 1000000,
   fileFilter: filterImage,
 });
 
@@ -48,7 +50,7 @@ function filterImage(req, file, cb) {
       cb(new Error("Invalid file type"), false);
     }
   } catch (err) {
-    console.error(err);
+    console.error(`Error with the file: ${err}`);
   }
 }
 
@@ -471,16 +473,54 @@ app.put("/edit-profile", async (req, res) => {
   }
 });
 
-app.post("/edit-images",uploadImage.fields([
-    { name: "avatar", maxCount: 1 },
-    { name: "banner", maxCount: 1 },
-  ]),
-  (req, res) => {
-    const {avatar,banner} = req.files
-    const editImgCmd = "UPDATE users set"
-    res.send("ok");
+const acceptableFile = uploadImage.fields([
+  { name: "avatar", maxCount: 1 },
+  { name: "banner", maxCount: 1 },
+]);
+
+app.post("/edit-images", acceptableFile, async (req, res) => {
+  try {
+    const { avatar, banner } = req.files;
+    const { ownerID } = req.body;
+    const values = [];
+    const tableNames = [];
+
+    const array = [avatar, banner]
+      .filter((e) => e != undefined)
+      .map((e) => {
+        // "images/" in fileName means folder name
+        const fileName = `images/${Date.now()}-${Math.floor(
+          Math.random() * 1e9
+        )}.jpg`;
+        return new Promise(async (resolve) => {
+          const uploadFile = bucket.file(fileName);
+          await uploadFile.save(e[0].buffer, { contentType: "image/jpg" });
+          const imagePath = await getDownloadURL(uploadFile);
+          values.push(imagePath);
+          tableNames.push(`${e[0].fieldname} =?`);
+          resolve();
+        });
+      });
+    await Promise.all(array);
+
+    const editImgCmd = `UPDATE users set ${tableNames.join(", ")} where id =?`;
+    db.query(editImgCmd, [...values, ownerID], (err) => {
+      if (err) throw `Error with db edit-images: ${err}`;
+      res.send("ok");
+    });
+  } catch (err) {
+    console.error(err);
   }
-);
+});
+
+app.get("/uploded-images", (req, res) => {
+  const { ownerID } = req.body;
+  const getUploadedImgCmd = "SELECT avatar, banner from users where id =?";
+  db.query(getUploadedImgCmd, [ownerID], (err, result) => {
+    if (err) throw `Error with db upload-images: ${err}`;
+    res.json(result);
+  });
+});
 
 app.post("/remove-invite", (req, res) => {
   const { ownerID, recipientID } = req.body;
@@ -543,12 +583,11 @@ app.post("/end-session", (req, res) => {
   const addSesssonTime = "INSERT INTO active_user";
 });
 
-// app.get("/google-login", (req, res) => {
-//   console.log(12431323);
-//   loginWithGoogle()
-//   // console.log(loginWithGoogle)
-//   res.json({ login: "sd" });
-// });
+app.get("/google-login", (req, res) => {
+  // const data = JSON.stringify(auth);
+  console.log(1);
+  res.json(auth);
+});
 
 wss.on("connection", (ws, req) => {
   const id = new URL(req.url, `wss://${req.headers.host}`).searchParams.get(
@@ -570,7 +609,7 @@ server.listen(PORT, (err) => {
 });
 
 export const api = functions
-  .runWith({ enforceAppCheck: true, vpcConnector: "db-test-two" })
+  .runWith({ enforceAppCheck: true, vpcConnector: process.env.VPC_CONNECTOR })
   .region("europe-central2")
   .https.onRequest((req, res) => {
     server.emit("request", req, res);

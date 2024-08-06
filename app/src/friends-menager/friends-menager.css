@@ -26,11 +26,10 @@
 }
 .friend-info {
   display: grid;
-  grid-template-columns: 1fr max-content;
+  grid-template-columns: 1fr max-content; 
 }
-.friend-container .avatar {
-  height: 3rem;
-  width: 3rem;
+.menage-friends .avatar {
+  width: 4rem;
   border-radius: 50%;
   overflow: hidden;
   aspect-ratio: 1/1;

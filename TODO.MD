@@ -51,3 +51,6 @@
                 -- dodać funckje zmniejszania rozmiaru zdjęć 
                 -- zapisaywać w firebase storage 
                 -- zmienić w storage reguły
+
+# Six 
+        -- W EditProfile, gdy funkcja compresImage wykryje inny format niż image/* dodać komunikat o tym (działa bez tego)

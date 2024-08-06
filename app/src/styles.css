@@ -143,9 +143,11 @@ body {
   filter: brightness(150%);
 }
 
-.navigation .avatar img {
+.avatar img {
+  width: 100%;  
   object-fit: cover;
   border-radius: 50%;
+  height: 100%;
 }
 
 .nav_setting {

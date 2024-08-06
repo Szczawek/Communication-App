@@ -24,7 +24,7 @@ export default function NavSettingsList({ closeMenu, user, notification }) {
           tabIndex={0}
           className="options">
           <div className="avatar" onClick={() => setMenuIsOpen(true)}>
-            <img src={!avatar ? "./images/user.jpg" : avatar} alt="avatar" />
+            <img src={avatar} alt="avatar" />
           </div>
         </div>
       ) : (
