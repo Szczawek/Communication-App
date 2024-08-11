@@ -11,7 +11,7 @@ export default function MessageTools({ addMessage, ownerID, recipientID }) {
     setSlow(true);
     const messData = { ownerID, recipientID, message: value };
     try {
-      const res = await fetch(`${process.env.VITE_URL}/send-message`, {
+      const res = await fetch(`${process.env.VITE_URL}/api/send-message`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",

@@ -24,7 +24,7 @@ export default function InviteFromFriends({ id }) {
         body: JSON.stringify(data),
       };
       const res = await fetch(
-        `${process.env.VITE_URL}/friends-list-change`,
+        `${process.env.VITE_URL}/api/friends-list-change`,
         transferOptions
       );
       if (!res.ok) throw res.status;
@@ -47,7 +47,7 @@ export default function InviteFromFriends({ id }) {
         credentials: "include",
       };
       const res = await fetch(
-        `${process.env.VITE_URL}/invite-from-friends/${id}`,
+        `${process.env.VITE_URL}/api/invite-from-friends/${id}`,
         transferOptions
       );
       if (!res.ok) {

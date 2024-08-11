@@ -38,7 +38,7 @@ export default function ShowCase({ user, loggedInUser, changeFriendsLis }) {
             onClick={async () => {
               try {
                 const res = await fetch(
-                  `${process.env.VITE_URL}/${
+                  `${process.env.VITE_URL}/api/${
                     friendAccount ? "friends-list-change" : "send-invite"
                   }`,
                   {

@@ -129,10 +129,10 @@ export default function App() {
     }
   }
 
-  function editProfileImages(avatar,banner) {
-    const test = {...loggedInUser, avatar,banner}
-    console.log(test)
-    console.log(...args)
+  function editProfileImages(avatar, banner) {
+    const test = { ...loggedInUser, avatar, banner };
+    console.log(test);
+    console.log(...args);
     // setLoggedInUser(prev => ({...prev}))
   }
 
@@ -147,7 +147,7 @@ export default function App() {
             loggedInUser,
             changeFriendsList,
             menageNotificaion,
-            editProfileImages
+            editProfileImages,
           }}>
           {loggedInUser["id"] === 0 && !loading ? (
             <Routes>
@@ -184,9 +184,7 @@ export default function App() {
                       loggedInUser={loggedInUser}
                       changeFriendsLis={changeFriendsList}
                     />
-                  }>
-        
-                </Route>
+                  }></Route>
               </Route>
               <Route path="*" element={<ReturnToPath path={"/info"} />} />
             </Routes>

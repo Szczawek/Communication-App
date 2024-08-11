@@ -47,7 +47,10 @@ export default function Login() {
         credentials: "include",
         body: JSON.stringify(data),
       };
-      const res = await fetch(`${process.env.VITE_URL}/login`, fetchOptions);
+      const res = await fetch(
+        `${process.env.VITE_URL}/login`,
+        fetchOptions
+      );
       setLoading(false);
 
       if (!res.ok) {

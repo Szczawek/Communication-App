@@ -1,11 +1,10 @@
 .menage-friends {
   display: grid;
   text-align: center;
-  grid-template-columns: 30% calc(70% - 2rem);
+  grid-template-columns: repeat(3,1fr);
   justify-items: center;
-  /* overflow: hidden; */
+align-items: center;
   padding-block: 2rem;
-  gap: 2rem;
 }
 
 .friends-list {

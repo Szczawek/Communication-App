@@ -4,7 +4,7 @@
   justify-content: center;
   text-align: center;
 }
-.friends-list {
+.home .friends-list {
   display: grid;
   gap: 1rem;
   padding: 2rem 1rem;
@@ -12,5 +12,5 @@
 }
 .home .profile-link .avatar {
   aspect-ratio: 1/1;
-  height: 6rem;
+  height: 4rem;
 }

@@ -34,6 +34,7 @@
   background-color: #501650;
   width: clamp(416px, 60vw, 680px);
   display: grid;
+  position: relative;
   place-content: center;
   grid-auto-rows: max-content;
   row-gap: 2rem;
@@ -47,6 +48,33 @@
   background-clip: text;
   animation: title-spining infinite 12s;
   font-size: 2.5rem;
+}
+
+/* GOOGLE BTN */
+
+
+.dif-sing-in{
+  display: grid;
+  grid-template-columns: repeat(2,max-content);
+  gap: 1rem;
+  width: max-content;
+  position: absolute;
+  right: 1rem;
+  bottom: .2rem;
+  background-color: rgb(29, 24, 24);
+  padding: var(--input-padding);
+  border-radius: var(--input-border-r);
+  align-items: center;
+  transition: filter,box-shadow,scale, 300ms;
+}
+.dif-sing-in:is(:hover,:focus,:focus-visible,:focus-within) {
+  filter: brightness(50%);
+  box-shadow: 0 0 1rem red;
+  scale: 1.1;
+}
+.dif-sing-in img {
+  aspect-ratio: 1/1;
+  width: 2rem;
 }
 
 @keyframes title-spining {
@@ -175,6 +203,9 @@
   bottom: 0;
 }
 @media (width < 417px) {
+  .account .container{
+height: 100vh;
+  }
   .account form {
     max-width: calc(100vw - 4px);
   }

@@ -15,7 +15,10 @@ export default function useInfinityScroll(path, elementToSpy) {
         },
         credentials: "include",
       };
-      const res = await fetch(`${process.env.VITE_URL}/${path}`, transferData);
+      const res = await fetch(
+        `${process.env.VITE_URL}/api/${path}`,
+        transferData
+      );
       if (!res.ok) {
         if (res.status === 404) return setAllValueLoaded(true);
         throw res.status;

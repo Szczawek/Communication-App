@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserFunctions } from "../App";
+import { loginWithGoogle } from "../../fireConf";
 export default function CreateAccount() {
   const { searchLoggedInUser } = useContext(UserFunctions);
   const [loading, setLoading] = useState(false);
@@ -192,8 +193,13 @@ export default function CreateAccount() {
             )}
           </label>
         </div>
+
         <button className="confirm" type="submit">
           {loading ? "Loading..." : "Submit"}
+        </button>
+        <button className="dif-sing-in" type="button" onClick={loginWithGoogle}>
+          <p>Sing in with Google</p>
+          <img src="/images/google.svg" alt="Sing in with Google" />
         </button>
       </form>
     </div>

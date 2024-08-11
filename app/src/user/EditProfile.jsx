@@ -32,7 +32,7 @@ export default function EditProfile() {
         body: form,
       };
       const res = await fetch(
-        `${process.env.VITE_URL}/edit-images`,
+        `${process.env.VITE_URL}/api/edit-images`,
         fetchOptions
       );
       if (!res.ok) throw res.status;
@@ -80,7 +80,7 @@ export default function EditProfile() {
         credentials: "include",
       };
       const res = await fetch(
-        `${process.env.VITE_URL}/uploded-images`,
+        `${process.env.VITE_URL}/api/uploded-images`,
         fetchOptions
       );
       if (!res.ok) throw res.status;

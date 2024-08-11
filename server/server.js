@@ -141,52 +141,65 @@ function decrypt(encryptedText, encryptionKey) {
 }
 
 // SIMPLE/WISE
+// # Only for local testing/protection against overflow requests
 let count = 0;
+// First wall
 const authorization = (req, res, next) => {
-  if (count >= 1000) return res.sendStatus(403);
-  count++;
-  const token = req.cookies["session"];
-  const recivedToken = req.headers.token;
-  if (!token || !recivedToken || recivedToken == "null") {
-    const random = () => {
-      const nums = [];
-      let count = 0;
-      while (count <= 10) {
-        nums.push(Math.floor(Math.random() * 10));
-        count++;
-      }
-      return nums;
-    };
-    const secureToken = jwt.sign(
-      { pass: `ShQ${random()}` },
-      process.env.JWT_TOKEN,
-      {
-        expiresIn: "30d",
-      }
-    );
+  try {
+    if (count >= 1000)
+      return res.status(403).json("Server has reached his limit!");
+    count++;
+    const token = req.cookies["session"];
+    const recivedToken = req.headers.token;
+    if (!token || !recivedToken || recivedToken == "null") {
+      const secureToken = jwt.sign(
+        { pass: `ShQ${Date.now()}` },
+        process.env.JWT_TOKEN,
+        {
+          expiresIn: "30d",
+        }
+      );
 
-    res.cookie("session", secureToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 1000 * 60 * 60 * 30,
-    });
-    return res.json({ token: secureToken });
-  }
-  const checkToken = jwt.verify(recivedToken, process.env.JWT_TOKEN);
-  const correctToken = jwt.verify(token, process.env.JWT_TOKEN);
-  if (checkToken["pass"] === correctToken["pass"]) {
-    next();
-  } else {
-    res.sendStatus(403);
+      res.cookie("session", secureToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 1000 * 60 * 60 * 30,
+      });
+      return res.json({ token: secureToken });
+    }
+    const checkToken = jwt.verify(recivedToken, process.env.JWT_TOKEN);
+    const correctToken = jwt.verify(token, process.env.JWT_TOKEN);
+
+    if (checkToken["pass"] === correctToken["pass"]) return next();
+    res.status(403).json("Token is incorrect!");
+  } catch (err) {
+    console.error("invalid jwt key", err);
+    res.sendStatus(403).json("jwt token is incorrect");
   }
 };
 
 app.use(authorization);
+app.use("/api", onlyLoggedInUsers);
+function onlyLoggedInUsers(req, res, next) {
+  try {
+    const isUserLogged = req.cookies["user_id"];
+    if (!isUserLogged) return res.status(403).json("unlogged user!");
+    const id = decrypt(isUserLogged, process.env.COOKIES_KEY);
+    if (!id) res.status(403).json("Empty cookies!");
+    next();
+  } catch (err) {
+    console.error("An unauthorized person tries to set cookies \n", err);
+    res
+      .status(403)
+      .json("An unauthorized person tries to set cookies, that is the result");
+  }
+}
 
 app.get("/", (req, res) => {
   res.send("What are you looking at?");
 });
+
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -275,7 +288,7 @@ app.get("/logged-in-user", async (req, res) => {
     const userIsLogged = req.cookies["user_id"];
     if (!userIsLogged) return res.status(204).json("User isn't logged-in!");
     const id = decrypt(userIsLogged, process.env.COOKIES_KEY);
-
+    // Dodać sprawdzenie czy id zostało storzone przez server, czy przez "intruza", każde cookies ma szyfrowanie
     const loadUserData =
       "SELECT id, nick,avatar,banner,date, unqiue_name as unqiueName FROM users where id = ?";
     const userData = new Promise((resolve) => {
@@ -305,7 +318,7 @@ app.get("/logged-in-user", async (req, res) => {
 });
 
 // Get user friends
-app.get("/users/:id", async (req, res) => {
+app.get("/api/users/:id", async (req, res) => {
   const { id } = req.params;
   const dbCommand = "SELECT friendID from user_friends where personID =?";
   const friendsID = await new Promise((resolve) => {
@@ -325,7 +338,7 @@ app.get("/users/:id", async (req, res) => {
 });
 
 // DOWNLOAD DATA FROM USER IF EXIST
-app.get("/user-search/:nick", (req, res) => {
+app.get("/api/user-search/:nick", (req, res) => {
   const { nick } = req.params;
   const dbCommand =
     "SELECT id, nick,avatar,banner,unqiue_name as unqiueName from users where unqiue_name =?";
@@ -349,7 +362,7 @@ async function removeLoggedInUser(res) {
 }
 
 // Add/Remove friend with user firends list
-app.post("/friends-list-change", (req, res) => {
+app.post("/api/friends-list-change", (req, res) => {
   const { action, personID, friendID } = req.body;
   const addUser = "INSERT into user_friends values(null,?,?)";
   const removeUser =
@@ -373,13 +386,13 @@ app.post("/friends-list-change", (req, res) => {
   });
 });
 
-app.post("/logout", async (req, res) => {
+app.post("/api/logout", async (req, res) => {
   await removeLoggedInUser(res);
   res.json("Logout");
 });
 
 // load messages
-app.get("/download-messages/:ownerID/:recipientID/:index", async (req, res) => {
+app.get("/api/download-messages/:ownerID/:recipientID/:index", async (req, res) => {
   const { ownerID, recipientID, index } = req.params;
   const dbValues = [ownerID, recipientID, recipientID, ownerID];
   const numberOfMessagesCommand =
@@ -401,7 +414,7 @@ app.get("/download-messages/:ownerID/:recipientID/:index", async (req, res) => {
   });
 });
 
-app.get("/last-message/:ownerID/:recipientID", (req, res) => {
+app.get("/api/last-message/:ownerID/:recipientID", (req, res) => {
   const { ownerID, recipientID } = req.params;
   const downloadLastMessage =
     "SELECT * FROM messages WHERE ownerID =? AND recipientID =? ORDER BY id DESC LIMIT 1";
@@ -412,7 +425,7 @@ app.get("/last-message/:ownerID/:recipientID", (req, res) => {
 });
 
 // Send Message
-app.post("/send-message", async (req, res) => {
+app.post("/api/send-message", async (req, res) => {
   const { ownerID, recipientID, message } = req.body;
 
   const valuesDB = [ownerID, recipientID, new Date(), message];
@@ -426,7 +439,7 @@ app.post("/send-message", async (req, res) => {
   });
 });
 
-app.put("/edit-profile", async (req, res) => {
+app.put("/api/edit-profile", async (req, res) => {
   try {
     const { name, password, email, id } = req.body;
     const isEmailExistCmd = "SELECT email FROM users where email = ?";
@@ -478,7 +491,7 @@ const acceptableFile = uploadImage.fields([
   { name: "banner", maxCount: 1 },
 ]);
 
-app.post("/edit-images", acceptableFile, async (req, res) => {
+app.post("/api/edit-images", acceptableFile, async (req, res) => {
   try {
     const { avatar, banner } = req.files;
     const { ownerID } = req.body;
@@ -513,7 +526,7 @@ app.post("/edit-images", acceptableFile, async (req, res) => {
   }
 });
 
-app.get("/uploded-images", (req, res) => {
+app.get("/api/uploded-images", (req, res) => {
   const { ownerID } = req.body;
   const getUploadedImgCmd = "SELECT avatar, banner from users where id =?";
   db.query(getUploadedImgCmd, [ownerID], (err, result) => {
@@ -522,7 +535,7 @@ app.get("/uploded-images", (req, res) => {
   });
 });
 
-app.post("/remove-invite", (req, res) => {
+app.post("/api/remove-invite", (req, res) => {
   const { ownerID, recipientID } = req.body;
   const removeInviteCmd =
     "DELETE FROM friendsWaiting where ownerID =? AND recipientID =?";
@@ -533,7 +546,7 @@ app.post("/remove-invite", (req, res) => {
   });
 });
 
-app.post("/send-invite", async (req, res) => {
+app.post("/api/send-invite", async (req, res) => {
   const { personID, friendID } = req.body;
   // TO REMOVE
   // TO REMOVE
@@ -564,7 +577,7 @@ app.post("/send-invite", async (req, res) => {
   });
 });
 
-app.get("/invite-from-friends/:id", (req, res) => {
+app.get("/api/invite-from-friends/:id", (req, res) => {
   const { id } = req.params;
   const laodInviteFromFriendsCmd =
     "SELECT ownerID from friendsWaiting where recipientID =?";
@@ -579,11 +592,11 @@ app.get("/invite-from-friends/:id", (req, res) => {
 // NOT COMPLITED
 // NOT COMPLITED
 // NOT COMPLITED
-app.post("/end-session", (req, res) => {
+app.post("/api/end-session", (req, res) => {
   const addSesssonTime = "INSERT INTO active_user";
 });
 
-app.get("/google-login", (req, res) => {
+app.get("/api/google-login", (req, res) => {
   // const data = JSON.stringify(auth);
   console.log(1);
   res.json(auth);

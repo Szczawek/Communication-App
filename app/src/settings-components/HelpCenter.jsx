@@ -14,7 +14,12 @@ export default function HelpCenter() {
           <div className="">
             <h5>Other:</h5>
             <p>Twitter</p>
-            <p>Github</p>
+            <a
+              href="https://github.com/Szczawek"
+              target="_blank"
+              rel="noopener noreferrer">
+              Github
+            </a>
           </div>
         </footer>
       </header>

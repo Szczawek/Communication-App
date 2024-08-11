@@ -1,3 +1,25 @@
+# IMPORTANT
+# AUTH
+        -- Dodać możliwość logowania dwu-stopniowego:
+                -- wymagać tego przy każdym nowym logowaniu / 5 miesięcy
+                 
+
+
+# Dodać do Auth w server
+
+        --  dodać wygenerowane hasło, żeby nie można było wysyłąć żądań z nieautoryzowanych miejsc
+        -- First Wall:
+                -- dodać sprawdzanie zalogowania przed wysyłaniem żądań na end pointy inny niż login,create-account;
+# logged-in END Potin 
+--// Dodać sprawdzenie czy id zostało storzone przez server, czy przez "intruza", każde cookies ma szyfrowanie
+# Login With Google
+
+        -- Głowne problemy:
+                -- w Google nie ma niczego do wypełnienia unqiue-name, dodać jakoś mechanizm wyboru unqiue-name po zalogowaniu
+                -- google przesyła, czy email jest zweryfikowany, dodać mechanizm wysyłania kodów do potwierdzenia email
+                -- w danych jest zdjęcie użytkownika można z linkiem, zmienić to na link do storage, lub zmienić sposób dodawania zdjęć
+                # correct, nie będzie z tym problemu. Przy tworzeniu konta można dodać obojętnie jaki link, inczej jest z edytowaniem
+
 # ONE
 
 - dodać możliwość wyszukiwania po samej nazwię, gdy nie ma użytownniką z danym unqiue name
@@ -15,7 +37,6 @@
     - Dodać sesje użytkownika(na razie tylko przy wychodzeniu ze strony), po wyjściu aktywuje się event window.addEventListener('beforeunload'). Wyśle on całą date do db
         - "wymaga tego u góry" Przy logowaniu pobrać powiadomienia wszystkich wiadomości, które zostały wysłałane w czasie późniejszy, niż sesja, którą jest dodana do db, po pobraniu usunąć ją
 
-
 # Api
 
 -- UserContection Map() zmienić na db
@@ -31,6 +52,7 @@
 -- dodać w CreateAccount, AccountSettings ikone oka, która pokazuję hasło;
 
 # Secure
+
 -- Aktualnie każdy użytkownik za pomoćą np. POST MAN może czytać każdego wiadomości, zmienić to:
 #idea
 -- błędna: zrobienie pobierania id z cookies
@@ -45,12 +67,13 @@
 -- Wystarczy usunąć cookie i sessionStroage jednocześnie
 -- Trzeba się postarć żeby to zrobić, zrobić #idioto-odporność
 
+# Five
 
-# Five 
-        -- skończyć component do edytowania zdjęć: 
-                -- dodać funckje zmniejszania rozmiaru zdjęć 
-                -- zapisaywać w firebase storage 
+        -- skończyć component do edytowania zdjęć:
+                -- dodać funckje zmniejszania rozmiaru zdjęć
+                -- zapisaywać w firebase storage
                 -- zmienić w storage reguły
 
-# Six 
+# Six
+
         -- W EditProfile, gdy funkcja compresImage wykryje inny format niż image/* dodać komunikat o tym (działa bez tego)

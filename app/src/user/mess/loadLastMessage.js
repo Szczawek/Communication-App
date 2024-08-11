@@ -1,7 +1,7 @@
 export async function loadLastMessage(ownerID, recipientID) {
   try {
     const res = await fetch(
-      `${process.env.VITE_URL}/last-message/${ownerID}/${recipientID}`,
+      `${process.env.VITE_URL}/api/last-message/${ownerID}/${recipientID}`,
       {
         credentials: "include",
         headers: { token: sessionStorage.getItem("session") },
