@@ -2,6 +2,9 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserFunctions } from "../App";
 import { loginWithGoogle } from "../../fireConf";
+import { sendEmailCode } from "./sendEmailCode";
+import { createNewAccount } from "./createNewAccount";
+
 export default function CreateAccount() {
   const { searchLoggedInUser } = useContext(UserFunctions);
   const [loading, setLoading] = useState(false);
@@ -50,7 +53,7 @@ export default function CreateAccount() {
     if (password != confirmPassword)
       return setWarnings((prev) => ({ ...prev, passwordWarning: true }));
     setLoading(true);
-    createNewAccount();
+    accountStatus();
   }
 
   function showPassword() {
@@ -66,36 +69,19 @@ export default function CreateAccount() {
     }
   }
 
-  async function createNewAccount() {
-    const fetchOptions = {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        token: sessionStorage.getItem("session"),
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        avatar: "./images/user.jpg",
-        banner: "./images/banner.jpg",
-        ...accountData,
-      }),
-    };
+  async function accountStatus() {
     try {
-      const res = await fetch(
-        `${process.env.VITE_URL}/create-account`,
-        fetchOptions
-      );
-      if (!res.ok) {
-        if (res.status == 400) {
-          return setWarnings((prev) => ({ ...prev, emailWarning: true }));
-        }
-        throw console.error("Error with server");
-      }
-      setLoading(false);
+      await createNewAccount(accountData, setWarnings);
       await searchLoggedInUser();
       navigate("/info");
     } catch (err) {
-      throw Error(`Error with account-creator: ${err}`);
+      // to change 
+      // to change 
+      // to change 
+      alert("server error")
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   }
   return (

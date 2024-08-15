@@ -71,9 +71,10 @@ export default function App() {
         setLoggedInUser(stdData);
         return;
       }
-      if (!res.ok) return console.error(`Error with server: ${res.status}`);
       const obj = await res.json();
-
+      if (!res.ok) {
+        return console.error(`${obj}: ${res.status}`);
+      }
       setLoggedInUser((prev) => {
         for (const key in prev) {
           if (!obj[key]) {

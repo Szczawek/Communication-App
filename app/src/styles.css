@@ -138,13 +138,16 @@ body {
 }
 
 .navigation .options:is(:hover, :focus, :focus-visible, :focus-within) .avatar,
-.navigation .avatar:is(:hover, :focus, :focus-visible, :focus-within) {
+.navigation
+  .nav_setting
+  li:is(:hover, :focus, :focus-visible, :focus-within)
+  .avatar {
   scale: 1.1;
   filter: brightness(150%);
 }
 
 .avatar img {
-  width: 100%;  
+  width: 100%;
   object-fit: cover;
   border-radius: 50%;
   height: 100%;
@@ -186,6 +189,7 @@ body {
 }
 .nav_setting .avatar-link {
   display: grid;
+  transition: background-color 300ms;
   justify-content: center;
 }
 .nav_setting > .link {
@@ -196,7 +200,7 @@ body {
   cursor: pointer;
 }
 
-.nav_setting .link:is(:hover, :focus, :focus-visible, :focus-within) {
+.nav_setting .link:is(:hover, :focus, :focus-visible, :focus-within), .nav_setting .avatar-link:is(:hover, :focus, :focus-visible, :focus-within) {
   background-color: var(--pink-active-component-color);
 }
 .nav_setting .line {

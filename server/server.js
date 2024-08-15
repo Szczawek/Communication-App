@@ -14,6 +14,8 @@ import multer from "multer";
 import crypto from "crypto";
 import { auth, bucket } from "./firebaseSetup.js";
 import { getDownloadURL } from "firebase-admin/storage";
+import nodemailer from "nodemailer";
+import { google } from "googleapis";
 
 const PORT = 443;
 const app = express();
@@ -200,30 +202,44 @@ app.get("/", (req, res) => {
   res.send("What are you looking at?");
 });
 
-
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-  const getUserPassword = "SELECT password FROM users where email =?";
-
-  const correctUserPassword = await new Promise((resolve) => {
-    db.query(getUserPassword, [email], (err, result) => {
-      if (err) throw Error(`Server can't find password in db: ${err}`);
-      if (!result[0]) return res.status(401).send("Wrong Login");
-      resolve(result[0]["password"]);
+  try {
+    const { email, password } = req.body;
+    const getUserPassword = "SELECT password FROM users where email =?";
+    const correctUserPassword = await new Promise((resolve, reject) => {
+      db.query(getUserPassword, [email], (err, result) => {
+        if (err) throw `Error with db: /login: ${err}`;
+        if (!result[0]) return reject("Wrong Login!");
+        resolve(result[0]["password"]);
+      });
     });
-  });
 
-  const isPasswordCorrect = await bcrypt.compare(password, correctUserPassword);
-  if (!isPasswordCorrect) return res.status(401).send("Bad login!");
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      correctUserPassword
+    );
+    if (!isPasswordCorrect) throw "Wrong Login!";
 
-  //Description, everyone has unqiue email, and unqiue_name. This is the easiest way to find user.
-  const loadUserData = "SELECT * FROM users where email = ?";
-  db.query(loadUserData, [email], (err, result) => {
-    if (err) throw Error(`Error with login db: ${err}`);
-    createSession(res, result[0]["id"]);
-
-    res.send("Logged to account succesfuly");
-  });
+    //Description, everyone has unqiue email, and unqiue_name. This is the easiest way to find user.
+    const loadUserData = "SELECT * FROM users where email = ?";
+    db.query(loadUserData, [email], (err, result) => {
+      if (err) throw `Error with login db: ${err}`;
+      createSession(res, result[0]["id"]);
+      res.send("Logged to account succesfuly");
+    });
+  } catch (err) {
+    // to edit
+    const amount = req.cookies["log_amount"];
+    const value = !amount ? 0 : JSON.parse(amount) + 1;
+    res.cookie("log_amount", JSON.stringify(value), {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+      partitioned: true,
+      maxAge: 1000 * 60 * 60,
+    });
+    res.status(403).json(err);
+  }
 });
 
 app.post("/create-account", async (req, res) => {
@@ -240,6 +256,7 @@ app.post("/create-account", async (req, res) => {
         resolve(result);
       });
     });
+
     if (isUserAlreadyExist[0]) return res.sendStatus(400);
     const encryptedPassword = await bcrypt.hash(password, 10);
     const values = [
@@ -283,6 +300,59 @@ function createSession(res, id) {
   });
 }
 
+// TO DO
+// const oAuthClient = new google.auth.OAuth2(
+//   process.env.CLIENT_ID,
+//   process.env.CLIENT_SECRET)
+// oAuthClient.setCredentials()
+// async function sendEmailCode() {
+
+//   const transporter = nodemailer.createTransport({
+//     host: "smth.ethernal.email",
+//     port: 465,
+//     secure: true,
+//     auth: {
+//       type: "OAUTH2",
+//       emailL: "earthwenus@gmail.com",
+//     },
+//   });
+// }
+
+function randomCode() {
+  let code = "";
+  let count = 0;
+  while (count < 6) {
+    code += Math.floor(Math.random() * 9);
+    count++;
+  }
+  return Number(code);
+}
+
+app.post("/send-email-code", async (req, res) => {
+  const code = randomCode();
+  res.cookie("em_code", JSON.stringify(code), {
+    secure: true,
+    partitioned: true,
+    httpOnly: true,
+    sameSite: "none",
+    maxAge: 1000 * 60 * 60,
+  });
+  res.json(code);
+});
+
+app.post("/check-email-code", (req, res) => {
+  const { code } = req.body;
+  res.clearCookie("em_code", {
+    secure: true,
+    partitioned: true,
+    httpOnly: true,
+    sameSite: "none",
+    maxAge: 1000 * 60 * 60,
+  });
+
+  res.json("ok");
+});
+
 app.get("/logged-in-user", async (req, res) => {
   try {
     const userIsLogged = req.cookies["user_id"];
@@ -313,7 +383,7 @@ app.get("/logged-in-user", async (req, res) => {
     res.json({ ...data, friends: friendsList });
   } catch (err) {
     console.error(`Error with /logged-in-user route: ${err}`);
-    res.sendStatus(403);
+    res.status(403).json(`Error in with check if user is logged! ${err}`);
   }
 });
 
@@ -392,27 +462,30 @@ app.post("/api/logout", async (req, res) => {
 });
 
 // load messages
-app.get("/api/download-messages/:ownerID/:recipientID/:index", async (req, res) => {
-  const { ownerID, recipientID, index } = req.params;
-  const dbValues = [ownerID, recipientID, recipientID, ownerID];
-  const numberOfMessagesCommand =
-    "SELECT COUNT(id) as messagesNumber FROM messages where ownerID =? AND recipientID = ? OR ownerID =? AND recipientID =?";
-  const messagesNumber = await new Promise((resolve) => {
-    db.query(numberOfMessagesCommand, dbValues, (err, result) => {
-      if (err) throw Error(`Error with downloads-messages: ${err}`);
-      resolve(result[0]);
+app.get(
+  "/api/download-messages/:ownerID/:recipientID/:index",
+  async (req, res) => {
+    const { ownerID, recipientID, index } = req.params;
+    const dbValues = [ownerID, recipientID, recipientID, ownerID];
+    const numberOfMessagesCommand =
+      "SELECT COUNT(id) as messagesNumber FROM messages where ownerID =? AND recipientID = ? OR ownerID =? AND recipientID =?";
+    const messagesNumber = await new Promise((resolve) => {
+      db.query(numberOfMessagesCommand, dbValues, (err, result) => {
+        if (err) throw Error(`Error with downloads-messages: ${err}`);
+        resolve(result[0]);
+      });
     });
-  });
 
-  const downloadMessagesCommand = `SELECT * FROM messages where ownerID =? AND recipientID =? OR ownerID =? AND recipientID =? ORDER BY id DESC LIMIT 20 OFFSET ${index}`;
-  db.query(downloadMessagesCommand, dbValues, (err, result) => {
-    if (err) throw Error(`Error with downloads-messages: ${err}`);
-    res.json({
-      value: result[0] ? result.reverse() : result,
-      limit: messagesNumber["messagesNumber"],
+    const downloadMessagesCommand = `SELECT * FROM messages where ownerID =? AND recipientID =? OR ownerID =? AND recipientID =? ORDER BY id DESC LIMIT 20 OFFSET ${index}`;
+    db.query(downloadMessagesCommand, dbValues, (err, result) => {
+      if (err) throw Error(`Error with downloads-messages: ${err}`);
+      res.json({
+        value: result[0] ? result.reverse() : result,
+        limit: messagesNumber["messagesNumber"],
+      });
     });
-  });
-});
+  }
+);
 
 app.get("/api/last-message/:ownerID/:recipientID", (req, res) => {
   const { ownerID, recipientID } = req.params;

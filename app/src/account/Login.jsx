@@ -54,7 +54,7 @@ export default function Login() {
       setLoading(false);
 
       if (!res.ok) {
-        if (res.status === 401) return setWarning(true);
+        if (res.status === 403) return setWarning(true);
         return console.error(`Error with login: ${res.status}}`);
       }
       await searchLoggedInUser();

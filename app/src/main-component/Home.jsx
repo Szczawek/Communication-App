@@ -3,6 +3,7 @@
   import useInfinityScroll from "./useInfinityScroll";
   import "./home.css";
 
+
   export default function Home({ id }) {
     const elementToSpy = useRef();
     const { value, allValueLoaded, setIsElementSet, setValue } =

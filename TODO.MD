@@ -8,8 +8,7 @@
 # Dodać do Auth w server
 
         --  dodać wygenerowane hasło, żeby nie można było wysyłąć żądań z nieautoryzowanych miejsc
-        -- First Wall:
-                -- dodać sprawdzanie zalogowania przed wysyłaniem żądań na end pointy inny niż login,create-account;
+
 # logged-in END Potin 
 --// Dodać sprawdzenie czy id zostało storzone przez server, czy przez "intruza", każde cookies ma szyfrowanie
 # Login With Google
@@ -46,10 +45,7 @@
 -- Bez żadnego powodu na firefox po kliknięciu enter by otworzył sub okno w na, to aktywuję onBlur w ul(zamyka okno) #50% powodzenia naprawy
 
 # Settings
-
--- Zrobić w CreateAcount, AccountSetting drugi input password na potwierdzenia prawidłowości hasło;
 -- W AccountSetting w puste inputy do zmiany danych stawić aktualne dane;
--- dodać w CreateAccount, AccountSettings ikone oka, która pokazuję hasło;
 
 # Secure
 
@@ -67,13 +63,15 @@
 -- Wystarczy usunąć cookie i sessionStroage jednocześnie
 -- Trzeba się postarć żeby to zrobić, zrobić #idioto-odporność
 
-# Five
-
-        -- skończyć component do edytowania zdjęć:
-                -- dodać funckje zmniejszania rozmiaru zdjęć
-                -- zapisaywać w firebase storage
-                -- zmienić w storage reguły
-
 # Six
 
         -- W EditProfile, gdy funkcja compresImage wykryje inny format niż image/* dodać komunikat o tym (działa bez tego)
+
+# Seven 
+        -- Dodać do wszystkiego limitu:
+                -- max kont stworzonych jednego dnia 5;
+                -- max prób logowania się przez 1h 10 razy;
+                -- max wysłanych wiadomości 200 przez jeden dzień;
+# Eight 
+        -- Poprawić inputy w create-account/Account-setting, żeby unqiue name nie mogło mieć specjalnych znaków, spacji 
+

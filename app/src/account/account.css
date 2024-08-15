@@ -52,22 +52,21 @@
 
 /* GOOGLE BTN */
 
-
-.dif-sing-in{
+.dif-sing-in {
   display: grid;
-  grid-template-columns: repeat(2,max-content);
+  grid-template-columns: repeat(2, max-content);
   gap: 1rem;
   width: max-content;
   position: absolute;
   right: 1rem;
-  bottom: .2rem;
+  bottom: 0.2rem;
   background-color: rgb(29, 24, 24);
   padding: var(--input-padding);
   border-radius: var(--input-border-r);
   align-items: center;
-  transition: filter,box-shadow,scale, 300ms;
+  transition: filter, box-shadow, scale, 300ms;
 }
-.dif-sing-in:is(:hover,:focus,:focus-visible,:focus-within) {
+.dif-sing-in:is(:hover, :focus, :focus-visible, :focus-within) {
   filter: brightness(50%);
   box-shadow: 0 0 1rem red;
   scale: 1.1;
@@ -203,8 +202,8 @@
   bottom: 0;
 }
 @media (width < 417px) {
-  .account .container{
-height: 100vh;
+  .account .container {
+    height: 100vh;
   }
   .account form {
     max-width: calc(100vw - 4px);
@@ -212,4 +211,36 @@ height: 100vh;
   .account .panel {
     padding-inline: 1rem;
   }
+}
+
+/* CONFIRM CODE */
+.code-container {
+  display: grid;
+  max-width: max-content;
+  gap: 1rem;
+  place-content: center;
+  grid-template-columns: repeat(6, 1fr);
+}
+.confirm-code .code-label {
+  aspect-ratio: 1/1;
+  width: 4rem;
+  display: grid;
+}
+.confirm-code .code-label input {
+  border: 2px solid yellow;
+  text-align: center;
+  border-radius: .2rem;
+  font-weight: bold;
+  box-shadow: 0 0 2rem -.5rem pink;
+  font-size: 1.8rem;
+  color: black;
+  background-color: rgb(238, 29, 64);
+  width: inherit;
+  transition: filter,scale,box-shadow, var(--transition-std);
+}
+
+.confirm-code .code-label input:is(:hover,:focus,:focus-visible,:focus-within) {
+  filter: brightness(150%);
+  scale: 1.1;
+  box-shadow: 0 0 2rem pink;
 }
