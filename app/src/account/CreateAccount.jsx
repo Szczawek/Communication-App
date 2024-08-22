@@ -13,7 +13,7 @@ export default function CreateAccount() {
     password: "",
     confirmPassword: "",
     email: "",
-    name: "",
+    nick: "",
     unqiueName: "",
   });
   const [warnings, setWarnings] = useState({
@@ -100,7 +100,7 @@ export default function CreateAccount() {
               value={accountData.nick}
               onChange={setFromData}
               autoComplete={"off"}
-              name="name"
+              name="nick"
               maxLength={25}
             />
           </label>

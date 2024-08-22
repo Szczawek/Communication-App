@@ -24,8 +24,8 @@ const UserFunctions = createContext();
 
 const stdData = {
   nick: "User",
-  avatar: "./images/user.jpg",
-  banner: "./images/banner.jpg",
+  avatar: "/images/user.jpg",
+  banner: "/images/banner.jpg",
   unqiueName: "#9132",
   id: 0,
   friends: [],
@@ -58,7 +58,6 @@ export default function App() {
       console.error(err);
     }
   }
-
   async function searchLoggedInUser() {
     try {
       const res = await fetch(`${process.env.VITE_URL}/logged-in-user`, {

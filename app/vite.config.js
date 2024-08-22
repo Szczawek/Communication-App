@@ -6,6 +6,8 @@ import "dotenv/config";
 export default defineConfig({
   plugins: [react()],
   server: {
+    host: "127.0.0.1",
+    open: true,
     https: {
       key: process.env.KEY_SSH,
       cert: process.env.CERT_SSH,

@@ -17,7 +17,7 @@ import { getDownloadURL } from "firebase-admin/storage";
 import nodemailer from "nodemailer";
 import { google } from "googleapis";
 
-const PORT = 443;
+const PORT = process.env.PORT;
 const app = express();
 
 const db = mysql.createConnection({
@@ -76,22 +76,26 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: [
-      "https://localhost:5173",
-      "https://communication-app-d664f.web.app",
-    ],
+    origin: [process.env.LOCAL_ADDRESS, process.env.CLIENT_ADDRESS],
     credentials: true,
   })
 );
+
 app.use(
   helmet({
-    contentSecurityPolicy: {
-      directives: {
-        "default-src": ["'self'"],
-        "img-src": ["'self'", "blob:"],
-        "script-src": ["'self'"],
-      },
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+    frameguard: {
+      action: "deny",
     },
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true,
+    },
+    hidePoweredBy: true,
+    referrerPolicy: { policy: "no-referrer" },
+    xssFilter: true,
   })
 );
 
@@ -100,6 +104,7 @@ const options = {
   key: process.env.KEY_SSH,
   cert: process.env.CERT_SSH,
 };
+
 const server = https.createServer(options, app);
 
 const wss = new WebSocketServer({
@@ -148,8 +153,12 @@ let count = 0;
 // First wall
 const authorization = (req, res, next) => {
   try {
-    if (count >= 1000)
-      return res.status(403).json("Server has reached his limit!");
+    if (count >= 500) {
+      server.close(() => {
+        console.log("Limit!");
+        return res.status(403).json("Server has reached his limit!");
+      });
+    }
     count++;
     const token = req.cookies["session"];
     const recivedToken = req.headers.token;
@@ -199,6 +208,7 @@ function onlyLoggedInUsers(req, res, next) {
 }
 
 app.get("/", (req, res) => {
+  console.log(req.headers);
   res.send("What are you looking at?");
 });
 
@@ -260,8 +270,8 @@ app.post("/create-account", async (req, res) => {
     if (isUserAlreadyExist[0]) return res.sendStatus(400);
     const encryptedPassword = await bcrypt.hash(password, 10);
     const values = [
-      avatar,
-      banner,
+      "/images/avatar.jpg",
+      "/images/baner.jpg",
       nick,
       unqiueName,
       encryptedPassword,
@@ -299,24 +309,6 @@ function createSession(res, id) {
     maxAge: 1000 * 60 * 60 * 24 * 30,
   });
 }
-
-// TO DO
-// const oAuthClient = new google.auth.OAuth2(
-//   process.env.CLIENT_ID,
-//   process.env.CLIENT_SECRET)
-// oAuthClient.setCredentials()
-// async function sendEmailCode() {
-
-//   const transporter = nodemailer.createTransport({
-//     host: "smth.ethernal.email",
-//     port: 465,
-//     secure: true,
-//     auth: {
-//       type: "OAUTH2",
-//       emailL: "earthwenus@gmail.com",
-//     },
-//   });
-// }
 
 function randomCode() {
   let code = "";
@@ -691,7 +683,7 @@ wss.on("connection", (ws, req) => {
 
 server.listen(PORT, (err) => {
   if (err) throw err;
-  console.log(`https://localhost:${PORT}`);
+  console.log(`https://127.0.0.1:${PORT}`);
 });
 
 export const api = functions

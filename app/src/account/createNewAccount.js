@@ -6,11 +6,7 @@ async function createNewAccount(accountData, setWarnings) {
       token: sessionStorage.getItem("session"),
     },
     credentials: "include",
-    body: JSON.stringify({
-      avatar: "./images/user.jpg",
-      banner: "./images/banner.jpg",
-      ...accountData,
-    }),
+    body: JSON.stringify(accountData),
   };
   try {
     const res = await fetch(
