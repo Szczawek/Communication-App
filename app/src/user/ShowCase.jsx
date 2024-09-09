@@ -9,6 +9,7 @@ export default function ShowCase({ user, loggedInUser, changeFriendsLis }) {
     if (loggedInUser["id"] === id) return;
     setFriendAccount(loggedInUser["friends"].includes(id));
   }, [user, loggedInUser]);
+
   return (
     <div className="show-case">
       <div className="baner">

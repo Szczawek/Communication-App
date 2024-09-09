@@ -1,3 +1,9 @@
+# ZDJĘCIA 
+# Visaul Only
+        -- Dla lepszego "USER PERFORMENCE" można zrobić dwa pobrania zdjęcie, jedno te co ma być docelowe, drugie copia orginału pomniejszona do najmniejszego rozmiaru zablurowana. 
+        -- Copia będzie 100x mniej ważyć, szybciej się załaduję 
+
+
 # IMPORTANT
 # AUTH
         -- Dodać możliwość logowania dwu-stopniowego:
@@ -75,3 +81,6 @@
 # Eight 
         -- Poprawić inputy w create-account/Account-setting, żeby unqiue name nie mogło mieć specjalnych znaków, spacji 
 
+# nine 
+-- Po wysłaniu email z codem, gdy użytkownik wejdzie w link stara karta strony przestaje działa
+-- Nie zmienić narazie 

@@ -4,7 +4,8 @@ export default function useWebSocketTunel(id, menageNotificaion) {
   const [wss, setWss] = useState();
   useEffect(() => {
     if (id === 0) return;
-    const wss = new WebSocket(`wss://${process.env.VITE_DOMAIN}/?userID=${id}`);
+    console.log(1)
+    const wss = new WebSocket(`wss://${process.env.VITE_WS_DOMAIN}/?user=${id}`);
     setWss(wss);
     wss.onopen = (e) => {
       console.log("conncected");

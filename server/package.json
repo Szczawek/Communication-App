@@ -4,8 +4,9 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js",
-    "deploy": "firebase deploy --only functions"
+    "start": "start https://127.0.0.1 & nodemon server.js",
+    "next": "nodemon content/wss/webSocketServer.js",
+    "deploy": "firebase deploy --only functions:api"
   },
   "engines": {
     "node": "22"
@@ -21,16 +22,17 @@
     "firebase": "^10.12.4",
     "firebase-admin": "^12.1.1",
     "firebase-auth": "^0.1.2",
-    "firebase-functions": "^5.0.1",
+    "firebase-functions": "^5.1.0",
     "firebase-storage": "^1.1.4",
     "googleapis": "^140.0.1",
     "helmet": "^7.1.0",
     "https": "^1.0.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
-    "mysql": "^2.18.1",
+    "mysql2": "^3.11.0",
     "nodemailer": "^6.9.14",
     "nodemon": "^3.1.0",
+    "pg": "^8.12.0",
     "redis": "^4.6.14",
     "sqlite3": "^5.1.7",
     "ws": "^8.17.0"

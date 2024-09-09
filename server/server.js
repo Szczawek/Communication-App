@@ -1,34 +1,31 @@
 import express from "express";
-import cors from "cors";
 import "dotenv/config";
 import https from "https";
-import mysql from "mysql";
 import bcrypt from "bcrypt";
-import rateLimit from "express-rate-limit";
-import helmet from "helmet";
 import { WebSocketServer } from "ws";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import functions from "firebase-functions";
 import multer from "multer";
-import crypto from "crypto";
 import { auth, bucket } from "./firebaseSetup.js";
 import { getDownloadURL } from "firebase-admin/storage";
-import nodemailer from "nodemailer";
+import { sendEmail } from "./content/sendEmail.js";
 import { google } from "googleapis";
+import {
+  corsOptions,
+  helemtOptions,
+  limitOptions,
+} from "./content/api-config/config.js";
+import { confirmCodeHTML } from "./content/confirmCodeHTML.js";
+import { db } from "./content/api-config/dbConfig.js";
+import {
+  confirmEmailCode,
+  encrypt,
+  decrypt,
+} from "./content/api-config/hashFunctions.js";
 
 const PORT = process.env.PORT;
 const app = express();
-
-const db = mysql.createConnection({
-  database: process.env.DB_DATABASE,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  host: process.env.DB_HOST,
-  ssl: {
-    ca: process.env.DB_SSL,
-  },
-});
 
 // WSS ID
 const userConnections = new Map();
@@ -56,53 +53,19 @@ function filterImage(req, file, cb) {
   }
 }
 
-db.connect((err) => {
-  if (err) return console.error(`Error with db: ${err}`);
-  console.log("DB MySQL works well!");
-});
-
 // SERVER config
 app.set("trust proxy", 1);
 
-const limit = rateLimit({
-  windowMs: 1000 * 60 * 60,
-  limit: 200,
-  standardHeaders: "draft-7",
-  legacyHeaders: false,
-});
-
-app.use(limit);
+app.use(limitOptions);
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: [process.env.LOCAL_ADDRESS, process.env.CLIENT_ADDRESS],
-    credentials: true,
-  })
-);
+app.use(corsOptions);
+app.use(helemtOptions);
 
-app.use(
-  helmet({
-    contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false,
-    frameguard: {
-      action: "deny",
-    },
-    hsts: {
-      maxAge: 31536000,
-      includeSubDomains: true,
-      preload: true,
-    },
-    hidePoweredBy: true,
-    referrerPolicy: { policy: "no-referrer" },
-    xssFilter: true,
-  })
-);
-
-// HTTPS config
+// HTTPS SSL
 const options = {
-  key: process.env.KEY_SSH,
-  cert: process.env.CERT_SSH,
+  key: process.env.SSL_KEY,
+  cert: process.env.SSL_CERT,
 };
 
 const server = https.createServer(options, app);
@@ -110,42 +73,6 @@ const server = https.createServer(options, app);
 const wss = new WebSocketServer({
   server,
 });
-
-// For cookies/other importat things
-function encrypt(text, encryptionKey) {
-  const iv = crypto.randomBytes(32);
-  const cipher = crypto.createCipheriv(
-    "aes-256-gcm",
-    Buffer.from(encryptionKey, "base64"),
-    iv
-  );
-  let encrypted = cipher.update(text, "utf8", "hex");
-  encrypted += cipher.final("hex");
-  const tag = cipher.getAuthTag();
-  const hasedData =
-    iv.toString("hex") + ":" + encrypted + ":" + tag.toString("hex");
-  return hasedData;
-}
-
-function decrypt(encryptedText, encryptionKey) {
-  try {
-    const parts = encryptedText.split(":");
-    const iv = Buffer.from(parts[0], "hex");
-    const encrypted = parts[1];
-    const tag = Buffer.from(parts[2], "hex");
-    const decipher = crypto.createDecipheriv(
-      "aes-256-gcm",
-      Buffer.from(encryptionKey, "base64"),
-      iv
-    );
-    decipher.setAuthTag(tag);
-    let decrypted = decipher.update(encrypted, "hex", "utf8");
-    decrypted += decipher.final("utf8");
-    return decrypted;
-  } catch (err) {
-    throw Error(`Wrong password: ${err}`);
-  }
-}
 
 // SIMPLE/WISE
 // # Only for local testing/protection against overflow requests
@@ -207,9 +134,26 @@ function onlyLoggedInUsers(req, res, next) {
   }
 }
 
-app.get("/", (req, res) => {
-  console.log(req.headers);
-  res.send("What are you looking at?");
+app.get("/", async (req, res) => {
+  try {
+    const { ip } = req;
+    const find = "SELECT * FROM collector where ip =?";
+    await new Promise((res, rej) => {
+      db.query(find, [ip], (err, result) => {
+        if (err || result[0]) return rej();
+        res();
+      });
+    });
+    const command = "INSERT INTO collector(id,ip) VALUES(NULL,?)";
+    db.query(command, [req.ip], (err) => {
+      if (err) console.log("err");
+      console.log(req.ip);
+    });
+  } catch (err) {
+    console.log(err);
+  } finally {
+    res.send("What are you looking at?");
+  }
 });
 
 app.post("/login", async (req, res) => {
@@ -270,8 +214,8 @@ app.post("/create-account", async (req, res) => {
     if (isUserAlreadyExist[0]) return res.sendStatus(400);
     const encryptedPassword = await bcrypt.hash(password, 10);
     const values = [
-      "/images/avatar.jpg",
-      "/images/baner.jpg",
+      "/images/user.jpg",
+      "/images/banner.jpg",
       nick,
       unqiueName,
       encryptedPassword,
@@ -320,18 +264,15 @@ function randomCode() {
   return Number(code);
 }
 
-app.post("/send-email-code", async (req, res) => {
-  const code = randomCode();
-  res.cookie("em_code", JSON.stringify(code), {
-    secure: true,
-    partitioned: true,
-    httpOnly: true,
-    sameSite: "none",
-    maxAge: 1000 * 60 * 60,
-  });
-  res.json(code);
+app.post("/send-email-code", (req, res) => {
+  const { user, subject } = req.body;
+  const data = {
+    user,
+    subject,
+    html: confirmCodeHTML(confirmEmailCode()),
+  };
+  sendEmail(res, data);
 });
-
 app.post("/check-email-code", (req, res) => {
   const { code } = req.body;
   res.clearCookie("em_code", {
@@ -667,19 +608,19 @@ app.get("/api/google-login", (req, res) => {
   res.json(auth);
 });
 
-wss.on("connection", (ws, req) => {
-  const id = new URL(req.url, `wss://${req.headers.host}`).searchParams.get(
-    "userID"
-  );
+// wss.on("connection", (ws, req) => {
+//   const id = new URL(req.url, `wss://${req.headers.host}`).searchParams.get(
+//     "userID"
+//   );
 
-  console.log("WBSOCKET connected!");
+//   console.log("WBSOCKET connected!");
 
-  userConnections.set(id, ws);
-  ws.on("close", () => {
-    console.log("connection was closed!");
-    userConnections.delete(id);
-  });
-});
+//   userConnections.set(id, ws);
+//   ws.on("close", () => {
+//     console.log("connection was closed!");
+//     userConnections.delete(id);
+//   });
+// });
 
 server.listen(PORT, (err) => {
   if (err) throw err;

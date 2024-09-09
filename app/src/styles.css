@@ -200,7 +200,8 @@ body {
   cursor: pointer;
 }
 
-.nav_setting .link:is(:hover, :focus, :focus-visible, :focus-within), .nav_setting .avatar-link:is(:hover, :focus, :focus-visible, :focus-within) {
+.nav_setting .link:is(:hover, :focus, :focus-visible, :focus-within),
+.nav_setting .avatar-link:is(:hover, :focus, :focus-visible, :focus-within) {
   background-color: var(--pink-active-component-color);
 }
 .nav_setting .line {
@@ -275,6 +276,12 @@ main > .info p {
     font-size: 0.8rem;
   }
 
+  .navigation {
+    height: 3.5rem;
+  }
+  .open-menu img {
+    height: 2rem;
+  }
   .navigation .links-list {
     padding-block: 2rem;
     top: 0;
@@ -299,13 +306,13 @@ main > .info p {
   }
   @keyframes spin {
     25% {
-      translate: -2rem 1rem;
+      translate: -2rem 0.5rem;
     }
     50% {
-      translate: -4rem 0.5rem;
+      translate: -4rem 0.25rem;
     }
     75% {
-      translate: -2rem -1rem;
+      translate: -2rem -0.5rem;
     }
     100% {
       translate: 0 0;
