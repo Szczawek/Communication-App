@@ -27,7 +27,7 @@ dist-ssr
 *.env
 *.env.prod
 *.key
-*.sql
+senderson.sql
 public
 # Firebase cache
 .firebase/

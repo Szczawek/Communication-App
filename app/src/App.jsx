@@ -20,6 +20,7 @@ const Login = lazy(() => import("./account/Login"));
 const Settings = lazy(() => import("./main-component/Settings"));
 const ReturnToPath = lazy(() => import("./main-component/ReturnToPath"));
 const MenageFriends = lazy(() => import("./main-component/MenageFriedns"));
+import ErrorComponent from "./main-component/ErrorComponent";
 const UserFunctions = createContext();
 
 const stdData = {
@@ -36,6 +37,7 @@ export default function App() {
   const effect = useRef(false);
   const [loading, setLoading] = useState(true);
   const [loggedInUser, setLoggedInUser] = useState(stdData);
+  const [serverError, setServerError] = useState(false);
   const wss = useWebSocketTunel(loggedInUser["id"], menageNotificaion);
 
   useEffect(() => {
@@ -55,6 +57,9 @@ export default function App() {
       }
       await searchLoggedInUser();
     } catch (err) {
+      setLoggedInUser(stdData);
+      setLoading(false);
+      setServerError(true);
       console.error(err);
     }
   }
@@ -72,6 +77,7 @@ export default function App() {
       }
       const obj = await res.json();
       if (!res.ok) {
+        setServerError(true);
         return console.error(`${obj}: ${res.status}`);
       }
       setLoggedInUser((prev) => {
@@ -136,9 +142,12 @@ export default function App() {
     // setLoggedInUser(prev => ({...prev}))
   }
 
+  if (loading) return <p className="loading-app">Loading ...</p>;
+
+  if (serverError) return <ErrorComponent />;
   return (
     <BrowserRouter>
-      <Suspense fallback={<p className="full-screen loading">Loading...</p>}>
+      <Suspense fallback={<p className="full-screen loading">Loading ...</p>}>
         <UserFunctions.Provider
           value={{
             notification,
@@ -149,7 +158,7 @@ export default function App() {
             menageNotificaion,
             editProfileImages,
           }}>
-          {loggedInUser["id"] === 0 && !loading ? (
+          {loggedInUser["id"] === 0 ? (
             <Routes>
               <Route path="/account" element={<Account />}>
                 <Route index element={<Login />} />

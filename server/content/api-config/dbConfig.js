@@ -10,10 +10,5 @@ const db = mysql2.createConnection({
     ca: process.env.DB_SSL,
   },
 });
-
-db.connect((err) => {
-    if (err) return console.error(`Error with db: ${err}`);
-    console.log("DB MySQL works well!");
-  });
   
 export {db}

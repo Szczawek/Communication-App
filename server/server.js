@@ -55,7 +55,6 @@ function filterImage(req, file, cb) {
 
 // SERVER config
 app.set("trust proxy", 1);
-
 app.use(limitOptions);
 app.use(express.json());
 app.use(cookieParser());
@@ -72,6 +71,15 @@ const server = https.createServer(options, app);
 
 const wss = new WebSocketServer({
   server,
+});
+
+db.connect((err) => {
+  if (err) {
+    console.error(`Error with db: ${err}`);
+    server.close()
+    return;
+  }
+  console.log("DB MySQL works well!");
 });
 
 // SIMPLE/WISE

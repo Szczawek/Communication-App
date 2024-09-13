@@ -1,0 +1,6 @@
+services:
+  server:
+    build:
+      context: server/.
+    ports:
+      - 443:443

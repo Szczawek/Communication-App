@@ -6,6 +6,7 @@ import "dotenv/config";
 const corsOptions = cors({
   origin: [
     "https://127.0.0.1:5173",
+    "https://red-town.net",
     process.env.CLIENT_ADDRESS,
     process.env.SECOND_LOCAL_ADDRESS,
     process.env.LOCAL_NETWORK,

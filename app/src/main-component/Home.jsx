@@ -16,9 +16,6 @@
     }, []);
     return (
       <div className="home">
-        <p className="ester-egg">
-          You can move your friends where you want them to be placed!
-        </p>
         <ul className="friends-list">
           {value.map((e, i) => {
             return (
@@ -31,9 +28,9 @@
             );
           })}
         </ul>
-        {!allValueLoaded && <p ref={setRef}>Loading...</p>}
+        {!allValueLoaded && <p className="loading-home" ref={setRef}>Loading ...</p>}
         {!value[0] && allValueLoaded ? (
-          <p className="empty-list">Empty...</p>
+          <p className="empty-list">Empty ...</p>
         ) : null}
       </div>
     );

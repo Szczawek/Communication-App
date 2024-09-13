@@ -1,7 +1,9 @@
 .home {
-  padding-top: 1rem;
   display: grid;
-  justify-content: center;
+  min-height: 100%;
+  padding-top: 1rem;
+  position: relative;
+  place-content: center;
   text-align: center;
 }
 .home .friends-list {
@@ -13,4 +15,18 @@
 .home .profile-link .avatar {
   aspect-ratio: 1/1;
   height: 4rem;
+}
+
+.home .empty-list {
+  font-size: 1.5rem;
+}
+
+.home .loading-home {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-content: center;
+  height: 100%;
 }

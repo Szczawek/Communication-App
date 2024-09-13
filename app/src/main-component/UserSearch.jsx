@@ -13,7 +13,7 @@ export default function UserSearch({ loggedInUser, changeFriendsLis }) {
   }
 
   if (loading) return <div className="loading">Loading...</div>;
-  if (!user) return <div className="not_found">User not found...</div>;
+  if (!user) return <div className="not_found">User not found ...</div>;
   return (
     <div className="user">
       <Routes>

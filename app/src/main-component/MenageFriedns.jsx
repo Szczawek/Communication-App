@@ -36,7 +36,7 @@
           {!value[0] && allValueLoaded ? (
             <p>There are no friends on your list...</p>
           ) : null}
-          {!allValueLoaded && <p ref={setRef}>Loading...</p>}
+          {!allValueLoaded && <p className="loading-fr" ref={setRef}>Loading ...</p>}
         </ul>
       </div>
     );

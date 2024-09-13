@@ -1,9 +1,9 @@
 .menage-friends {
   display: grid;
+  position: relative;
   text-align: center;
-  grid-template-columns: repeat(3,1fr);
-  justify-items: center;
-align-items: center;
+  height: 100%;
+  grid-template-columns: repeat(3, 1fr);
   padding-block: 2rem;
 }
 
@@ -25,7 +25,7 @@ align-items: center;
 }
 .friend-info {
   display: grid;
-  grid-template-columns: 1fr max-content; 
+  grid-template-columns: 1fr max-content;
 }
 .menage-friends .avatar {
   width: 4rem;
@@ -46,4 +46,14 @@ align-items: center;
 }
 .remove-friend:is(:hover, :focus, :focus-within, :focus-visible) {
   background-color: #350444;
+}
+
+.menage-friends .loading-fr {
+  display: grid;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  place-content: center;
 }

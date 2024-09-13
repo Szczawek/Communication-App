@@ -73,8 +73,17 @@ body {
 #root {
   display: grid;
   grid-template-rows: max-content 1fr;
-  height: 100vh;
+  min-height: 100vh;
 }
+
+#root > .loading-app {
+  display: grid;
+  place-content: center ;
+  height: 100vh;
+  width: 100%;
+  font-size: 2rem;
+}
+
 /* All loading in the site  */
 .loading {
   display: grid;
@@ -237,10 +246,16 @@ main > .info {
   place-content: center;
 }
 main > .info h1 {
-  text-align: center;
+  text-align: left;
+  color: lightgreen;
+  font-size: 2rem;
 }
-main > .info p {
-  font-size: 1.8rem;
+
+main .info .descryption {
+  font-size: 1.4rem;
+}
+main .info .adt {
+  font-size: 2rem;
   font-weight: bold;
   color: lightgreen;
   text-align: right;
@@ -272,8 +287,15 @@ main > .info p {
 }
 
 @media (width < 560px) {
-  main > .info {
-    font-size: 0.8rem;
+  main .info .adt,
+  main .info .descryption,
+  main > .info h1 {
+    text-align: center;
+  }
+
+  main .info .adt,
+  main > .info h1 {
+    font-size: 1.5rem;
   }
 
   .navigation {
