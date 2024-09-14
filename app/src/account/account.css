@@ -31,7 +31,27 @@
 }
 .account form {
   height: 100%;
-  background-color: #501650;
+  background: rgb(34, 155, 228);
+  background: -moz-linear-gradient(
+    333deg,
+    rgba(34, 155, 228, 1) 0%,
+    rgba(34, 4, 29, 1) 82%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    333deg,
+    rgba(34, 155, 228, 1) 0%,
+    rgba(34, 4, 29, 1) 82%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  background: linear-gradient(
+    333deg,
+    rgba(34, 155, 228, 1) 0%,
+    rgba(34, 4, 29, 1) 82%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#229be4",endColorstr="#000000",GradientType=1);
+
   width: clamp(416px, 60vw, 680px);
   display: grid;
   position: relative;
@@ -39,14 +59,42 @@
   grid-auto-rows: max-content;
   row-gap: 2rem;
   text-align: center;
+  box-shadow: 0 -1rem 8rem black;
+}
+
+.account form header {
+  padding: 0.25rem 1rem;
+  border-radius: 0.5rem;
+  animation: title-spining infinite 12s;
 }
 
 .account form h2 {
-  background-image: linear-gradient(-45deg, #f00 0%, rgb(100, 192, 38) 100%);
+  background: rgb(193, 62, 62);
+  background: -moz-linear-gradient(
+    45deg,
+    rgba(193, 62, 62, 1) 0%,
+    rgba(193, 62, 102, 1) 12%,
+    rgba(255, 231, 0, 1) 70%,
+    rgba(255, 192, 0, 1) 89%
+  );
+  background: -webkit-linear-gradient(
+    45deg,
+    rgba(193, 62, 62, 1) 0%,
+    rgba(193, 62, 102, 1) 12%,
+    rgba(255, 231, 0, 1) 70%,
+    rgba(255, 192, 0, 1) 89%
+  );
+  background: linear-gradient(
+    45deg,
+    rgba(193, 62, 62, 1) 0%,
+    rgba(193, 62, 102, 1) 12%,
+    rgba(255, 231, 0, 1) 70%,
+    rgba(255, 192, 0, 1) 89%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#c13e3e",endColorstr="#ffc000",GradientType=1);
   color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
-  animation: title-spining infinite 12s;
   font-size: 2.5rem;
 }
 
@@ -131,7 +179,14 @@
   border-radius: var(--input-border-r);
   padding: var(--input-padding);
 }
-
+.account input::placeholder {
+  transition: translate, font-size,color, var(--transition-std);
+}
+.account input:is(:hover, :focus, :focus-visible, :focus-within)::placeholder {
+  font-size: 0.6rem;
+  color: pink;
+  translate: 0 -0.5rem;
+}
 .account .confirm {
   padding: var(--input-padding);
   border-radius: var(--input-border-r);
@@ -143,12 +198,14 @@
   padding-block: 0.4rem;
   font-weight: 200;
   margin-inline: auto;
-  border: 4px solid transparent;
+  border: 4px solid #22e822;
+  box-shadow: 0rem 1.5rem 1rem -1rem black;
   background-color: var(--confirm-color);
 }
 
 .account .confirm:is(:hover, :focus) {
-  background-color: #4dff4d;
+  background-color: rgb(158, 42, 42);
+  border-color: var(--cancel-color);
   scale: 1.1;
 }
 
@@ -162,45 +219,46 @@
 }
 
 .account .panel {
-  background-color: #280b28;
+  background-color: #2263f0;
   padding-inline: 1rem;
 }
 .account .panel .panel-list {
   display: grid;
   font-weight: 800;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, max-content);
   text-align: center;
   border-radius: 0 0 0.4rem 0.4rem;
   padding-block: 1rem;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .account .panel .link {
   padding-block: 0.2rem;
+  transition: scale, color, var(--transition-std);
 }
 
-.account .descryption-fn {
-  font-size: 0.6rem;
-  position: absolute;
-  left: 0;
-  right: 0;
-  display: grid;
-  align-items: center;
-  grid-template-columns: repeat(2, max-content);
-  justify-content: space-between;
-  bottom: -2rem;
-  padding-inline: 0.5rem;
+.account .panel .link:hover {
+  scale: 1.2;
 }
 
+.account .lb-con {
+  position: relative;
+}
 .account .eye {
-  display: grid;
-  align-items: center;
   position: absolute;
-  right: -2rem;
+  transition: translate, scale, var(--transition-std);
+  padding: 0.2rem;
   top: 0;
   bottom: 0;
+  right: -2.4rem;
 }
+
+.account .eye:is(:hover, :focus, :focus-within, :focus-visible) {
+  translate: 0.2rem 0.1rem;
+  scale: 1.1;
+}
+
 @media (width < 417px) {
   .account .container {
     height: 100vh;
@@ -229,17 +287,19 @@
 .confirm-code .code-label input {
   border: 2px solid yellow;
   text-align: center;
-  border-radius: .2rem;
+  border-radius: 0.2rem;
   font-weight: bold;
-  box-shadow: 0 0 2rem -.5rem pink;
+  box-shadow: 0 0 2rem -0.5rem pink;
   font-size: 1.8rem;
   color: black;
   background-color: rgb(238, 29, 64);
   width: inherit;
-  transition: filter,scale,box-shadow, var(--transition-std);
+  transition: filter, scale, box-shadow, var(--transition-std);
 }
 
-.confirm-code .code-label input:is(:hover,:focus,:focus-visible,:focus-within) {
+.confirm-code
+  .code-label
+  input:is(:hover, :focus, :focus-visible, :focus-within) {
   filter: brightness(150%);
   scale: 1.1;
   box-shadow: 0 0 2rem pink;

@@ -1,0 +1,13 @@
+.notification {
+  height: 100%;
+}
+
+.notification .notification-list {
+  height: 100%;
+}
+.notification .statement {
+  display: grid;
+  place-content: center;
+  height: 100%;
+  font-size: 1.5rem;
+}

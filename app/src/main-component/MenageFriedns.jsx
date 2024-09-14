@@ -12,7 +12,6 @@
       if (element) {
         setIsElementSet(true);
         botomOpponent.current = element;
-        console.log("calback");
       }
     }, []);
 
@@ -34,7 +33,7 @@
           })}
 
           {!value[0] && allValueLoaded ? (
-            <p>There are no friends on your list...</p>
+            <p>Empty friends list ...</p>
           ) : null}
           {!allValueLoaded && <p className="loading-fr" ref={setRef}>Loading ...</p>}
         </ul>

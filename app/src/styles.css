@@ -13,7 +13,8 @@ html {
 :root {
   --input-padding: 0.6rem 0.8rem;
   --input-border-r: 0.4rem;
-  --confirm-color: #00b300;
+  --confirm-color: #00e600;
+  --cancel-color: rgb(193, 60, 60);
   --component-padding: 0.6rem;
   --main-font-size: 1.5rem;
   --transition-std: 300ms ease-in;
@@ -78,7 +79,7 @@ body {
 
 #root > .loading-app {
   display: grid;
-  place-content: center ;
+  place-content: center;
   height: 100vh;
   width: 100%;
   font-size: 2rem;
@@ -96,131 +97,11 @@ body {
   min-height: 100vh;
 }
 
-/* NAVIGATION */
-
-.link {
-  font-size: var(--main-font-size);
-}
-
-.links-list > .link > a {
-  font-size: 1.5rem;
-  transition: color var(--transition-std);
-}
-
-.links-list > .link > a:is(:hover, :focus, :focus-visible, :focus-within) {
-  color: var(--active-font-color);
-}
-.navigation .active {
-  color: lightgreen;
-}
-
-.navigation {
-  height: 5rem;
-  background-color: #282428;
-  display: grid;
-  box-shadow: 0 0rem 2rem #070607;
-  align-items: center;
-}
-.navigation .links-list {
-  display: grid;
-  padding-inline: 1rem;
-  gap: 1rem;
-  outline: none;
-  grid-auto-flow: column;
-  justify-content: space-around;
-  align-items: center;
-}
-.navigation .options {
-  height: 3.5rem;
-  transition: filter, scale, var(--transition-std);
-  border: none;
-  outline: none;
-  aspect-ratio: 1/1;
-  position: relative;
-}
-
-.navigation .avatar {
-  height: 3.5rem;
-  aspect-ratio: 1/1;
-  cursor: pointer;
-  transition: scale, fillter, var(--transition-std);
-}
-
-.navigation .options:is(:hover, :focus, :focus-visible, :focus-within) .avatar,
-.navigation
-  .nav_setting
-  li:is(:hover, :focus, :focus-visible, :focus-within)
-  .avatar {
-  scale: 1.1;
-  filter: brightness(150%);
-}
-
 .avatar img {
   width: 100%;
   object-fit: cover;
   border-radius: 50%;
   height: 100%;
-}
-
-.nav_setting {
-  position: absolute;
-  right: 5%;
-  z-index: 99999;
-  overflow: hidden;
-  border-radius: var(--input-border-r);
-  display: grid;
-  background-color: var(--contrast-component-color);
-}
-.open-menu {
-  display: none;
-  margin-left: auto;
-  padding: 0.5rem 2rem 0.5rem 0.5rem;
-}
-.open-menu img {
-  height: 3rem;
-}
-.nav_setting .avatar {
-  height: 3.5rem;
-}
-.nav_setting li {
-  font-size: 1.2rem;
-  padding: var(--component-padding);
-}
-
-.nav_setting .notification {
-  color: red;
-  padding: 0.2rem 0.4rem;
-}
-.nav_setting a {
-  display: grid;
-  align-items: center;
-  grid-template-columns: 1fr max-content;
-}
-.nav_setting .avatar-link {
-  display: grid;
-  transition: background-color 300ms;
-  justify-content: center;
-}
-.nav_setting > .link {
-  display: grid;
-  text-align: center;
-  transition: background-color 300ms;
-  padding-inline: var(--component-padding);
-  cursor: pointer;
-}
-
-.nav_setting .link:is(:hover, :focus, :focus-visible, :focus-within),
-.nav_setting .avatar-link:is(:hover, :focus, :focus-visible, :focus-within) {
-  background-color: var(--pink-active-component-color);
-}
-.nav_setting .line {
-  height: 4px;
-  width: 100%;
-  background-color: rgb(255, 239, 8);
-  box-shadow: 0 0.2rem 1rem rgb(255, 239, 8);
-}
-.nav_setting .logout-btn {
-  width: 100%;
 }
 
 /* NotFond */
@@ -273,19 +154,6 @@ main .info .adt {
   }
 }
 
-@keyframes move_to_left {
-  0% {
-    translate: -100% 0;
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    translate: 0 0;
-  }
-}
-
 @media (width < 560px) {
   main .info .adt,
   main .info .descryption,
@@ -296,57 +164,5 @@ main .info .adt {
   main .info .adt,
   main > .info h1 {
     font-size: 1.5rem;
-  }
-
-  .navigation {
-    height: 3.5rem;
-  }
-  .open-menu img {
-    height: 2rem;
-  }
-  .navigation .links-list {
-    padding-block: 2rem;
-    top: 0;
-    z-index: 9999;
-    animation: move_to_left 0.8s;
-    text-align: center;
-    position: absolute;
-    width: 100%;
-    backdrop-filter: blur(200px);
-    justify-items: center;
-    grid-auto-flow: row;
-    border-bottom: 2px solid yellow;
-    box-shadow: 0 0.1rem 10rem yellow;
-  }
-  .nav_setting {
-    animation: move_to_left 0.8s;
-    background-color: transparent;
-    position: relative;
-    border-radius: 0;
-    width: 100%;
-    right: 0;
-  }
-  @keyframes spin {
-    25% {
-      translate: -2rem 0.5rem;
-    }
-    50% {
-      translate: -4rem 0.25rem;
-    }
-    75% {
-      translate: -2rem -0.5rem;
-    }
-    100% {
-      translate: 0 0;
-    }
-  }
-  .open-menu {
-    display: grid;
-  }
-  .open-menu:is(:hover, :focus, :focus-visible, :focus-within) {
-    animation: spin 5s infinite;
-  }
-  .navigation .links-list.hide {
-    display: none;
   }
 }

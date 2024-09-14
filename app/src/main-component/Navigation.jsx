@@ -1,11 +1,23 @@
 import { Outlet, NavLink } from "react-router-dom";
 import NavSettingsList from "../navigation/NavSettingsList";
 import { useEffect, useRef, useState } from "react";
+import "../navigation/navigation.css";
 
 export default function Navigation({ user, notification }) {
   const [miniMenuIsActive, setMiniMenuIsActive] = useState(false);
+  const [isSubWinOpened, setIsSubWinOpende] = useState(false);
   const menuElement = useRef(null);
   const firstElement = useRef(null);
+
+  function changeStateOfSubWin(bool) {
+    setIsSubWinOpende(bool);
+  }
+
+  function closeMenu() {
+    setMiniMenuIsActive(false);
+    setIsSubWinOpende(false);
+  }
+
   useEffect(() => {
     if (firstElement.current) {
       firstElement.current.focus();
@@ -25,11 +37,15 @@ export default function Navigation({ user, notification }) {
             tabIndex={0}
             ref={menuElement}
             onBlur={(e) => {
-              if (!e.relatedTarget) setMiniMenuIsActive(false);
-
-              const state = e.target.contains(e.relatedTarget);
+              // IT'S for mobile mode
+              if (!e.relatedTarget) {
+                setIsSubWinOpende(false);
+                setMiniMenuIsActive(false);
+              }
             }}
-            className={`links-list ${!miniMenuIsActive ? "hide" : ""}`}>
+            className={`${isSubWinOpened ? "short" : ""} links-list ${
+              !miniMenuIsActive ? "hide" : ""
+            }`}>
             <li className="link">
               <NavLink
                 onClick={() => setMiniMenuIsActive(false)}
@@ -55,9 +71,10 @@ export default function Navigation({ user, notification }) {
                 Friends
               </NavLink>
             </li>
-            <li className="link">
+            <li className="link open-list">
               <NavSettingsList
-                closeMenu={setMiniMenuIsActive}
+                changeStateOfSubWin={changeStateOfSubWin}
+                closeMenu={closeMenu}
                 user={user}
                 notification={notification}
               />

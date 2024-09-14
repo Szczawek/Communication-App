@@ -2,7 +2,12 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { logout } from "./logout";
 import { UserFunctions } from "../App";
-export default function NavSettingsList({ closeMenu, user, notification }) {
+export default function NavSettingsList({
+  closeMenu,
+  user,
+  notification,
+  changeStateOfSubWin,
+}) {
   const { unqiueName, avatar } = user;
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const activeElement = useRef(null);
@@ -19,13 +24,18 @@ export default function NavSettingsList({ closeMenu, user, notification }) {
       {!menuIsOpen ? (
         <div
           onKeyDown={(e) => {
-            if (e.key === "Enter" && !menuIsOpen) setMenuIsOpen(true);
+            if (e.key === "Enter" && !menuIsOpen) {
+              changeStateOfSubWin(true);
+              setMenuIsOpen(true);
+            }
           }}
           tabIndex={0}
-          className="options">
-          <div className="avatar" onClick={() => setMenuIsOpen(true)}>
-            <img src={avatar} alt="avatar" />
-          </div>
+          className="avatar"
+          onClick={() => {
+            changeStateOfSubWin(true);
+            setMenuIsOpen(true);
+          }}>
+          <img src={avatar} alt="avatar" />
         </div>
       ) : (
         <ul
@@ -35,6 +45,7 @@ export default function NavSettingsList({ closeMenu, user, notification }) {
               !e.relatedTarget ||
               !parentElement.current.contains(e.relatedTarget)
             ) {
+              changeStateOfSubWin(false);
               setMenuIsOpen(false);
             }
           }}
@@ -52,9 +63,11 @@ export default function NavSettingsList({ closeMenu, user, notification }) {
               </div>
             </Link>
           </li>
+          <p className="desc-profile">Profile</p>
           <hr className="line" />
           <li className="link">
             <Link
+              to={"notifications"}
               onClick={() => {
                 setMenuIsOpen(false);
                 closeMenu(false);
@@ -73,6 +86,7 @@ export default function NavSettingsList({ closeMenu, user, notification }) {
             <Link
               onClick={() => {
                 setMenuIsOpen(false);
+                changeStateOfSubWin(false);
                 closeMenu(false);
               }}
               to={"settings"}>
@@ -81,6 +95,7 @@ export default function NavSettingsList({ closeMenu, user, notification }) {
           </li>
           <li className="link">
             <Link
+              to={"/settings/help-center"}
               onClick={() => {
                 setMenuIsOpen(false);
                 closeMenu(false);

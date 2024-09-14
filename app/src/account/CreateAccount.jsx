@@ -75,10 +75,10 @@ export default function CreateAccount() {
       await searchLoggedInUser();
       navigate("/info");
     } catch (err) {
-      // to change 
-      // to change 
-      // to change 
-      alert("server error")
+      // to change
+      // to change
+      // to change
+      alert("server error");
       console.error(err);
     } finally {
       setLoading(false);
@@ -151,40 +151,45 @@ export default function CreateAccount() {
               maxLength={30}
               name="password"
             />
-            <small className="descryption-fn">
-              Show passwords
-              <button type="button" onClick={showPassword}>
-                {isPasswordShowed ? (
-                  <img src="../images/eye.svg" alt="show password" />
-                ) : (
-                  <img src="../images/closed_eye.svg" alt="show password" />
-                )}
-              </button>
-            </small>
           </label>
-          <label htmlFor="confirm-password">
-            <input
-              id="confirm-password"
-              required
-              placeholder="confirm password"
-              ref={confirmInpElement}
-              type="password"
-              name="confirmPassword"
-              value={accountData.confirmPassword}
-              maxLength={30}
-              onChange={setFromData}
-            />
-            {warnings.passwordWarning && (
-              <small className="warning">The passwords aren't the same!</small>
-            )}
-          </label>
+          <div className="lb-con">
+            <button
+              className="eye"
+              tabIndex={-1}
+              type="button"
+              onClick={showPassword}>
+              {isPasswordShowed ? (
+                <img src="/images/eye.svg" alt="show password" />
+              ) : (
+                <img src="/images/closed_eye.svg" alt="show password" />
+              )}
+            </button>
+            <label htmlFor="confirm-password">
+              <input
+                id="confirm-password"
+                required
+                placeholder="confirm password"
+                ref={confirmInpElement}
+                type="password"
+                name="confirmPassword"
+                value={accountData.confirmPassword}
+                maxLength={30}
+                onChange={setFromData}
+              />
+              {warnings.passwordWarning && (
+                <small className="warning">
+                  The passwords aren't the same!
+                </small>
+              )}
+            </label>
+          </div>
         </div>
 
         <button className="confirm" type="submit">
           {loading ? "Loading..." : "Submit"}
         </button>
         <button className="dif-sing-in" type="button" onClick={loginWithGoogle}>
-          <p>Sing in with Google</p>
+          <p>Google</p>
           <img src="/images/google.svg" alt="Sing in with Google" />
         </button>
       </form>
