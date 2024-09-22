@@ -6,10 +6,14 @@ import "dotenv/config";
 const corsOptions = cors({
   origin: [
     "https://127.0.0.1:5173",
-    "https://red-town.net",
-    process.env.CLIENT_ADDRESS,
-    process.env.SECOND_LOCAL_ADDRESS,
+    "https://127.0.0.1:4173",
+    "https://127.0.0.1:443",
+    "https://127.0.0.1:8443",
+    "https://127.0.0.1:53843",
     process.env.LOCAL_NETWORK,
+    process.env.PUBLIC_SITE,
+    process.env.FIREBASE_ONE,
+    process.env.FIREBASE_TWO,
   ],
   credentials: true,
   maxAge: 1000 * 60 * 60,

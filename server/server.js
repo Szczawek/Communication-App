@@ -10,7 +10,6 @@ import multer from "multer";
 import { auth, bucket } from "./firebaseSetup.js";
 import { getDownloadURL } from "firebase-admin/storage";
 import { sendEmail } from "./content/sendEmail.js";
-import { google } from "googleapis";
 import {
   corsOptions,
   helemtOptions,
@@ -24,7 +23,7 @@ import {
   decrypt,
 } from "./content/api-config/hashFunctions.js";
 
-const PORT = process.env.PORT;
+const PORT = 443;
 const app = express();
 
 // WSS ID
@@ -76,7 +75,7 @@ const wss = new WebSocketServer({
 db.connect((err) => {
   if (err) {
     console.error(`Error with db: ${err}`);
-    server.close()
+    server.close();
     return;
   }
   console.log("DB MySQL works well!");
@@ -635,9 +634,9 @@ server.listen(PORT, (err) => {
   console.log(`https://127.0.0.1:${PORT}`);
 });
 
-export const api = functions
-  .runWith({ enforceAppCheck: true, vpcConnector: process.env.VPC_CONNECTOR })
-  .region("europe-central2")
-  .https.onRequest((req, res) => {
-    server.emit("request", req, res);
-  });
+// export const api = functions
+//   .runWith({ enforceAppCheck: true, vpcConnector: process.env.VPC_CONNECTOR })
+//   .region("europe-central2")
+//   .https.onRequest((req, res) => {
+//     server.emit("request", req, res);
+//   });

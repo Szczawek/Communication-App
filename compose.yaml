@@ -1,6 +1,30 @@
 services:
+  
   server:
     build:
       context: server/.
+    env_file:
+      - server/.env
     ports:
       - 443:443
+    networks:
+      - backend
+    depends_on:
+      - database
+
+  database:
+    image: mysql:latest
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_DATABASE="magazine"
+      - MYSQL_HOST="database"
+      - MYSQL_ROOT_PASSWORD="9goFK18O7XNFZI"
+    volumes:
+      - server/initTable.sql:/docker-entrypoint-initdb.d/initTable.sql
+    networks:
+      - backend
+
+networks:
+  backend:
+    name: backend-network

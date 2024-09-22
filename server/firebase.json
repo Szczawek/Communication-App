@@ -1,7 +1,7 @@
 {
   "functions": [
     {
-      "source": ".",
+      "source": "**",
       "codebase": "default",
       "ignore": [
         "node_modules",
@@ -9,10 +9,7 @@
         "firebase-debug.log",
         "firebase-debug.*.log",
         "*.local"
-      ],
-      "functions": {
-        "vpcConnector": "shadow-connection"
-      }
+      ]
     }
   ]
 }
