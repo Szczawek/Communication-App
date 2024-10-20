@@ -1,6 +1,4 @@
-# syntax=docker/dockerfile:1
-
-FROM node:22.3.0-alpine
+FROM node:22.9.0-alpine as build
 
 WORKDIR /src/app
 
@@ -12,6 +10,12 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 USER node
 
 COPY . .
+
+FROM node:22.9.0-alpine as production
+
+WORKDIR /src/app
+
+COPY --from=build /src/app /src/app
 
 EXPOSE 443
 

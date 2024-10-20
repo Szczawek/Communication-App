@@ -10,6 +10,7 @@ export default function ShowCase({ user, loggedInUser, changeFriendsLis }) {
     setFriendAccount(loggedInUser["friends"].includes(id));
   }, [user, loggedInUser]);
 
+
   return (
     <div className="show-case">
       <div className="baner">
@@ -28,7 +29,7 @@ export default function ShowCase({ user, loggedInUser, changeFriendsLis }) {
       <div className="panel">
         <div className="profile_info">
           <p className="nick">{nick}</p>
-          <p className="unqiue-name">{unqiueName}</p>
+          <p className="unqiue-name">@{unqiueName}</p>
         </div>
         {loggedInUser["id"] === id ? (
           <Link to={"edit-profile-info"}>Edit</Link>

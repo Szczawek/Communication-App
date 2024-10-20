@@ -75,6 +75,7 @@
 }
 .show-case .unqiue-name {
   opacity: 0.8;
+  font-size: .8rem;
   color: whitesmoke;
 }
 .show-case .panel .friend {
@@ -94,6 +95,7 @@
   grid-template-rows: repeat(2, max-content);
 }
 .profile .send-message:disabled {
+  color: grey;
   cursor: not-allowed;
 }
 .profile .send-message {

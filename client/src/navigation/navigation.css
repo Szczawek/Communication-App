@@ -58,14 +58,14 @@
   .open-list:is(:hover, :focus, :focus-visible, :focus-within)
   .avatar,
 .navigation
-  .nav_setting
+  .list
   li:is(:hover, :focus, :focus-visible, :focus-within)
   .avatar {
   scale: 1.1;
   filter: brightness(150%);
 }
 
-.nav_setting {
+.list {
   position: absolute;
   right: 5%;
   z-index: 99999;
@@ -82,29 +82,28 @@
 .open-menu img {
   height: 3rem;
 }
-.nav_setting .avatar {
+.list .avatar {
   height: 3.5rem;
 }
-.nav_setting li {
+.list li {
   font-size: 1.2rem;
   padding: var(--component-padding);
 }
 
-.nav_setting .notification {
+.list .notification {
   color: red;
   padding: 0.2rem 0.4rem;
 }
-.nav_setting a {
+.list .link a {
   display: grid;
   align-items: center;
-  grid-template-columns: 1fr max-content;
 }
-.nav_setting .avatar-link {
+.list .avatar-link {
   display: grid;
   transition: background-color 300ms;
   justify-content: center;
 }
-.nav_setting > .link {
+.list > .link {
   display: grid;
   text-align: center;
   transition: background-color 300ms;
@@ -112,21 +111,27 @@
   cursor: pointer;
 }
 
-.nav_setting .link:is(:hover, :focus, :focus-visible, :focus-within),
-.nav_setting .avatar-link:is(:hover, :focus, :focus-visible, :focus-within) {
+.list .link:is(:hover, :focus, :focus-visible, :focus-within),
+.list .avatar-link:is(:hover, :focus, :focus-visible, :focus-within) {
   background-color: var(--pink-active-component-color);
 }
-.nav_setting .line {
+.list .line {
   height: 4px;
   width: 100%;
   background-color: rgb(255, 239, 8);
   box-shadow: 0 0.2rem 1rem rgb(255, 239, 8);
 }
-.nav_setting .logout-btn {
+.list .logout-btn {
   width: 100%;
 }
 
-.nav_setting .desc-profile {
+.list .box-link {
+  display: grid;
+  grid-template-rows: repeat(2, max-content);
+  gap: .4rem;
+}
+
+.list .desc-profile {
   text-align: center;
   font-size: 0.8rem;
   padding-block: 0.2rem;
@@ -165,7 +170,7 @@
     border-bottom: 2px solid yellow;
     box-shadow: 0 0.1rem 10rem yellow;
   }
-  .nav_setting {
+  .list {
     animation: move_to_left 0.8s;
     background-color: transparent;
     position: relative;
@@ -197,5 +202,4 @@
     justify-content: normal;
     grid-column: 1/4;
   }
-
 }

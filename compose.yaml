@@ -1,19 +1,33 @@
 services:
-  
-  server:
-    build:
-      context: server/.
-    env_file:
-      - server/.env
-    ports:
-      - 443:443
-    networks:
-      - backend
-    depends_on:
-      - database
+  # client:
+  #   build: 
+  #     context: client/.
+  #     dockerfile: Dockerfile
+  #   env_file:
+  #     - client/.env
+  #   ports:
+  #     - 8443
+  #   networks:
+  #     - backend
+  #   depends_on:
+  #     - server
+
+  # server:
+  #   build:  
+  #     context: server/.
+  #     dockerfile: Dockerfile
+  #   container_name: server
+  #   env_file:
+  #     - server/.env
+  #   ports:
+  #     - 443
+    # networks:
+    #   - backend
+    # depends_on:
+    #   - database
 
   database:
-    image: mysql:latest
+    image: mysql:latest-alphine
     ports:
       - 3307:3306
     environment:
@@ -21,10 +35,18 @@ services:
       - MYSQL_HOST="database"
       - MYSQL_ROOT_PASSWORD="9goFK18O7XNFZI"
     volumes:
-      - server/initTable.sql:/docker-entrypoint-initdb.d/initTable.sql
+      - init
     networks:
       - backend
 
 networks:
   backend:
     name: backend-network
+
+volumes:
+   init:
+     name: dbInit
+     mount: 
+        source: server/initTables.sql
+        destination: docker-entrypoint-initdb.d/initTables.sql
+    

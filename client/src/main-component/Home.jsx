@@ -30,7 +30,7 @@
         </ul>
         {!allValueLoaded && <p className="loading-home" ref={setRef}>Loading ...</p>}
         {!value[0] && allValueLoaded ? (
-          <p className="empty-list">Empty ...</p>
+          <p className="empty-list">Empty</p>
         ) : null}
       </div>
     );

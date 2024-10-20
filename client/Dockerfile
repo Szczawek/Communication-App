@@ -32,21 +32,15 @@ RUN npm run build
 
 FROM nginx:alpine as final
 
-# Copy Nginx configuration
 COPY ./nginx.conf /etc/nginx/nginx.conf
-
-# Copy SSL certificates for HTTPS
 COPY ./ssl/client.cert /etc/nginx/ssl/client.cert
 COPY ./ssl/client.key /etc/nginx/ssl/client.key
 
-# Clear the default Nginx HTML files
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 
 COPY --from=build /client/dist .
 
-EXPOSE 443
-
-RUN echo "https://127.0.0.1:54148"
+EXPOSE 8443
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

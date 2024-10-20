@@ -9,7 +9,7 @@ export default function NavSettingsList({
   changeStateOfSubWin,
 }) {
   const { unqiueName, avatar } = user;
-  const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [isListOpened, setIsListOpened] = useState(false);
   const activeElement = useRef(null);
   const parentElement = useRef(null);
   const { searchLoggedInUser } = useContext(UserFunctions);
@@ -18,60 +18,69 @@ export default function NavSettingsList({
     if (activeElement.current) {
       activeElement.current.focus();
     }
-  }, [menuIsOpen]);
+  }, [isListOpened]);
+
+  function moveByOne(e) {
+    console.log(e);
+    switch (e.key) {
+      case "ArrowUp":
+        console.log("top");
+        break;
+
+      case "ArrowDown":
+        console.log("bottom");
+        break;
+    }
+  }
+
+  function openList() {
+    changeStateOfSubWin(true);
+    setIsListOpened(true);
+  }
+  function closeList() {
+    setIsListOpened(false);
+    changeStateOfSubWin(false);
+  }
+
   return (
     <>
-      {!menuIsOpen ? (
+      {!isListOpened ? (
         <div
           onKeyDown={(e) => {
-            if (e.key === "Enter" && !menuIsOpen) {
-              changeStateOfSubWin(true);
-              setMenuIsOpen(true);
-            }
+            if (e.key === "Enter" && !isListOpened) openList();
           }}
           tabIndex={0}
           className="avatar"
-          onClick={() => {
-            changeStateOfSubWin(true);
-            setMenuIsOpen(true);
-          }}>
+          onClick={openList}>
           <img src={avatar} alt="avatar" />
         </div>
       ) : (
         <ul
+          onKeyDown={moveByOne}
           ref={parentElement}
           onBlur={(e) => {
             if (
               !e.relatedTarget ||
               !parentElement.current.contains(e.relatedTarget)
-            ) {
-              changeStateOfSubWin(false);
-              setMenuIsOpen(false);
-            }
+            )
+              closeList();
           }}
-          className="nav_setting">
+          className="list">
           <li className="avatar-link">
             <Link
+              className="box-link"
               ref={activeElement}
-              onClick={() => {
-                setMenuIsOpen(false);
-                closeMenu(false);
-              }}
+              onClick={closeList}
               to={unqiueName}>
               <div className="avatar">
                 <img src={avatar} alt="avatar" />
               </div>
+              <p className="desc-profile">Profile</p>
             </Link>
           </li>
-          <p className="desc-profile">Profile</p>
           <hr className="line" />
           <li className="link">
-            <Link
-              to={"notifications"}
-              onClick={() => {
-                setMenuIsOpen(false);
-                closeMenu(false);
-              }}>
+            <Link to={"notifications"} onClick={closeList}>
               Notification
               <small className="notification">
                 {notification === 0
@@ -85,8 +94,7 @@ export default function NavSettingsList({
           <li className="link">
             <Link
               onClick={() => {
-                setMenuIsOpen(false);
-                changeStateOfSubWin(false);
+                closeList();
                 closeMenu(false);
               }}
               to={"settings"}>
@@ -97,7 +105,7 @@ export default function NavSettingsList({
             <Link
               to={"/settings/help-center"}
               onClick={() => {
-                setMenuIsOpen(false);
+                setIsListOpened(false);
                 closeMenu(false);
               }}>
               Contact
@@ -107,7 +115,7 @@ export default function NavSettingsList({
             <button
               className="logout-btn"
               onClick={() => {
-                setMenuIsOpen(false);
+                setIsListOpened(false);
                 closeMenu(false);
                 logout(searchLoggedInUser);
               }}>

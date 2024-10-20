@@ -5,15 +5,43 @@
   grid-template-columns: 30% 1fr;
 }
 
-.main-settings {
+.settings-list {
   display: grid;
+  border-right: 1px solid white;
   gap: 2.5rem;
+  grid-auto-flow: row;
+  grid-auto-rows: max-content;
   text-align: center;
-  height: max-content;
+}
+
+.notification-settings {
+  display: grid;
+  place-content: center;
+}
+
+.security-settings {
+  display: grid;
+  justify-content: center;
+}
+
+.help-center {
+  display: grid;
+  place-content: center;
+}
+
+
+
+.desc-title,
+header.hq {
+  display: grid;
+
+  text-align: center;
+  justify-content: center;
 }
 
 .account-settings {
   display: grid;
+  justify-content: center;
   grid-template-rows: repeat(2, max-content);
   gap: 2rem;
 }
@@ -24,7 +52,8 @@
 }
 .edit-data {
   display: grid;
-  position: relative;
+  width: clamp(320px, 60vw, 800px);
+  padding-inline: 0.4rem;
   row-gap: 1.8rem;
 }
 .edit-data label {
@@ -75,16 +104,39 @@
   box-shadow: 0 0 1rem yellow;
 }
 
+.show-in-mobile {
+  display: none;
+}
+
+.return-btn {
+  display: none;
+  width: max-content;
+  padding: 0.2rem 1rem;
+}
+
 @media (width < 500px) {
   .setting {
-    padding: 1rem;
     gap: 1rem;
+    grid-template-rows: repeat(2, max-content);
     grid-template-columns: 1fr;
   }
+  .return-btn {
+    display: block;
+  }
+  .hide-in-mobile {
+    display: none;
+  }
 
-  .main-settings {
+  .components {
+    display: none;
+  }
+
+  .show-in-mobile {
+    display: block;
+  }
+  .settings-list {
     font-size: 0.6rem;
     padding: 0;
-    grid-template-columns: repeat(auto-fill, minmax(3rem, 6rem));
+    border-right: none;
   }
 }

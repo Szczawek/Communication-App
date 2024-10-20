@@ -101,6 +101,7 @@ export default function CreateAccount() {
               onChange={setFromData}
               autoComplete={"off"}
               name="nick"
+              minLength={1}
               maxLength={25}
             />
           </label>
@@ -113,6 +114,7 @@ export default function CreateAccount() {
               onChange={setFromData}
               autoComplete={"off"}
               name="unqiueName"
+              minLength={3}
               maxLength={25}
             />
             {warnings.unqiueNameWarning && (
@@ -130,7 +132,8 @@ export default function CreateAccount() {
               onChange={setFromData}
               type="email"
               name="email"
-              maxLength={25}
+              minLength={3}
+              maxLength={30}
             />
             {warnings.emailWarning && (
               <small className="warning">
@@ -167,14 +170,15 @@ export default function CreateAccount() {
             <label htmlFor="confirm-password">
               <input
                 id="confirm-password"
-                required
-                placeholder="confirm password"
-                ref={confirmInpElement}
-                type="password"
                 name="confirmPassword"
-                value={accountData.confirmPassword}
-                maxLength={30}
+                required
+                ref={confirmInpElement}
                 onChange={setFromData}
+                value={accountData.confirmPassword}
+                type="password"
+                minLength={8}
+                maxLength={25}
+                placeholder="Confir password..."
               />
               {warnings.passwordWarning && (
                 <small className="warning">

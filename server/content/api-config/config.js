@@ -9,7 +9,7 @@ const corsOptions = cors({
     "https://127.0.0.1:4173",
     "https://127.0.0.1:443",
     "https://127.0.0.1:8443",
-    "https://127.0.0.1:53843",
+    "https://127.0.0.1:52249",
     process.env.LOCAL_NETWORK,
     process.env.PUBLIC_SITE,
     process.env.FIREBASE_ONE,

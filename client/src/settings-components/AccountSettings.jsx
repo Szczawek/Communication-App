@@ -5,7 +5,11 @@ export default function AccountSettings() {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [warning, setWarning] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [warnings, setWarnings] = useState({
+    email: false,
+    password: false,
+  });
   const [confirmMessage, setConfirmMessage] = useState(false);
   const { id } = useContext(UserFunctions)["loggedInUser"];
   const elementToFocus = useRef(null);
@@ -15,8 +19,10 @@ export default function AccountSettings() {
   }, []);
 
   useEffect(() => {
-    if (warning) setWarning(false);
-  }, [email]);
+    if (warnings.email || warnings.password)
+      setWarnings({ email: false, password: false });
+  }, [email, password, confirmPassword]);
+
   async function editUserData() {
     try {
       const data = { name: userName, password, email, id };
@@ -34,25 +40,40 @@ export default function AccountSettings() {
         transferSettings
       );
       if (!res.ok) {
-        if (res.status === 409) return setWarning(true);
+        if (res.status === 409)
+          return setWarnings((prev) => ({ ...prev, email: true }));
         throw res.status;
       }
-      setEmail("");
-      setUserName("");
-      setPassword("");
-      setConfirmMessage(true);
+      clear();
       setTimeout(() => {
         setConfirmMessage(false);
-      }, 3000);
+      }, 1500);
     } catch (err) {
       console.error(`Error with sends datas to server: ${err}`);
     }
   }
 
+  function clear() {
+    setEmail("");
+    setUserName("");
+    setPassword("");
+    setConfirmPassword("");
+    setConfirmMessage(true);
+  }
+
   function checkFormValidity(e) {
     e.preventDefault();
-    if (!e.target.checkValidity()) return setWarning(true);
-    if (userName == "" && password == "" && email == "") return;
+    if (!e.target.checkValidity())
+      return setWarnings({ email: true, password: true });
+    if (
+      userName == "" &&
+      email == "" &&
+      (password == "" || confirmPassword == "")
+    )
+      return;
+    if (password != confirmPassword)
+      return setWarnings((prev) => ({ ...prev, passord: true }));
+      console.log(1)
     editUserData();
   }
 
@@ -69,7 +90,7 @@ export default function AccountSettings() {
           <input
             ref={elementToFocus}
             disabled={confirmMessage ? true : false}
-            minLength={6}
+            minLength={1}
             maxLength={25}
             value={userName}
             autoComplete="off"
@@ -81,7 +102,7 @@ export default function AccountSettings() {
         </label>
         <label htmlFor="new-email">
           Email
-          {warning && (
+          {warnings.email && (
             <small className="warning">
               Account with the email already exist!
             </small>
@@ -103,23 +124,32 @@ export default function AccountSettings() {
             disabled={confirmMessage ? true : false}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            id="new-password"
             type="password"
             name="password"
             autoComplete="new-password"
-            id="new-password"
             minLength={8}
             maxLength={25}
             placeholder="Password..."
           />
         </label>
-        <label htmlFor="">
+        <label htmlFor="second_password">
           Confirm Password
+          {warnings.password && (
+            <small className="warning">
+              The password and the confirm password must be the same!
+            </small>
+          )}
           <input
+            id="second_password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             type="password"
+            name="password"
             autoComplete="new-password"
             minLength={8}
             maxLength={25}
-            placeholder="Password..."
+            placeholder="Confirm password..."
           />
         </label>
         <button className="confirm" type="submit">

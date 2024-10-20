@@ -6,6 +6,7 @@ import "../navigation/navigation.css";
 export default function Navigation({ user, notification }) {
   const [miniMenuIsActive, setMiniMenuIsActive] = useState(false);
   const [isSubWinOpened, setIsSubWinOpende] = useState(false);
+
   const menuElement = useRef(null);
   const firstElement = useRef(null);
 
@@ -31,7 +32,7 @@ export default function Navigation({ user, notification }) {
             disabled={miniMenuIsActive ? true : false}
             onClick={() => setMiniMenuIsActive(true)}
             className="open-menu">
-            <img src="./images/bars-solid.svg" alt="open menu btn" />
+            <img src="/images/bars-solid.svg" alt="open menu btn" />
           </button>
           <ul
             tabIndex={0}

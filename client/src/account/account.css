@@ -180,7 +180,7 @@
   padding: var(--input-padding);
 }
 .account input::placeholder {
-  transition: translate, font-size,color, var(--transition-std);
+  transition: translate, font-size, color, var(--transition-std);
 }
 .account input:is(:hover, :focus, :focus-visible, :focus-within)::placeholder {
   font-size: 0.6rem;
@@ -263,6 +263,10 @@
   .account .container {
     height: 100vh;
   }
+
+  .code-container {
+    padding:0;
+  }
   .account form {
     max-width: calc(100vw - 4px);
   }
@@ -272,12 +276,34 @@
 }
 
 /* CONFIRM CODE */
+.code-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.confirm-code-btn {
+  width: max-content;
+  margin-inline: auto;
+  padding: var(--input-padding);
+  border-radius: var(--input-border-r);
+  background-color: green;
+  transition: filter var(--transition-std);
+}
+
+.confirm-code-btn:is(:hover, :focus, :focus-within, :focus-visible) {
+  filter: brightness(60%);
+}
+
+.confirm-code {
+  display: grid;
+  gap: 1rem;
+}
+
 .code-container {
   display: grid;
-  max-width: max-content;
-  gap: 1rem;
-  place-content: center;
-  grid-template-columns: repeat(6, 1fr);
+  gap: 3rem;
+  padding-inline: 2rem;
+  grid-template-columns: repeat(auto-fill, 2.5rem);
 }
 .confirm-code .code-label {
   aspect-ratio: 1/1;

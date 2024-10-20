@@ -33,7 +33,7 @@
           })}
 
           {!value[0] && allValueLoaded ? (
-            <p>Empty friends list ...</p>
+            <p>Empty friends list</p>
           ) : null}
           {!allValueLoaded && <p className="loading-fr" ref={setRef}>Loading ...</p>}
         </ul>

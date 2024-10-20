@@ -50,11 +50,11 @@ export default function ConfirmCode() {
   }
   return (
     <div className="confirm-code">
-      <header className="titile">
+      <header className="desc-title">
         <h2>Enter Code From Your Email</h2>
         <p>You have 5 min</p>
       </header>
-      <form onSubmit={checkCode}>
+      <form className="code-form" onSubmit={checkCode}>
         <div className="code-container">
           {[...new Array(6)].map((e, index) => {
             return (
@@ -78,7 +78,7 @@ export default function ConfirmCode() {
             );
           })}
         </div>
-        <button type="submit">Confirm</button>
+        <button className="confirm-code-btn" type="submit">Confirm</button>
       </form>
     </div>
   );

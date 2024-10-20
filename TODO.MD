@@ -84,3 +84,8 @@
 # nine 
 -- Po wysłaniu email z codem, gdy użytkownik wejdzie w link stara karta strony przestaje działa
 -- Nie zmienić narazie 
+
+# TEN 
+-- Account Setting:
+        --  Przy zmianie email, trzeba go potwierdzić kodem
+        -- naprawić hasła';

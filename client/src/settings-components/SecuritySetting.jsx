@@ -1,14 +1,17 @@
 import ConfirmCode from "../account/ConfirmCode";
-import "../account/account.css"
+import "../account/account.css";
+import "../settings-components/settings.css";
 export default function SecuritySettings() {
   return (
-    <div className="seccurity-settings">
-      <header>
+    <div className="security-settings">
+      <header className="title hq">
         <h2>Security</h2>
       </header>
       <div className="two-steps-auth">
-        <h3>Two Steps Auth</h3>
-        <p>it's recommended</p>
+        <header className="sub-title hq">
+          <h3>Two Steps Auth</h3>
+          <p>it's recommended</p>
+        </header>
         <ConfirmCode />
       </div>
     </div>

@@ -350,8 +350,14 @@ app.get("/api/users/:id", async (req, res) => {
 // DOWNLOAD DATA FROM USER IF EXIST
 app.get("/api/user-search/:nick", (req, res) => {
   const { nick } = req.params;
+
+  // DESC
+  // There is a simple question it is worthy to do next request after falled attempt to find user by unqiue name and find after nick or mix it. 
+  // The best thing is to do an algoritm to proretize a most knowed persons and, fousce on unqiue name in the first.
+  // END OF DESC
+  
   const dbCommand =
-    "SELECT id, nick,avatar,banner,unqiue_name as unqiueName from users where unqiue_name =?";
+    "SELECT id, nick,avatar,banner,unqiue_name as unqiueName from users where unqiue_name =? || nick =?";
   db.query(dbCommand, [nick, nick], (err, result) => {
     if (err) throw Error(`Error with user-search: ${err}`);
     if (!result[0]) return res.sendStatus(204);

@@ -43,6 +43,26 @@ wss.on("connection", (ws, req) => {
   }
 });
 
+wss.on("error",(ws,res) => {
+  try {
+    const activeUserId = new URL(
+      req.url,
+      `wss://${req.headers.host}`
+    ).searchParams.get("user");
+
+    // console.log("Connected!");
+
+    ws.on("error", (err) => {
+      throw err;
+    });
+    ws.on("message", (e) => {
+      console.log(12312312, e);
+    });
+  } catch (err) {
+    console.log(`Error with WebSockert: ${err}`);
+  }
+})
+
 server.listen(PORT, () => {
   console.log("WebSocket Server is working!");
 });

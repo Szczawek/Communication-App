@@ -89,7 +89,7 @@ export default function InviteFromFriends({ id }) {
         })}
       </div>
       {!invites[0] && !loading ? (
-        <p className="empty-list">Empty invite list ...</p>
+        <p className="empty-list">Empty invite list</p>
       ) : null}
     </div>
   );
