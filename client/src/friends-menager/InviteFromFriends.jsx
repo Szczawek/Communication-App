@@ -63,7 +63,7 @@ export default function InviteFromFriends({ id }) {
   }
   useEffect(() => {
     if (effect.current) return;
-    loadInvites();
+    // loadInvites();
     return () => (effect.current = true);
   }, []);
   return (

@@ -22,7 +22,8 @@ import {
   encrypt,
   decrypt,
 } from "./content/api-config/hashFunctions.js";
-
+import { checkInviteStatus } from "./content/components/checkInviteStatus.js";
+import { playWithFriend } from "./content/components/playWithFriend.js";
 const PORT = 443;
 const app = express();
 
@@ -352,10 +353,10 @@ app.get("/api/user-search/:nick", (req, res) => {
   const { nick } = req.params;
 
   // DESC
-  // There is a simple question it is worthy to do next request after falled attempt to find user by unqiue name and find after nick or mix it. 
+  // There is a simple question it is worthy to do next request after falled attempt to find user by unqiue name and find after nick or mix it.
   // The best thing is to do an algoritm to proretize a most knowed persons and, fousce on unqiue name in the first.
   // END OF DESC
-  
+
   const dbCommand =
     "SELECT id, nick,avatar,banner,unqiue_name as unqiueName from users where unqiue_name =? || nick =?";
   db.query(dbCommand, [nick, nick], (err, result) => {
@@ -554,59 +555,7 @@ app.get("/api/uploded-images", (req, res) => {
   });
 });
 
-app.post("/api/remove-invite", (req, res) => {
-  const { ownerID, recipientID } = req.body;
-  const removeInviteCmd =
-    "DELETE FROM friendsWaiting where ownerID =? AND recipientID =?";
-  db.query(removeInviteCmd, [ownerID, recipientID], (err) => {
-    if (err)
-      return console.error(`Error with remove invite from friend: ${err}`);
-    res.sendStatus(200);
-  });
-});
 
-app.post("/api/send-invite", async (req, res) => {
-  const { personID, friendID } = req.body;
-  // TO REMOVE
-  // TO REMOVE
-  // TO REMOVE
-  // TO REMOVE
-  const checkSendInviteCmd =
-    "SELECT * FROM friendsWaiting where `ownerID` =? AND `recipientID` =?";
-
-  const tryOne = await new Promise((resolve) => {
-    db.query(checkSendInviteCmd, [personID, friendID], (err, result) => {
-      if (err)
-        return console.error(`Error with check friends invite status: ${err}`);
-
-      if (result[0]) return resolve(false);
-      resolve(true);
-    });
-  });
-  // TO REMOVE
-  // TO REMOVE
-  // TO REMOVE
-  // TO REMOVE
-  if (!tryOne) return res.sendStatus(200);
-  const sendInviteCmd =
-    "INSERT INTO friendsWaiting(ownerID, recipientID) values(?,?)";
-  db.query(sendInviteCmd, [personID, friendID], (err) => {
-    if (err) return console.error(`Error with invite friend: ${err}`);
-    res.sendStatus(200);
-  });
-});
-
-app.get("/api/invite-from-friends/:id", (req, res) => {
-  const { id } = req.params;
-  const laodInviteFromFriendsCmd =
-    "SELECT ownerID from friendsWaiting where recipientID =?";
-  db.query(laodInviteFromFriendsCmd, [id], (err, result) => {
-    if (err)
-      return console.error(`Error with loading invite from friends: ${err}`);
-    if (!result[0]) return res.sendStatus(404);
-    res.json(result);
-  });
-});
 
 // NOT COMPLITED
 // NOT COMPLITED
@@ -634,6 +583,9 @@ app.get("/api/google-login", (req, res) => {
 //     userConnections.delete(id);
 //   });
 // });
+
+app.get("/api/check-invite-status/:inviting/:recipient", checkInviteStatus);
+app.post("/api/play-with-friend", playWithFriend);
 
 server.listen(PORT, (err) => {
   if (err) throw err;

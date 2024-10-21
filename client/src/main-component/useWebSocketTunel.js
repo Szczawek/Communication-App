@@ -12,6 +12,7 @@ export default function useWebSocketTunel(id, menageNotificaion) {
     };
 
     wss.onclose = (e) => {
+      console.log(e)
       console.log("closed");
     };
 

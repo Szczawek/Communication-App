@@ -19,9 +19,9 @@ const options = {
 app.use(corsOptions);
 app.use(helemtOptions);
 app.use(limitOptions);
-
 const server = createServer(options, app);
 const wss = new WebSocketServer({ server });
+const collection = new Map();
 
 wss.on("connection", (ws, req) => {
   try {
@@ -29,7 +29,7 @@ wss.on("connection", (ws, req) => {
       req.url,
       `wss://${req.headers.host}`
     ).searchParams.get("user");
-
+    collection.set(activeUserId, ws);
     console.log("Connected!");
 
     ws.on("error", (err) => {
@@ -43,7 +43,7 @@ wss.on("connection", (ws, req) => {
   }
 });
 
-wss.on("error",(ws,res) => {
+wss.on("error", (ws, res) => {
   try {
     const activeUserId = new URL(
       req.url,
@@ -61,7 +61,7 @@ wss.on("error",(ws,res) => {
   } catch (err) {
     console.log(`Error with WebSockert: ${err}`);
   }
-})
+});
 
 server.listen(PORT, () => {
   console.log("WebSocket Server is working!");
