@@ -19,8 +19,8 @@ const CreateAccount = lazy(() => import("./account/CreateAccount"));
 const Login = lazy(() => import("./account/Login"));
 const Settings = lazy(() => import("./main-component/Settings"));
 const ReturnToPath = lazy(() => import("./main-component/ReturnToPath"));
-const Notification = lazy(() => import("./main-component/Notification"))
-const MenageFriends = lazy(() => import("./main-component/MenageFriedns"));
+const Notification = lazy(() => import("./main-component/Notification"));
+const Menager = lazy(() => import("./main-component/Menager"));
 import ErrorComponent from "./main-component/ErrorComponent";
 const UserFunctions = createContext();
 
@@ -177,15 +177,10 @@ export default function App() {
                 }>
                 <Route index element={<Home id={loggedInUser["id"]} />} />
                 <Route path="info" element={<Info />} />
-                <Route path="notifications" element={<Notification/>} />
+                <Route path="notifications" element={<Notification />} />
                 <Route
                   path="menage-friends"
-                  element={
-                    <MenageFriends
-                      changeFriendsLis={changeFriendsList}
-                      id={loggedInUser["id"]}
-                    />
-                  }
+                  element={<Menager personID={loggedInUser.id} />}
                 />
                 <Route path="settings/*" element={<Settings />} />
                 <Route

@@ -1,4 +1,4 @@
-import { db } from "../api-config/dbConfig.js";
+import { db } from "../../api-config/dbConfig.js";
 async function cancelInvite(from, to, resolve, reject) {
   const command = "DELETE FROM friend_invite WHERE inviting =? AND recipient =?";
   const values = [from, to];

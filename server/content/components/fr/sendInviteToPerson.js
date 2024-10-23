@@ -1,4 +1,4 @@
-import { db } from "../api-config/dbConfig.js   ";
+import { db } from "../../api-config/dbConfig.js   ";
 async function sendInviteToPerson(from, to, resolve, reject) {
   const values = [from, to, new Date()];
   const command =

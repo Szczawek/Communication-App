@@ -1,4 +1,4 @@
-import { db } from "../api-config/dbConfig.js";
+import { db } from "../../api-config/dbConfig.js";
 async function checkInviteStatus(req, res) {
   try {
     const { inviting, recipient } = req.params;

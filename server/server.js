@@ -22,8 +22,9 @@ import {
   encrypt,
   decrypt,
 } from "./content/api-config/hashFunctions.js";
-import { checkInviteStatus } from "./content/components/checkInviteStatus.js";
-import { playWithFriend } from "./content/components/playWithFriend.js";
+import { loadFriendsList } from "./content/components/fr/loadFriendsList.js";
+import { checkInviteStatus } from "./content/components/fr/checkInviteStatus.js";
+import { playWithFriend } from "./content/components/fr/playWithFriend.js";
 const PORT = 443;
 const app = express();
 
@@ -555,8 +556,6 @@ app.get("/api/uploded-images", (req, res) => {
   });
 });
 
-
-
 // NOT COMPLITED
 // NOT COMPLITED
 // NOT COMPLITED
@@ -584,6 +583,7 @@ app.get("/api/google-login", (req, res) => {
 //   });
 // });
 
+app.get("/api/friends-list/:type/:id", loadFriendsList);
 app.get("/api/check-invite-status/:inviting/:recipient", checkInviteStatus);
 app.post("/api/play-with-friend", playWithFriend);
 
