@@ -1,37 +1,49 @@
-  import { useCallback, useRef } from "react";
-  import ProfileLink from "./ProfileLink";
-  import useInfinityScroll from "./useInfinityScroll";
-  import "./home.css";
+import { useEffect, useState } from "react";
+import ProfileLink from "./ProfileLink";
+import "./home.css";
 
-
-  export default function Home({ id }) {
-    const elementToSpy = useRef();
-    const { value, allValueLoaded, setIsElementSet, setValue } =
-      useInfinityScroll(`users/${id}`, elementToSpy.current);
-
-    const setRef = useCallback((element) => {
-      if (!element) return;
-      elementToSpy.current = element;
-      setIsElementSet(true);
-    }, []);
-    return (
-      <div className="home">
-        <ul className="friends-list">
-          {value.map((e, i) => {
-            return (
-              <ProfileLink
-                key={e["date"]}
-                data={e}
-                setArray={setValue}
-                index={i}
-              />
-            );
-          })}
-        </ul>
-        {!allValueLoaded && <p className="loading-home" ref={setRef}>Loading ...</p>}
-        {!value[0] && allValueLoaded ? (
-          <p className="empty-list">Empty</p>
-        ) : null}
-      </div>
-    );
+export default function Home({ id }) {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  async function loadActiveConv() {
+    try {
+      const options = {
+        headers: {
+          token: sessionStorage.getItem("session"),
+        },
+        credentials: "include",
+      };
+      const res = await fetch(
+        `${process.env.VITE_URL}/api/active-conversations/${id}`,
+        options
+      );
+      if (!res.ok) throw res.status;
+      const obj = await res.json();
+      setUsers(obj);
+    } catch (err) {
+      setError(true);
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   }
+  useEffect(() => {
+    loadActiveConv();
+  }, []);
+
+  if (error) return <p>Error</p>;
+  return (
+    <div className="home">
+      {loading ? (
+        <p>Loading ...</p>
+      ) : !users[0] ? (
+        <p>Empty</p>
+      ) : (
+        users.map((e) => {
+          return <ProfileLink key={e.date} data={e} />;
+        })
+      )}
+    </div>
+  );
+}

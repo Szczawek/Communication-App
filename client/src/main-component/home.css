@@ -1,10 +1,20 @@
 .home {
   display: grid;
+  grid-auto-rows: max-content;
+  gap: 2rem;
   min-height: 100%;
   padding-top: 1rem;
   position: relative;
-  place-content: center;
   text-align: center;
+}
+
+.home .profile-link-container {
+  display: grid;
+  height: max-content;
+}
+.home .profile-link {
+  width: clamp(320px, 100vw, 590px);
+  margin-inline:auto;
 }
 .home .friends-list {
   display: grid;

@@ -89,3 +89,7 @@
 -- Account Setting:
         --  Przy zmianie email, trzeba go potwierdzić kodem
         -- naprawić hasła';
+
+
+# ELEVEN 
+-- W Home ładować listę z użytkownikami, którymi mamy rozpoczętą konwersację! 

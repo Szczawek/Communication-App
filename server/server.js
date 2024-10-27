@@ -25,6 +25,7 @@ import {
 import { loadFriendsList } from "./content/components/fr/loadFriendsList.js";
 import { checkInviteStatus } from "./content/components/fr/checkInviteStatus.js";
 import { playWithFriend } from "./content/components/fr/playWithFriend.js";
+import { activeConversations } from "./content/components/fr/activeConversations.js";
 const PORT = 443;
 const app = express();
 
@@ -585,7 +586,11 @@ app.get("/api/google-login", (req, res) => {
 
 app.get("/api/friends-list/:type/:id", loadFriendsList);
 app.get("/api/check-invite-status/:inviting/:recipient", checkInviteStatus);
+
+// ALL action with friens like add, delete, invite, cancel invite.
 app.post("/api/play-with-friend", playWithFriend);
+
+app.get("/api/active-conversations/:id", activeConversations);
 
 server.listen(PORT, (err) => {
   if (err) throw err;
