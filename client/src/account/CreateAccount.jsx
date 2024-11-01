@@ -2,10 +2,13 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserFunctions } from "../App";
 import { loginWithGoogle } from "../../fireConf";
-import { sendEmailCode } from "./sendEmailCode";
+import { sendConfirmCode } from "./sendConfirmCode.js";
 import { createNewAccount } from "./createNewAccount";
-
+import { Navigate } from "react-router-dom";
+import { areDataUnqiue } from "./areDataUnqiue";
 export default function CreateAccount() {
+  const [validData, setValidData] = useState(false);
+
   const { searchLoggedInUser } = useContext(UserFunctions);
   const [loading, setLoading] = useState(false);
   const [isPasswordShowed, setIsShowedPassword] = useState(false);
@@ -40,20 +43,29 @@ export default function CreateAccount() {
 
   useEffect(() => {
     if (focusdElement.current) focusdElement.current.focus();
+
   }, []);
+
+  console.log(warnings)
+  function emailWarning() {
+    setWarnings(prev=> ({...prev,emailWarning:true}))
+  }
+  function unqiueNameWarning() {
+    setWarnings(prev => ({...prev,unqiueNameWarning:true}))
+  }
 
   function setFromData(e) {
     const { name, value } = e.target;
     setAccountData((prev) => ({ ...prev, [name]: value }));
   }
 
-  function arePasswordsTheSame(e) {
-    e.preventDefault();
+  function confirmPassword() {
     const { password, confirmPassword } = accountData;
-    if (password != confirmPassword)
-      return setWarnings((prev) => ({ ...prev, passwordWarning: true }));
+    if (password != confirmPassword) {
+      setWarnings((prev) => ({ ...prev, passwordWarning: true }));
+      throw Error("Password aren't the same!");
+    }
     setLoading(true);
-    accountStatus();
   }
 
   function showPassword() {
@@ -69,9 +81,24 @@ export default function CreateAccount() {
     }
   }
 
+  async function tryCreateAnAccount(e) {
+    try {
+      e.preventDefault();
+      confirmPassword();
+      const copy = { ...accountData };
+      delete copy.confirmPassword;
+      await areDataUnqiue(accountData, emailWarning,unqiueNameWarning);
+      setValidData(true);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  }
   async function accountStatus() {
     try {
-      await createNewAccount(accountData, setWarnings);
+      // confirm code
+      await createNewAccount(accountData);
       await searchLoggedInUser();
       navigate("/info");
     } catch (err) {
@@ -84,9 +111,11 @@ export default function CreateAccount() {
       setLoading(false);
     }
   }
+  if (validData) return <Navigate to="/confirm-code" />;
+
   return (
     <div className="create_account">
-      <form onSubmit={arePasswordsTheSame}>
+      <form onSubmit={tryCreateAnAccount}>
         <header>
           <h2>Create Account</h2>
         </header>
@@ -178,7 +207,7 @@ export default function CreateAccount() {
                 type="password"
                 minLength={8}
                 maxLength={25}
-                placeholder="Confir password..."
+                placeholder="Confirm password"
               />
               {warnings.passwordWarning && (
                 <small className="warning">

@@ -26,8 +26,6 @@
                 # correct, nie będzie z tym problemu. Przy tworzeniu konta można dodać obojętnie jaki link, inczej jest z edytowaniem
 
 # ONE
-
-- dodać możliwość wyszukiwania po samej nazwię, gdy nie ma użytownniką z danym unqiue name
 - w badzie danych dodać tabele na: - linki do zdjęć/filów - powiadomienia
 
 # Two

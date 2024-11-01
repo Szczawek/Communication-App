@@ -9,23 +9,25 @@ import functions from "firebase-functions";
 import multer from "multer";
 import { auth, bucket } from "./firebaseSetup.js";
 import { getDownloadURL } from "firebase-admin/storage";
-import { sendEmail } from "./content/sendEmail.js";
 import {
   corsOptions,
   helemtOptions,
   limitOptions,
 } from "./content/api-config/config.js";
-import { confirmCodeHTML } from "./content/confirmCodeHTML.js";
 import { db } from "./content/api-config/dbConfig.js";
 import {
   confirmEmailCode,
   encrypt,
   decrypt,
 } from "./content/api-config/hashFunctions.js";
-import { loadFriendsList } from "./content/components/fr/loadFriendsList.js";
-import { checkInviteStatus } from "./content/components/fr/checkInviteStatus.js";
-import { playWithFriend } from "./content/components/fr/playWithFriend.js";
-import { activeConversations } from "./content/components/fr/activeConversations.js";
+
+import { checkEmailCode } from "./content/components/account/checkEmailCode.js";
+import { isDataValid } from "./content/components/account/isDataValid.js";
+import { sendEmailCode } from "./content/components/account/sendEmailCode.js";
+import { loadFriendsList } from "./content/components/friend-actions/loadFriendsList.js";
+import { checkInviteStatus } from "./content/components/friend-actions/checkInviteStatus.js";
+import { playWithFriend } from "./content/components/friend-actions/playWithFriend.js";
+import { activeConversations } from "./content/components/friend-actions/activeConversations.js";
 const PORT = 443;
 const app = express();
 
@@ -264,38 +266,6 @@ function createSession(res, id) {
   });
 }
 
-function randomCode() {
-  let code = "";
-  let count = 0;
-  while (count < 6) {
-    code += Math.floor(Math.random() * 9);
-    count++;
-  }
-  return Number(code);
-}
-
-app.post("/send-email-code", (req, res) => {
-  const { user, subject } = req.body;
-  const data = {
-    user,
-    subject,
-    html: confirmCodeHTML(confirmEmailCode()),
-  };
-  sendEmail(res, data);
-});
-app.post("/check-email-code", (req, res) => {
-  const { code } = req.body;
-  res.clearCookie("em_code", {
-    secure: true,
-    partitioned: true,
-    httpOnly: true,
-    sameSite: "none",
-    maxAge: 1000 * 60 * 60,
-  });
-
-  res.json("ok");
-});
-
 app.get("/logged-in-user", async (req, res) => {
   try {
     const userIsLogged = req.cookies["user_id"];
@@ -381,7 +351,7 @@ async function removeLoggedInUser(res) {
 }
 
 // Add/Remove friend with user firends list
-app.post("/api/friends-list-change", (req, res) => {
+app.post("/api/friend-actionsiends-list-change", (req, res) => {
   const { action, personID, friendID } = req.body;
   const addUser = "INSERT into user_friends values(null,?,?)";
   const removeUser =
@@ -583,13 +553,15 @@ app.get("/api/google-login", (req, res) => {
 //     userConnections.delete(id);
 //   });
 // });
+app.post("/check-email-code", checkEmailCode);
+app.post("/is-data-valid", isDataValid);
+app.post("/send-email-code", sendEmailCode);
 
-app.get("/api/friends-list/:type/:id", loadFriendsList);
+app.get("/api/friend-actionsiends-list/:type/:id", loadFriendsList);
 app.get("/api/check-invite-status/:inviting/:recipient", checkInviteStatus);
 
 // ALL action with friens like add, delete, invite, cancel invite.
 app.post("/api/play-with-friend", playWithFriend);
-
 app.get("/api/active-conversations/:id", activeConversations);
 
 server.listen(PORT, (err) => {

@@ -21,6 +21,7 @@ const Settings = lazy(() => import("./main-component/Settings"));
 const ReturnToPath = lazy(() => import("./main-component/ReturnToPath"));
 const Notification = lazy(() => import("./main-component/Notification"));
 const Menager = lazy(() => import("./main-component/Menager"));
+const ConfirmCode = lazy(() => import("./account/ConfirmCode"));
 import ErrorComponent from "./main-component/ErrorComponent";
 const UserFunctions = createContext();
 
@@ -164,8 +165,10 @@ export default function App() {
               <Route path="/account" element={<Account />}>
                 <Route index element={<Login />} />
                 <Route path="create" element={<CreateAccount />} />
+
                 <Route path="*" element={<ReturnToPath path="/account" />} />
               </Route>
+              <Route path="confirm-code" element={<ConfirmCode />} />
               <Route path="*" element={<ReturnToPath path="/account" />} />
             </Routes>
           ) : (

@@ -1,6 +1,9 @@
-import { useRef, useState } from "react";
-
+import { useEffect, useRef, useState } from "react";
+import { isCodeCorrect } from "./isCodeCorrect";
+import "./account.css";
 export default function ConfirmCode() {
+  const [invalidData, setInvalidData] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [code, setCode] = useState({
     1: "",
     2: "",
@@ -9,8 +12,13 @@ export default function ConfirmCode() {
     5: "",
     6: "",
   });
+  const [incorrectCode, setInCorrectCode] = useState(false);
   const activeElement = useRef(null);
-  async function checkCode(e) {
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+  async function sendCode(e) {
     e.preventDefault();
     try {
       let codeAsString = "";
@@ -18,20 +26,9 @@ export default function ConfirmCode() {
         codeAsString += value;
       }
 
-      console.log(Number(codeAsString));
-      const fetchOptions = {
-        method: "POST",
-        headers: {
-          "Content-type": "applicaition/json",
-          token: sessionStorage.getItem("session"),
-        },
-        credentials: "include",
-        body: JSON.stringify({ code: Number(codeAsString) }),
-      };
-      // const res = await fetch(`${process.env.VITE_URL}/confirm-code`,fetchOptions)
-      // if(!res.ok) throw res.status
+      await isCodeCorrect(Number(codeAsString));
     } catch (err) {
-      console.error(`Error wiith code: ${err}`);
+      console.error(err);
     }
   }
   function putNumber(e) {
@@ -48,17 +45,22 @@ export default function ConfirmCode() {
     if (!acceptable.includes(e.key) && isNaN(Number(e.key)))
       return e.preventDefault();
   }
+
+  if (loading) return <p>Loading ...</p>;
+
   return (
     <div className="confirm-code">
       <header className="desc-title">
         <h2>Enter Code From Your Email</h2>
+        {incorrectCode && <p>Code is incorrect!</p>}
         <p>You have 5 min</p>
       </header>
-      <form className="code-form" onSubmit={checkCode}>
+      <form className="code-form" onSubmit={sendCode}>
         <div className="code-container">
           {[...new Array(6)].map((e, index) => {
             return (
               <label
+                ref={index == 0 ? activeElement : null}
                 className="code-label"
                 key={index + Date.now()}
                 htmlFor={`code-inp-${index}`}>
@@ -78,7 +80,9 @@ export default function ConfirmCode() {
             );
           })}
         </div>
-        <button className="confirm-code-btn" type="submit">Confirm</button>
+        <button className="confirm-code-btn" type="submit">
+          Confirm
+        </button>
       </form>
     </div>
   );
