@@ -296,6 +296,8 @@
 
 .confirm-code {
   display: grid;
+  text-align: center;
+  place-content: center;
   gap: 1rem;
 }
 

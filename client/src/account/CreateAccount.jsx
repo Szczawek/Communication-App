@@ -1,15 +1,10 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { UserFunctions } from "../App";
+import { useEffect, useRef, useState } from "react";
 import { loginWithGoogle } from "../../fireConf";
 import { sendConfirmCode } from "./sendConfirmCode.js";
-import { createNewAccount } from "./createNewAccount";
 import { Navigate } from "react-router-dom";
 import { areDataUnqiue } from "./areDataUnqiue";
 export default function CreateAccount() {
   const [validData, setValidData] = useState(false);
-
-  const { searchLoggedInUser } = useContext(UserFunctions);
   const [loading, setLoading] = useState(false);
   const [isPasswordShowed, setIsShowedPassword] = useState(false);
   const [accountData, setAccountData] = useState({
@@ -27,7 +22,6 @@ export default function CreateAccount() {
   const passwordInpElement = useRef(null);
   const confirmInpElement = useRef(null);
   const focusdElement = useRef(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const { emailWarning, passwordWarning, unqiueNameWarning } = warnings;
@@ -43,15 +37,14 @@ export default function CreateAccount() {
 
   useEffect(() => {
     if (focusdElement.current) focusdElement.current.focus();
-
   }, []);
 
-  console.log(warnings)
+  console.log(warnings);
   function emailWarning() {
-    setWarnings(prev=> ({...prev,emailWarning:true}))
+    setWarnings((prev) => ({ ...prev, emailWarning: true }));
   }
   function unqiueNameWarning() {
-    setWarnings(prev => ({...prev,unqiueNameWarning:true}))
+    setWarnings((prev) => ({ ...prev, unqiueNameWarning: true }));
   }
 
   function setFromData(e) {
@@ -87,7 +80,8 @@ export default function CreateAccount() {
       confirmPassword();
       const copy = { ...accountData };
       delete copy.confirmPassword;
-      await areDataUnqiue(accountData, emailWarning,unqiueNameWarning);
+      await areDataUnqiue(accountData, emailWarning, unqiueNameWarning);
+      await sendConfirmCode();
       setValidData(true);
     } catch (err) {
       console.log(err);
@@ -95,22 +89,7 @@ export default function CreateAccount() {
       setLoading(false);
     }
   }
-  async function accountStatus() {
-    try {
-      // confirm code
-      await createNewAccount(accountData);
-      await searchLoggedInUser();
-      navigate("/info");
-    } catch (err) {
-      // to change
-      // to change
-      // to change
-      alert("server error");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }
+
   if (validData) return <Navigate to="/confirm-code" />;
 
   return (

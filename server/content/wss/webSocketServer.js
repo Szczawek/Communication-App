@@ -64,5 +64,6 @@ wss.on("error", (ws, res) => {
 });
 
 server.listen(PORT, () => {
+  console.log("https://127.0.0.1:8443")
   console.log("WebSocket Server is working!");
 });

@@ -91,3 +91,7 @@
 
 # ELEVEN 
 -- W Home ładować listę z użytkownikami, którymi mamy rozpoczętą konwersację! 
+
+# Twelve 
+-- Confirm-Code  po użyciu backspace posostawić foucue na tym samym polu.
+Aktualnie backspace wywyołyje w przeglądarece event blur()

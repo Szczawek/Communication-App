@@ -13,11 +13,16 @@ export default function ConfirmCode() {
     6: "",
   });
   const [incorrectCode, setInCorrectCode] = useState(false);
+  const [activeFild, setActiveField] = useState(0);
   const activeElement = useRef(null);
 
   useEffect(() => {
     setLoading(false);
   }, []);
+
+  useEffect(() => {
+    if (activeElement.current) activeElement.current.focus();
+  }, [activeFild]);
   async function sendCode(e) {
     e.preventDefault();
     try {
@@ -25,7 +30,6 @@ export default function ConfirmCode() {
       for (const [key, value] of Object.entries(code)) {
         codeAsString += value;
       }
-
       await isCodeCorrect(Number(codeAsString));
     } catch (err) {
       console.error(err);
@@ -33,21 +37,47 @@ export default function ConfirmCode() {
   }
   function putNumber(e) {
     const { value, name } = e.target;
-
     setCode((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    
+    if (activeFild < 5 && value !== "") {
+      setActiveField((prev) => prev + 1);
+    }
   }
 
   function onlyNumberAvaliable(e) {
-    const acceptable = ["ArrowRight", "ArrowLeft", "WhiteSpace", "Backspace"];
-    if (!acceptable.includes(e.key) && isNaN(Number(e.key)))
+    const acceptable = [
+      "ArrowRight",
+      "ArrowLeft",
+      "Tab",
+      "ArrowUp",
+      "ArrowDown",
+      "Backspace",
+    ];
+    if (!acceptable.includes(e.key) && isNaN(Number(e.key))) {
       return e.preventDefault();
+    }
+    switch (e.key) {
+      case "ArrowUp":
+        if (activeFild < 5) {
+          setActiveField((prev) => prev + 1);
+          return;
+        }
+        setActiveField(0);
+        break;
+      case "ArrowDown":
+        if (activeFild > 0) {
+          return setActiveField((prev) => prev - 1);
+        }
+        setActiveField(5);
+        break;
+    }
   }
 
   if (loading) return <p>Loading ...</p>;
-
   return (
     <div className="confirm-code">
       <header className="desc-title">
@@ -60,8 +90,9 @@ export default function ConfirmCode() {
           {[...new Array(6)].map((e, index) => {
             return (
               <label
-                ref={index == 0 ? activeElement : null}
+                ref={index == activeFild ? activeElement : null}
                 className="code-label"
+                onClick={() => setActiveField(index)}
                 key={index + Date.now()}
                 htmlFor={`code-inp-${index}`}>
                 <input

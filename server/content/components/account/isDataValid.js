@@ -10,7 +10,6 @@ async function isDataValid(req, res) {
         resolve(result);
       });
     });
-    console.log(user);
     if (user.length == 0) {
       res.cookie(
         "ac-data",
@@ -24,14 +23,15 @@ async function isDataValid(req, res) {
       );
       return res.json("ok");
     }
-
-    res.status(403).json({
+    const invalidData = {
       unqiueName:
         user[0].unqiueName.toLowerCase() == unqiueName.toLowerCase()
           ? true
           : false,
       email: user[0].email.toLowerCase() == email.toLowerCase() ? true : false,
-    });
+    };
+  console.log(user)
+    res.status(403).json(invalidData);
   } catch (err) {
     console.error(err);
     res.status(404).json(err);
