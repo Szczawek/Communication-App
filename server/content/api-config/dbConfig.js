@@ -1,5 +1,8 @@
 import "dotenv/config";
 import mysql2 from "mysql2";
+import redis from "redis"
+
+const socketDB = redis.createClient()
 
 const db = mysql2.createConnection({
   database: process.env.DB_DATABASE || "magazine",
@@ -11,4 +14,4 @@ const db = mysql2.createConnection({
   // },
 });
   
-export {db}
+export {db,socketDB}

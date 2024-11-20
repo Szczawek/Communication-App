@@ -3,6 +3,7 @@ import MessageTools from "./MessageTools";
 import { loadLastMessage } from "./loadLastMessage";
 import useInfinityScroll from "../../main-component/useInfinityScroll";
 import { UserFunctions } from "../../App";
+import RemoveMsg from "./RemoveMsg";
 export default function Messages({ ownerID, recipientID }) {
   const { notification } = useContext(UserFunctions);
   const messContainer = useRef(null);
@@ -34,9 +35,14 @@ export default function Messages({ ownerID, recipientID }) {
         setValue((prev) => [...prev, ...valueToAdd]);
         console.log("New mess");
       };
-      call()
+      call();
     }
   }, [notification]);
+
+  function removeFromList(id) {
+    // IT SHOULD REMOVE MSG FROM VALUE ARRAY
+  }
+
   return (
     <div className="container">
       <div className="messages-window">
@@ -58,10 +64,11 @@ export default function Messages({ ownerID, recipientID }) {
               return (
                 <p
                   key={e["date"]}
-                  className={`${
-                    e["ownerID"] === ownerID ? "right" : "left"
+                  className={`msg ${
+                    e.ownerID === ownerID ? "right" : "left"
                   } text`}>
                   {e["message"]}
+                  {e.ownerID === ownerID && <RemoveMsg id={e.ownerID} removeFromList={removeFromList} />}
                 </p>
               );
             })

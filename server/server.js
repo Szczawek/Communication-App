@@ -14,9 +14,11 @@ import {
   helemtOptions,
   limitOptions,
 } from "./content/api-config/config.js";
-import { db } from "./content/api-config/dbConfig.js";
+import { removeMsg } from "./content/components/msg/removeMsg.js";
+import { db,socketDB } from "./content/api-config/dbConfig.js";
 import { encrypt, decrypt } from "./content/api-config/hashFunctions.js";
-
+import { login } from "./content/components/account/login.js";
+import { logout } from "./content/components/account/logout.js";
 import { createAccount } from "./content/components/account/createAccount.js";
 import { checkEmailCode } from "./content/components/account/checkEmailCode.js";
 import { isDataValid } from "./content/components/account/isDataValid.js";
@@ -73,6 +75,10 @@ const server = https.createServer(options, app);
 const wss = new WebSocketServer({
   server,
 });
+
+// socketDB.connect((err) => {
+//   console.log("Socker db is working!")
+// })
 
 db.connect((err) => {
   if (err) {
@@ -166,59 +172,9 @@ app.get("/", async (req, res) => {
 });
 
 app.post("/check-email-code", checkEmailCode);
-
-app.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const getUserPassword = "SELECT password FROM users where email =?";
-    const correctUserPassword = await new Promise((resolve, reject) => {
-      db.query(getUserPassword, [email], (err, result) => {
-        if (err) throw `Error with db: /login: ${err}`;
-        if (!result[0]) return reject("Wrong Login!");
-        resolve(result[0]["password"]);
-      });
-    });
-
-    const isPasswordCorrect = await bcrypt.compare(
-      password,
-      correctUserPassword
-    );
-    if (!isPasswordCorrect) throw "Wrong Login!";
-
-    //Description, everyone has unqiue email, and unqiue_name. This is the easiest way to find user.
-    const loadUserData = "SELECT * FROM users where email = ?";
-    db.query(loadUserData, [email], (err, result) => {
-      if (err) throw `Error with login db: ${err}`;
-      createSession(res, result[0]["id"]);
-      res.send("Logged to account succesfuly");
-    });
-  } catch (err) {
-    // to edit
-    const amount = req.cookies["log_amount"];
-    const value = !amount ? 0 : JSON.parse(amount) + 1;
-    res.cookie("log_amount", JSON.stringify(value), {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-      partitioned: true,
-      maxAge: 1000 * 60 * 60,
-    });
-    res.status(403).json(err);
-  }
-});
-
+app.post("/login",login)
+app.put("/api/logout", logout)
 app.post("/create-account", createAccount);
-
-
-
-function createSession(res, id) {
-  res.cookie("user_id", encrypt(String(id), process.env.COOKIES_KEY), {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    maxAge: 1000 * 60 * 60 * 24 * 30,
-  });
-}
 
 app.get("/logged-in-user", async (req, res) => {
   try {
@@ -292,17 +248,6 @@ app.get("/api/user-search/:nick", (req, res) => {
   });
 });
 
-async function removeLoggedInUser(res) {
-  new Promise((resolve) => {
-    res.clearCookie("user_id", {
-      maxAge: 0,
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    });
-    resolve();
-  });
-}
 
 // Add/Remove friend with user firends list
 app.post("/api/friend-actionsiends-list-change", (req, res) => {
@@ -329,10 +274,6 @@ app.post("/api/friend-actionsiends-list-change", (req, res) => {
   });
 });
 
-app.post("/api/logout", async (req, res) => {
-  await removeLoggedInUser(res);
-  res.json("Logout");
-});
 
 // load messages
 app.get(
@@ -508,9 +449,11 @@ app.get("/api/google-login", (req, res) => {
 //   });
 // });
 
+
+app.delete("/api/remove-msg",removeMsg)
+
 app.post("/is-data-valid", isDataValid);
 app.post("/send-email-code", sendEmailCode);
-
 app.get("/api/friend-actionsiends-list/:type/:id", loadFriendsList);
 app.get("/api/check-invite-status/:inviting/:recipient", checkInviteStatus);
 

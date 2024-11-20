@@ -75,7 +75,7 @@
 }
 .show-case .unqiue-name {
   opacity: 0.8;
-  font-size: .8rem;
+  font-size: 0.8rem;
   color: whitesmoke;
 }
 .show-case .panel .friend {
@@ -119,9 +119,34 @@
   column-gap: 2rem;
 }
 
+.profile .msg {
+  position: relative;
+}
+
+.profile .remove-msg {
+  display: grid;
+  place-content: center;
+  grid-template-columns: repeat(2, max-content);
+}
+
+.profile .msg:is(:focus, :focus-within, :focus-visible, :hover) .msg-options {
+  opacity: 1;
+}
+
+.profile .msg-options {
+  position: absolute;
+  right: 0rem;
+  height: 100%;
+  display: grid;
+  top: 0;
+  opacity: 0;
+  transition: opacity ease-in 100ms;
+  place-content: center;
+}
+
 .profile .tools input {
   width: 100%;
-  box-shadow: 0 0 .5rem 0rem #bf80ff;
+  box-shadow: 0 0 0.5rem 0rem #bf80ff;
   background-color: rgba(61, 56, 56, 0.589);
   border-radius: var(--input-border-r);
   padding: var(--input-padding);
@@ -302,7 +327,6 @@
   filter: brightness(50%);
   scale: 1.2;
 }
-
 
 @media (width < 560px) {
   .user {

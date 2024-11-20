@@ -43,7 +43,7 @@ export default function Home({ id }) {
       {loading ? (
         <p>Loading ...</p>
       ) : !users[0] ? (
-        <p>Empty</p>
+        <p className="empty-activity">Empty</p>
       ) : (
         users.map((e) => {
           return <ProfileLink key={e.date} data={e} />;

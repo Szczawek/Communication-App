@@ -3,7 +3,6 @@
   grid-auto-rows: max-content;
   gap: 2rem;
   min-height: 100%;
-  padding-top: 1rem;
   position: relative;
   text-align: center;
 }
@@ -39,4 +38,12 @@
   display: grid;
   place-content: center;
   height: 100%;
+}
+.home .empty-activity {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  font-size: 2rem;
+  position: absolute;
+  place-content: center;
 }

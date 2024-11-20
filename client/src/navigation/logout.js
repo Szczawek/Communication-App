@@ -1,7 +1,7 @@
 export async function logout(searchLoggedInUser) {
   try {
     const res = await fetch(`${process.env.VITE_URL}/api/logout`, {
-      method: "POST",
+      method: "PUT",
       headers: {
         token: sessionStorage.getItem("session"),
       },
