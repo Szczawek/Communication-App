@@ -14,7 +14,7 @@ async function activeConversations(req, res) {
         resolve(filter);
       });
     });
-    if (!list[0]) return res.status(403).json("Nothing is here!");
+    if (!list[0]) return res.status(404).json("Nothing is here!");
     const selectUsers =
       "SELECT nick,unqiue_name as unqiueName,date, avatar FROM users where id IN (?)";
     db.query(selectUsers, [list], (err, listOfUsers) => {

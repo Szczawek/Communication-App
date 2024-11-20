@@ -4,6 +4,9 @@ import bcrypt from "bcrypt";
 
 async function createAccount(req, res) {
   try {
+    const cookies = req.cookies["ac-data"];
+    if (!cookies) throw "The cookies was deleted!";
+
     const { nick, email, unqiueName, password } = req.cookies["ac-data"];
     const encryptedPassword = await bcrypt.hash(password, 10);
 

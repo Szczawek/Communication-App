@@ -80,7 +80,7 @@ export default function CreateAccount() {
       const copy = { ...accountData };
       delete copy.confirmPassword;
       await areDataUnqiue(accountData, emailWarning, unqiueNameWarning);
-      await setConfirmCode();
+      await setConfirmCode(accountData.email);
       setValidData(true);
     } catch (err) {
       console.log(err);

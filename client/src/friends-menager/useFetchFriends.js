@@ -4,7 +4,6 @@ export default function useFetchFriends(id, type) {
   const [list, setList] = useState([]);
   const effect = useRef(false);
   const [loading, setLoading] = useState(true);
-  console.log(effect.current)
   async function loadList() {
     try {
       const options = {
@@ -17,20 +16,21 @@ export default function useFetchFriends(id, type) {
         `${process.env.VITE_URL}/api/friends-list/${type}/${id}`,
         options
       );
-      if (!res.ok) throw res.status;
+      if (!res.ok) {
+        if (res.status == 404) return;
+        throw res.status;
+      }
       const obj = await res.json();
-      console.log(obj);
-      setLoading(false);
+      setList(obj)
     } catch (err) {
       console.log("error", err);
     } finally {
+      setLoading(false);
       effect.current = true;
     }
   }
   useEffect(() => {
-    console.log(id)
     if (effect.current) return;
-    // console.log(effect.current)
     loadList();
   }, []);
   return [list, loading];

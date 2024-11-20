@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { isCodeCorrect } from "./isCodeCorrect";
+import { UserFunctions } from "../App";
+
 import "./account.css";
 export default function ConfirmCode() {
-  const [invalidData, setInvalidData] = useState(false);
   const [loading, setLoading] = useState(true);
   const [code, setCode] = useState({
     1: "",
@@ -12,8 +13,11 @@ export default function ConfirmCode() {
     5: "",
     6: "",
   });
-  const [incorrectCode, setInCorrectCode] = useState(false);
+  const [incorrectCode, setIncorrectCode] = useState(false);
   const [activeFild, setActiveField] = useState(0);
+  const { searchLoggedInUser } = useContext(UserFunctions);
+  const [moveToAccount, setMoveToAccount] = useState(false);
+  const [comeBack, setCameBack] = useState(false);
   const activeElement = useRef(null);
 
   useEffect(() => {
@@ -32,16 +36,28 @@ export default function ConfirmCode() {
         codeAsString += value;
       }
       await isCodeCorrect(Number(codeAsString));
-      console.log("New account was created!")
+      console.log("New account was created!");
+      await searchLoggedInUser();
+      setMoveToAccount(true);
     } catch (err) {
-      if(err == 401) {
-        return console.log("Time has passed!")
-      } 
-      console.error(err);
+      switch (err) {
+        case 400:
+          console.log("Incorrect code");
+          setIncorrectCode(true);
+          break;
+        case 401:
+          console.log("Time has passed!");
+          setCameBack(true);
+          break;
+        default:
+          console.error(err);
+          setCameBack(true);
+      }
     }
   }
   function putNumber(e) {
     const { value, name } = e.target;
+    if (incorrectCode) setIncorrectCode(false);
     setCode((prev) => ({
       ...prev,
       [name]: value,
@@ -80,7 +96,8 @@ export default function ConfirmCode() {
         break;
     }
   }
-
+  if (comeBack) return <Navigate to={"/account/create"} />;
+  if (moveToAccount) return <Navigate to={"/"} />;
   if (loading) return <p>Loading ...</p>;
   return (
     <div className="confirm-code">

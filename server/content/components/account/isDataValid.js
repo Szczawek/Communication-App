@@ -10,6 +10,7 @@ async function isDataValid(req, res) {
         resolve(result);
       });
     });
+    console.log(user)
     if (user.length == 0) {
       res.cookie(
         "ac-data",

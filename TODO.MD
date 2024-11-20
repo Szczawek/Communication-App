@@ -3,14 +3,6 @@
         -- Dla lepszego "USER PERFORMENCE" można zrobić dwa pobrania zdjęcie, jedno te co ma być docelowe, drugie copia orginału pomniejszona do najmniejszego rozmiaru zablurowana. 
         -- Copia będzie 100x mniej ważyć, szybciej się załaduję 
 
-
-# IMPORTANT
-# AUTH
-        -- Dodać możliwość logowania dwu-stopniowego:
-                -- wymagać tego przy każdym nowym logowaniu / 5 miesięcy
-                 
-
-
 # Dodać do Auth w server
 
         --  dodać wygenerowane hasło, żeby nie można było wysyłąć żądań z nieautoryzowanych miejsc
@@ -48,8 +40,6 @@
 
 -- Bez żadnego powodu na firefox po kliknięciu enter by otworzył sub okno w na, to aktywuję onBlur w ul(zamyka okno) #50% powodzenia naprawy
 
-# Settings
--- W AccountSetting w puste inputy do zmiany danych stawić aktualne dane;
 
 # Secure
 

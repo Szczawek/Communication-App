@@ -18,7 +18,11 @@ export default function Home({ id }) {
         `${process.env.VITE_URL}/api/active-conversations/${id}`,
         options
       );
-      if (!res.ok) throw res.status;
+      console.log(res.status);
+      if (!res.ok) {
+        if(res.status == 404) return
+        throw res.status;
+      }
       const obj = await res.json();
       setUsers(obj);
     } catch (err) {
@@ -32,6 +36,7 @@ export default function Home({ id }) {
     loadActiveConv();
   }, []);
 
+  console.log(error);
   if (error) return <p>Error</p>;
   return (
     <div className="home">

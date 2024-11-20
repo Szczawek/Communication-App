@@ -11,15 +11,8 @@ async function createNewAccount() {
     `${process.env.VITE_URL}/create-account`,
     fetchOptions
   );
-  if (!res.ok) {
-    throw "I don't know";
-    // if (res.status == 400) {
-    //   // return setWarnings((prev) => ({ ...prev, emailWarning: true }));
-    // }
-    // const obj = await res.json();
-    // throw `${obj}: ${res.status}`;
-  }
+  if (!res.ok) throw res.status
   console.log("ok");
-}
+} 
 
 export { createNewAccount };

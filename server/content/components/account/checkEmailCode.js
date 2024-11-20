@@ -10,7 +10,7 @@ async function checkEmailCode(req, res) {
     const decryptedCodeAsNumber = Number(decryptedCode)
 
     if (code != decryptedCodeAsNumber)
-      return res.status(404).json("Incorrect code!");
+      return res.status(400).json("Incorrect code!");
     res.json("Ok");
   } catch (err) {
     console.log(err);
