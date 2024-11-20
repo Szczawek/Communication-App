@@ -1,12 +1,4 @@
 import crypto from "crypto";
-function confirmEmailCode() {
-  let code = "";
-  while (true) {
-    code += Math.floor(Math.random() * 10);
-    if (code.length == 6) break;
-  }
-  return code;
-}
 
 function decrypt(encryptedText, encryptionKey) {
   try {
@@ -42,4 +34,4 @@ function encrypt(text, encryptionKey) {
     iv.toString("hex") + ":" + encrypted + ":" + tag.toString("hex");
   return hasedData;
 }
-export { confirmEmailCode, decrypt, encrypt };
+export { decrypt, encrypt };

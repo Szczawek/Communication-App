@@ -15,12 +15,9 @@ import {
   limitOptions,
 } from "./content/api-config/config.js";
 import { db } from "./content/api-config/dbConfig.js";
-import {
-  confirmEmailCode,
-  encrypt,
-  decrypt,
-} from "./content/api-config/hashFunctions.js";
+import { encrypt, decrypt } from "./content/api-config/hashFunctions.js";
 
+import { createAccount } from "./content/components/account/createAccount.js";
 import { checkEmailCode } from "./content/components/account/checkEmailCode.js";
 import { isDataValid } from "./content/components/account/isDataValid.js";
 import { sendEmailCode } from "./content/components/account/sendEmailCode.js";
@@ -168,6 +165,8 @@ app.get("/", async (req, res) => {
   }
 });
 
+app.post("/check-email-code", checkEmailCode);
+
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -208,54 +207,9 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.post("/create-account", async (req, res) => {
-  try {
-    const { nick, email, unqiueName, avatar, password, banner } = req.body;
+app.post("/create-account", createAccount);
 
-    const selectUser = "SELECT id FROM users where email =? OR unqiue_name =?";
-    const isUserAlreadyExist = await new Promise((resolve) => {
-      db.query(selectUser, [email, unqiueName], (err, result) => {
-        if (err)
-          throw Error(
-            `Error, check if user already exist is imposible for that moment! :${err}`
-          );
-        resolve(result);
-      });
-    });
 
-    if (isUserAlreadyExist[0]) return res.sendStatus(400);
-    const encryptedPassword = await bcrypt.hash(password, 10);
-    const values = [
-      "/images/user.jpg",
-      "/images/banner.jpg",
-      nick,
-      unqiueName,
-      encryptedPassword,
-      email,
-      new Date(),
-    ];
-
-    const addUserDBCommand =
-      "INSERT INTO users(avatar,banner,nick,unqiue_name,password,email,date) values(?,?,?,?,?,?,?)";
-    await new Promise((resolve) => {
-      db.query(addUserDBCommand, values, (err) => {
-        if (err)
-          throw Error(`Database can't create new user accout now: ${err}`);
-        resolve();
-      });
-    });
-
-    const searchForUserID = "SELECT id from users where unqiue_name =? ";
-    db.query(searchForUserID, [unqiueName], (err, result) => {
-      if (err) throw Error(`Database can't find user id: ${err}`);
-      createSession(res, result[0]["id"]);
-      res.send("The account has been created successfully!");
-    });
-  } catch (err) {
-    console.error(`Error with create-account: ${err}`);
-    res.sendStatus(403);
-  }
-});
 
 function createSession(res, id) {
   res.cookie("user_id", encrypt(String(id), process.env.COOKIES_KEY), {
@@ -553,7 +507,7 @@ app.get("/api/google-login", (req, res) => {
 //     userConnections.delete(id);
 //   });
 // });
-app.post("/check-email-code", checkEmailCode);
+
 app.post("/is-data-valid", isDataValid);
 app.post("/send-email-code", sendEmailCode);
 

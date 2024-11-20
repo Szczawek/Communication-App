@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { loginWithGoogle } from "../../fireConf";
-import { sendConfirmCode } from "./sendConfirmCode.js";
+// import { loginWithGoogle } from "../../fireConf";
+import { setConfirmCode } from "./setConfirmCode.js";
 import { Navigate } from "react-router-dom";
 import { areDataUnqiue } from "./areDataUnqiue";
 export default function CreateAccount() {
@@ -39,7 +39,6 @@ export default function CreateAccount() {
     if (focusdElement.current) focusdElement.current.focus();
   }, []);
 
-  console.log(warnings);
   function emailWarning() {
     setWarnings((prev) => ({ ...prev, emailWarning: true }));
   }
@@ -81,7 +80,7 @@ export default function CreateAccount() {
       const copy = { ...accountData };
       delete copy.confirmPassword;
       await areDataUnqiue(accountData, emailWarning, unqiueNameWarning);
-      await sendConfirmCode();
+      await setConfirmCode();
       setValidData(true);
     } catch (err) {
       console.log(err);
@@ -200,7 +199,11 @@ export default function CreateAccount() {
         <button className="confirm" type="submit">
           {loading ? "Loading..." : "Submit"}
         </button>
-        <button className="dif-sing-in" type="button" onClick={loginWithGoogle}>
+        <button
+          className="dif-sing-in"
+          type="button"
+          // onClick={loginWithGoogle}
+        >
           <p>Google</p>
           <img src="/images/google.svg" alt="Sing in with Google" />
         </button>

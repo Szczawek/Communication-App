@@ -2,7 +2,6 @@ import { createTransport } from "nodemailer";
 
 async function sendEmail(res, data) {
   const { subject, user, html } = data;
-console.log(subject,user)
   const transporter = createTransport({
     service: "gmail",
     host: process.env.EM_HOST,
@@ -15,7 +14,7 @@ console.log(subject,user)
   });
   await transporter.sendMail({
     from: `"Senderson Company" <${process.env.EM_OWNER}>`,
-    to: "szczawik.rozwoju@wp.pl",
+    to: user,
     subject,
     html,
   });

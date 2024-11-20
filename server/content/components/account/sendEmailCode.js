@@ -1,5 +1,8 @@
 import { confirmCodeHTML } from "../../confirmCodeHTML.js";
 import { sendEmail } from "../../sendEmail.js";
+import { encrypt } from "../../api-config/hashFunctions.js";
+import "dotenv/config";
+
 async function sendEmailCode(req, res) {
   try {
     const { email } = req.body;
@@ -9,10 +12,10 @@ async function sendEmailCode(req, res) {
       codeArray.push(randomNumber);
     }
     const code = codeArray.join("");
-    console.log(code);
+    const encryptedCode = encrypt(code, process.env.EMAIL_CODE);
     res.cookie(
-      "seq",
-      { code },
+      "two-auth",
+      { code:encryptedCode },
       { sameSite: "none", secure: true, httpOnly: true, maxAge: 1000 * 60 * 5 }
     );
     await sendEmail(res, {

@@ -23,6 +23,7 @@ export default function ConfirmCode() {
   useEffect(() => {
     if (activeElement.current) activeElement.current.focus();
   }, [activeFild]);
+
   async function sendCode(e) {
     e.preventDefault();
     try {
@@ -31,7 +32,11 @@ export default function ConfirmCode() {
         codeAsString += value;
       }
       await isCodeCorrect(Number(codeAsString));
+      console.log("New account was created!")
     } catch (err) {
+      if(err == 401) {
+        return console.log("Time has passed!")
+      } 
       console.error(err);
     }
   }
@@ -42,7 +47,6 @@ export default function ConfirmCode() {
       [name]: value,
     }));
 
-    
     if (activeFild < 5 && value !== "") {
       setActiveField((prev) => prev + 1);
     }

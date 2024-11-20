@@ -1,4 +1,4 @@
-async function sendConfirmCode(email) {
+async function setConfirmCode(email) {
   const options = {
     method: "POST",
     headers: {
@@ -13,4 +13,4 @@ async function sendConfirmCode(email) {
   const obj = await res.json();
   console.log(obj);
 }
-export { sendConfirmCode };
+export { setConfirmCode };
