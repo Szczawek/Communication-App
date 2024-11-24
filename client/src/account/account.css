@@ -167,6 +167,7 @@
   justify-content: center;
   grid-auto-rows: max-content;
   row-gap: 2rem;
+  position: relative;
 }
 .account label {
   position: relative;
@@ -210,11 +211,19 @@
 
 .account .warning {
   position: absolute;
+  color: orange;
+}
+.account .attempts-warning {
+  color: orange;
+}
+.login .warning {
+  bottom: -1.5rem;
+}
+.create_account .warning {
   height: 1rem;
-  bottom: 20%;
+  bottom: -30%;
   left: 0;
   right: 0;
-  color: orange;
 }
 
 .account .panel {

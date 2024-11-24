@@ -105,8 +105,24 @@ export default function ConfirmCode() {
         <h2>Enter Code From Your Email</h2>
         {incorrectCode && <p>Code is incorrect!</p>}
         <p>You have 5 min</p>
+        <small>Pss... You can use "ctrl + v"</small>
       </header>
-      <form className="code-form" onSubmit={sendCode}>
+      <form
+        onPaste={(e) => {
+          const code = e.clipboardData.getData("text");
+          const codeToNumber = Number(code);
+          const checkType = isNaN(codeToNumber);
+          if (!checkType) {
+            const arr = code.split("").slice(0, 6);
+            const obj = {};
+            for (let i = 0; i < arr.length; i++) {
+              obj[i] = arr[i];
+            }
+            setCode(obj);
+          }
+        }}
+        className="code-form"
+        onSubmit={sendCode}>
         <div className="code-container">
           {[...new Array(6)].map((e, index) => {
             return (

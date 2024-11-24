@@ -146,7 +146,7 @@ export default function App() {
 
   if (loading) return <p className="loading-app">Loading ...</p>;
   if (serverError) return <ErrorComponent />;
-  
+
   return (
     <BrowserRouter>
       <Suspense fallback={<p className="full-screen loading">Loading ...</p>}>
@@ -186,6 +186,7 @@ export default function App() {
                   element={<Menager personID={loggedInUser.id} />}
                 />
                 <Route path="settings/*" element={<Settings />} />
+                <Route path="confirm-code" element={<ConfirmCode />} />
                 <Route
                   path=":nick/*"
                   element={

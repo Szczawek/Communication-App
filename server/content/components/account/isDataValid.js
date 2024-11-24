@@ -10,7 +10,6 @@ async function isDataValid(req, res) {
         resolve(result);
       });
     });
-    console.log(user)
     if (user.length == 0) {
       res.cookie(
         "ac-data",
@@ -31,7 +30,6 @@ async function isDataValid(req, res) {
           : false,
       email: user[0].email.toLowerCase() == email.toLowerCase() ? true : false,
     };
-  console.log(user)
     res.status(403).json(invalidData);
   } catch (err) {
     console.error(err);

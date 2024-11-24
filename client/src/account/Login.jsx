@@ -7,11 +7,13 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [warning, setWarning] = useState(false);
+  const [attemptsWarning, setAttemptsWarning] = useState(false);
   const focusdElement = useRef(null);
   const passwordInpElement = useRef(null);
   const navigate = useNavigate();
   const { searchLoggedInUser } = useContext(UserFunctions);
   useEffect(() => {
+    // if (sessionStorage.getItem("limit")) setAttemptsWarning(true);
     if (focusdElement.current) focusdElement.current.focus();
   }, []);
 
@@ -51,13 +53,24 @@ export default function Login() {
       setLoading(false);
 
       if (!res.ok) {
-        if (res.status === 403) return setWarning(true);
-        return console.error(`Error with login: ${res.status}}`);
+        switch (res.status) {
+          case 403:
+            setWarning(true);
+            break;
+          case 429:
+            setWarning(false);
+            setAttemptsWarning(true);
+            sessionStorage.setItem("limit", JSON.stringify(true));
+            break;
+          default:
+            throw res.status;
+        }
+        throw res.status;
       }
       await searchLoggedInUser();
       navigate("/info");
     } catch (err) {
-      throw Error(`Error durning login to account: ${err}`);
+      console.error(`Error durning login to account: ${err}`);
     }
   }
   return (
@@ -93,21 +106,27 @@ export default function Login() {
                 maxLength={30}
               />
             </label>
-              <button type="button" className="eye" onClick={showPassword}>
-                {isPasswordShowed ? (
-                  <img src="../images/eye.svg" alt="hide password" />
-                ) : (
-                  <img src="../images/closed_eye.svg" alt="show password" />
-                )}
-              </button>
+            <button type="button" className="eye" onClick={showPassword}>
+              {isPasswordShowed ? (
+                <img src="../images/eye.svg" alt="hide password" />
+              ) : (
+                <img src="../images/closed_eye.svg" alt="show password" />
+              )}
+            </button>
           </div>
           <small className="warning">
             {warning && "Email or Password are invalid!"}
           </small>
         </div>
-        <button className="confirm" type="submit">
+        <button
+          disabled={attemptsWarning ? true : false}
+          className="confirm"
+          type="submit">
           {loading ? "loading..." : "Submit"}
         </button>
+        {attemptsWarning && (
+          <h3 className="attempts-warning">To Many Attempts! Wait 10min</h3>
+        )}
       </form>
     </div>
   );

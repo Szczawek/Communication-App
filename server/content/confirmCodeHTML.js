@@ -34,6 +34,7 @@ export function confirmCodeHTML(code) {
   .code {
     font-size: 2rem;
     padding: 1rem 2rem;
+    text-align: center;
     background-color: #423a3a;
   }
   li {

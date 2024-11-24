@@ -32,6 +32,16 @@ async function createAccount(req, res) {
     const searchUserID = "SELECT id from users where unqiue_name =? ";
     db.query(searchUserID, [unqiueName], (err, result) => {
       if (err) throw `Database can't find user id: ${err}`;
+      res.clearCookies(
+        "two-auth",
+        {
+          sameSite: "none",
+          secure: true,
+          httpOnly: true,
+          maxAge: 1000 * 60 * 5,
+        }
+      );
+
       createSession(res, result[0]["id"]);
       res.send("The account has been created successfully!");
     });
