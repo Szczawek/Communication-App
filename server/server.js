@@ -15,8 +15,9 @@ import {
   limitOptions,
 } from "./content/api-config/config.js";
 import { removeMsg } from "./content/components/msg/removeMsg.js";
-import { db,socketDB } from "./content/api-config/dbConfig.js";
+import { db, socketDB } from "./content/api-config/dbConfig.js";
 import { encrypt, decrypt } from "./content/api-config/hashFunctions.js";
+import { isCodeExist } from "./content/components/account/isCodeExist.js";
 import { login } from "./content/components/account/login.js";
 import { logout } from "./content/components/account/logout.js";
 import { createAccount } from "./content/components/account/createAccount.js";
@@ -75,10 +76,6 @@ const server = https.createServer(options, app);
 const wss = new WebSocketServer({
   server,
 });
-
-// socketDB.connect((err) => {
-//   console.log("Socker db is working!")
-// })
 
 db.connect((err) => {
   if (err) {
@@ -172,8 +169,8 @@ app.get("/", async (req, res) => {
 });
 
 app.post("/check-email-code", checkEmailCode);
-app.post("/login",login)
-app.put("/api/logout", logout)
+app.post("/login", login);
+app.put("/api/logout", logout);
 app.post("/create-account", createAccount);
 
 app.get("/logged-in-user", async (req, res) => {
@@ -248,7 +245,6 @@ app.get("/api/user-search/:nick", (req, res) => {
   });
 });
 
-
 // Add/Remove friend with user firends list
 app.post("/api/friend-actionsiends-list-change", (req, res) => {
   const { action, personID, friendID } = req.body;
@@ -273,7 +269,6 @@ app.post("/api/friend-actionsiends-list-change", (req, res) => {
     res.json("The action was performed successfully!");
   });
 });
-
 
 // load messages
 app.get(
@@ -449,8 +444,9 @@ app.get("/api/google-login", (req, res) => {
 //   });
 // });
 
+app.get("/is-code-exist",isCodeExist)
 
-app.delete("/api/remove-msg",removeMsg)
+app.delete("/api/remove-msg", removeMsg);
 
 app.post("/is-data-valid", isDataValid);
 app.post("/send-email-code", sendEmailCode);

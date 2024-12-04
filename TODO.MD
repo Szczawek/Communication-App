@@ -33,7 +33,7 @@
         - "wymaga tego u góry" Przy logowaniu pobrać powiadomienia wszystkich wiadomości, które zostały wysłałane w czasie późniejszy, niż sesja, którą jest dodana do db, po pobraniu usunąć ją
 
 # Api
-
+        
 -- UserContection Map() zmienić na db
 
 # FireFox

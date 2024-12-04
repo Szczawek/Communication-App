@@ -5,7 +5,6 @@ import { createSession } from "./createSession.js";
 async function login(req, res) {
   try {
     const { email, password } = req.body;
-    res.cookie("test",{'s':2},{secure:true,expires:new Date(Date.now() + 1000 * 5)})
     const getUserPassword = "SELECT password FROM users where email =?";
     const correctUserPassword = await new Promise((resolve, reject) => {
       db.query(getUserPassword, [email], (err, result) => {
@@ -26,9 +25,13 @@ async function login(req, res) {
       }
       throw "Wrong Login!";
     }
+    // TwoStepsAuth
+
+
+
 
     //Description, everyone has unqiue email, and unqiue_name. This is the easiest way to find user.
-    const loadUserData = "SELECT * FROM users where email = ?";
+    const loadUserData = "SELECT id,two_steps_auth as twoStepsAuth FROM users where email = ?";
     db.query(loadUserData, [email], (err, result) => {
       if (err) throw `Error with login db: ${err}`;
       if (req.cookies["log_amount"]) {

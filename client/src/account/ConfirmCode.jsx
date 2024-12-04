@@ -1,10 +1,10 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { isCodeCorrect } from "./isCodeCorrect";
 import { UserFunctions } from "../App";
-
+import { useCodeStatus } from "./useCodeStatus";
 import "./account.css";
+import { Navigate } from "react-router-dom";
 export default function ConfirmCode() {
-  const [loading, setLoading] = useState(true);
   const [code, setCode] = useState({
     1: "",
     2: "",
@@ -17,12 +17,9 @@ export default function ConfirmCode() {
   const [activeFild, setActiveField] = useState(0);
   const { searchLoggedInUser } = useContext(UserFunctions);
   const [moveToAccount, setMoveToAccount] = useState(false);
-  const [comeBack, setCameBack] = useState(false);
+  const [comeBack, setComeBack] = useState(false);
+  const [loading, isCodeExist] = useCodeStatus();
   const activeElement = useRef(null);
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
 
   useEffect(() => {
     if (activeElement.current) activeElement.current.focus();
@@ -36,22 +33,19 @@ export default function ConfirmCode() {
         codeAsString += value;
       }
       await isCodeCorrect(Number(codeAsString));
-      console.log("New account was created!");
       await searchLoggedInUser();
       setMoveToAccount(true);
     } catch (err) {
       switch (err) {
         case 400:
-          console.log("Incorrect code");
           setIncorrectCode(true);
           break;
         case 401:
-          console.log("Time has passed!");
-          setCameBack(true);
+          setComeBack(true);
           break;
         default:
           console.error(err);
-          setCameBack(true);
+          setComeBack(true);
       }
     }
   }
@@ -96,7 +90,8 @@ export default function ConfirmCode() {
         break;
     }
   }
-  if (comeBack) return <Navigate to={"/account/create"} />;
+  if (comeBack || (!isCodeExist && !loading))
+    return <Navigate to={"/"} />;
   if (moveToAccount) return <Navigate to={"/"} />;
   if (loading) return <p>Loading ...</p>;
   return (

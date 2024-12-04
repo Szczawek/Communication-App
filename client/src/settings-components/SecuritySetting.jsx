@@ -1,13 +1,20 @@
 import { useState } from "react";
-import ConfirmCode from "../account/ConfirmCode";
 import "../account/account.css";
 import "../settings-components/settings.css";
 import { Navigate } from "react-router-dom";
-export default function SecuritySettings() {
+import { setConfirmCode } from "../account/setConfirmCode";
+export default function SecuritySettings({ email }) {
   const [confirmCodeEnable, setConfirmCodeEnable] = useState(false);
 
   if (confirmCodeEnable) return <Navigate to={"/confirm-code"} />;
-  
+  async function activeTwoAuth() {  
+    try {
+      await setConfirmCode(email);
+      setConfirmCodeEnable(true);
+    } catch (err) {
+      console.log(err)
+    }
+  }
   return (
     <div className="security-settings">
       <header className="title hq">
@@ -18,9 +25,7 @@ export default function SecuritySettings() {
           <h3>Two Steps Auth</h3>
           <p>it's recommended</p>
         </header>
-        <button
-          onClick={() => setConfirmCodeEnable(true)}
-          className="enable-btn">
+        <button onClick={activeTwoAuth} className="enable-btn">
           Enable
         </button>
       </div>

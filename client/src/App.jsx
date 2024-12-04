@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLoaderData } from "react-router-dom";
 import {
   lazy,
   useEffect,
@@ -185,7 +185,10 @@ export default function App() {
                   path="menage-friends"
                   element={<Menager personID={loggedInUser.id} />}
                 />
-                <Route path="settings/*" element={<Settings />} />
+                <Route
+                  path="settings/*"
+                  element={<Settings email={loggedInUser.email} />}
+                />
                 <Route path="confirm-code" element={<ConfirmCode />} />
                 <Route
                   path=":nick/*"

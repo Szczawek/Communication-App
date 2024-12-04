@@ -1,8 +1,19 @@
 import "dotenv/config";
 import mysql2 from "mysql2";
-import redis from "redis"
+import {createClient}from "redis"
 
-const socketDB = redis.createClient()
+const socketDB = createClient()
+// await socketDB.connect()
+
+// socketDB.on("error", (err) => {
+//   console.log(`Error with redis: ${err}`);
+// });
+
+// await socketDB.connect((msg) => {
+//   console.log("connected!") 
+//   console.log(msg);
+// });
+
 
 const db = mysql2.createConnection({
   database: process.env.DB_DATABASE || "magazine",
