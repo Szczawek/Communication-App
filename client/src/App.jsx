@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLoaderData } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import {
   lazy,
   useEffect,
@@ -6,7 +6,6 @@ import {
   Suspense,
   useState,
   createContext,
-  useMemo,
 } from "react";
 import "./styles.css";
 import useWebSocketTunel from "./main-component/useWebSocketTunel";

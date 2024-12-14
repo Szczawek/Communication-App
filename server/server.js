@@ -28,7 +28,7 @@ import { loadFriendsList } from "./content/components/friend-actions/loadFriends
 import { checkInviteStatus } from "./content/components/friend-actions/checkInviteStatus.js";
 import { playWithFriend } from "./content/components/friend-actions/playWithFriend.js";
 import { activeConversations } from "./content/components/friend-actions/activeConversations.js";
-const PORT = 443;
+const PORT = 8443;
 const app = express();
 
 // WSS ID
@@ -77,14 +77,24 @@ const wss = new WebSocketServer({
   server,
 });
 
-db.connect((err) => {
-  if (err) {
-    console.error(`Error with db: ${err}`);
-    server.close();
-    return;
-  }
-  console.log("DB MySQL works well!");
-});
+// Socket DB
+// socketDB.connect();
+// socketDB.on("error", (err) => {
+//   console.log(`Error with redis: ${err}`);
+// });
+// socketDB.on("connect", (e) => {
+//   console.log("Redis: connected!");
+// });
+
+// User Data DB
+// db.connect((err) => {
+//   if (err) {
+//     console.error(`Error with db: ${err}`);
+//     server.close();
+//     return;
+//   }
+//   console.log("MySQL: connected!");
+// });
 
 // SIMPLE/WISE
 // # Only for local testing/protection against overflow requests
@@ -444,7 +454,7 @@ app.get("/api/google-login", (req, res) => {
 //   });
 // });
 
-app.get("/is-code-exist",isCodeExist)
+app.get("/is-code-exist", isCodeExist);
 
 app.delete("/api/remove-msg", removeMsg);
 
