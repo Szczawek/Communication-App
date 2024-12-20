@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS `red-town`;
+USE `red-town`;
+
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nick` varchar(255) DEFAULT NULL,

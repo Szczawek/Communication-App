@@ -1,26 +1,63 @@
 services:
-
-  database:
-    image: mysql:latest-alphine
+  client:
+    build: client
+    env_file:
+      - client/.env
+    container_name: client-rt
+    networks:
+      - frontend-network
+    ports:
+      - 8443:8443
+    depends_on:
+      - server
+    
+  express:
+    build: 
+      context: server
+      dockerfile: Dockerfile
+    env_file:
+      - server/.env
+    container_name: express-rt
+    ports:
+      - 3000:443
+    networks:
+      - backend-network
+    depends_on:
+      - databaseMain
+  server:
+    container_name: server-rt
+    build: 
+      context: server/nginx
+      dockerfile: Dockerfile
+    depends_on:
+      - express
+    env_file:
+      - server/.env
+    ports:
+      - 443:443
+    networks:
+      - backend-network
+      - frontend-network
+      
+  
+  databaseMain:
+    image: mysql:latest
+    container_name: mysql-rt
     ports:
       - 3307:3306
     environment:
-      - MYSQL_DATABASE="magazine"
-      - MYSQL_HOST="database"
-      - MYSQL_ROOT_PASSWORD="9goFK18O7XNFZI"
-    volumes:
-      - init
+      MYSQL_DATABASE: red-town
+      MYSQL_ROOT_PASSWORD: 636mAMnAhymLQos/GjIhe+6uRHm5TK68uP4FPLIP4Yo
+    restart: always
     networks:
-      - backend
+      - backend-network
+    volumes:
+    - ./server/initTables.sql:/docker-entrypoint-initdb.d/initTables.sql
 
 networks:
-  backend:
-    name: backend-network
+  backend-network:
+    driver: bridge
 
-volumes:
-   init:
-     name: dbInit
-     mount: 
-        source: server/initTables.sql
-        destination: docker-entrypoint-initdb.d/initTables.sql
-    
+  frontend-network:
+    driver: bridge
+      

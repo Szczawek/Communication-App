@@ -1,19 +1,20 @@
 import "dotenv/config";
-import mysql2 from "mysql2";
+import {createConnection} from "mysql2";
 import {createClient}from "redis"
 
 // const socketDB = createClient()
 
-// const db = mysql2.createConnection({
-//   database: process.env.DB_DATABASE || "magazine",
-//   user: process.env.DB_USER || "root",
-//   password: process.env.DB_PASSWORD || "9goFK18O7XNFZI",
-//   host: process.env.DB_HOST || "127.0.0.1",
-//   // ssl: {
-//   //   ca: process.env.DB_SSL ,
-//   // },
-// });
+const db = createConnection({
+  database: process.env.DB_DATABASE || "magazine",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "9goFK18O7XNFZI",
+  host: process.env.DB_HOST || "127.0.0.1",
+  port:process.env.DB_PORT || 3306,
+  // ssl: {
+  //   ca: process.env.DB_SSL ,
+  // },
+});
   
 const socketDB = 1
-const db = 2
+
 export {db,socketDB}

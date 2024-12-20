@@ -28,7 +28,7 @@ import { loadFriendsList } from "./content/components/friend-actions/loadFriends
 import { checkInviteStatus } from "./content/components/friend-actions/checkInviteStatus.js";
 import { playWithFriend } from "./content/components/friend-actions/playWithFriend.js";
 import { activeConversations } from "./content/components/friend-actions/activeConversations.js";
-const PORT = 8443;
+const PORT = 443;
 const app = express();
 
 // WSS ID
@@ -87,14 +87,14 @@ const wss = new WebSocketServer({
 // });
 
 // User Data DB
-// db.connect((err) => {
-//   if (err) {
-//     console.error(`Error with db: ${err}`);
-//     server.close();
-//     return;
-//   }
-//   console.log("MySQL: connected!");
-// });
+db.connect((err) => {
+  if (err) {
+    console.error(`Error with db: ${err}`);
+    server.close();
+    return;
+  }
+  console.log("MySQL: connected!");
+});
 
 // SIMPLE/WISE
 // # Only for local testing/protection against overflow requests

@@ -1,26 +1,16 @@
-# Use the Dockerfile syntax for BuildKit support (Docker 18.09+)
-# syntax=docker/dockerfile:1
+FROM node:22.9.0-alpine as base
 
-ARG NODE_VERSION=22.9.0
+WORKDIR /usr/src/client
 
-# Base image for Node.js environment
-FROM node:${NODE_VERSION}-alpine as base
-
-WORKDIR /client
-
-# Install production dependencies
 FROM base as deps
 
-# Use --mount to cache npm files and bind package.json files
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=package-lock.json,target=package-lock.json \
     --mount=type=cache,target=/root/.npm \
     npm ci --omit=dev
 
-# Build the application
 FROM deps as build
 
-# Bind package.json and package-lock.json and use the cache
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=package-lock.json,target=package-lock.json \
     --mount=type=cache,target=/root/.npm \
@@ -30,17 +20,14 @@ COPY . .
 
 RUN npm run build
 
-FROM nginx:alpine as final
+FROM nginx:latest
 
-COPY ./nginx.conf /etc/nginx/nginx.conf
-COPY ./ssl/client.cert /etc/nginx/ssl/client.cert
-COPY ./ssl/client.key /etc/nginx/ssl/client.key
+RUN rm /etc/nginx/conf.d/default.conf
 
-WORKDIR /usr/share/nginx/html
-RUN rm -rf ./*
+COPY /nginx/nginx.conf /etc/nginx/conf.d
+COPY /nginx/ssl /etc/nginx/ssl
 
-COPY --from=build /client/dist .
+COPY --from=build /usr/src/client /usr/share/nginx/html
 
-EXPOSE 8443
 
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+

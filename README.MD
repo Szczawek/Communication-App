@@ -1,5 +1,4 @@
 Command for start up project:
-
 # Server
    # two separate consoles are needed 
     cd server 
@@ -11,3 +10,8 @@ Command for start up project:
 # Client
     cd client 
     npm run dev
+
+# Quick Start with Docker 
+    - install docker 
+    docker compose up --build -d
+    
